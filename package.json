@@ -1,0 +1,9 @@
+{
+  "name": "pulpoffe-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-worker.mjs",
+    "preview": "node scripts/local-preview.mjs"
+  }
+}

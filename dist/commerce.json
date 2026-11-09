@@ -1,0 +1,7 @@
+{
+  "provider": "razorpay",
+  "checkout_enabled": false,
+  "currency": "INR",
+  "status": "awaiting_verified_pack_sizes_prices_and_payment_account",
+  "note": "No payment is collected. Product selections are saved as enquiries. Razorpay live checkout requires a server-created order and server-verified payment signature. Never put API secret keys in this static directory."
+}

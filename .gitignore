@@ -1,0 +1,5 @@
+render-public/
+node_modules/
+.env
+.env.*
+*.sqlite*

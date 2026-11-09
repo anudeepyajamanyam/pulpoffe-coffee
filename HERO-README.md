@@ -1,0 +1,4 @@
+# Hourglass stages
+Replace the five illustrated placeholders in public/hero/stages/stage_01.webp through stage_05.webp with photographs of increasing bottom fill. Use identical framing, background #140c09 and image dimensions for all five. Replace public/hero/beans/bean_01.png through bean_06.png with six transparent roasted-bean cut-outs. Keep transparent margins consistent. Run npm run build and restart the local preview after replacement.
+ 
+The 350vh desktop section uses four text phases at 0%, 14%, 45% and 80%. The logo dissolves into the first stage by 11.5%. Stage progression runs from 10% to 94%. Sprite placement is measured in normalized image coordinates. Adjust neckX, neckY, width and travel at the top of dist/hero-stages.js after replacing the images. Mobile, reduced motion, pause and low-power mode show the final stage.
