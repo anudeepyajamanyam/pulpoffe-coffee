@@ -5,5 +5,8 @@
   "scripts": {
     "build": "node scripts/build-worker.mjs",
     "preview": "node scripts/local-preview.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
   }
 }

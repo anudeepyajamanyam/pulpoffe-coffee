@@ -3,3 +3,8 @@ node_modules/
 .env
 .env.*
 *.sqlite*
+
+public/media/source/
+encode-*.bat
+process-photos.mjs
+encode-test.bat
