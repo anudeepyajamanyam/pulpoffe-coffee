@@ -18,25 +18,34 @@
     </div>
   </div>
 
-  <!-- Right media card -->
-  <div class="hero-media-col">
-    <div class="hero-media-card" aria-label="Estate pickers walking the path at Kodagu">
-      <!-- poster shown until video loads or for reduced-motion -->
-      <img class="hero-poster estate-media"
-           src="media/posters/hero-picker-path-poster.webp"
-           alt="A picker walking down the estate path in Kodagu"
-           width="440" height="587"
+  <!-- Right image grid -->
+  <div class="hero-grid-col" aria-label="Estate photographs from Kodagu">
+    <!-- tall portrait — primary anchor -->
+    <div class="hg-cell hg-primary">
+      <img src="media/estate/hero-portrait-1280.webp"
+           srcset="media/estate/hero-portrait-640.webp 640w, media/estate/hero-portrait-1280.webp 1280w"
+           sizes="(max-width:767px) 50vw, 28vw"
+           alt="A picker walking the estate path in Kodagu"
+           width="960" height="1280"
            fetchpriority="high">
-      <video
-        autoplay muted loop playsinline
-        width="440" height="587"
-        poster="media/posters/hero-picker-path-poster.webp"
-        aria-hidden="true">
-        <source src="media/videos/hero-picker-path.webm" type="video/webm">
-        <source src="media/videos/hero-picker-path.mp4"  type="video/mp4">
-      </video>
-      <div class="hero-media-caption">
-        <span>Kodagu estate, picking season</span>
+    </div>
+    <!-- stack: second portrait + landscape -->
+    <div class="hg-stack">
+      <div class="hg-cell hg-secondary">
+        <img src="media/estate/pickers-plantation-1280.webp"
+             srcset="media/estate/pickers-plantation-640.webp 640w, media/estate/pickers-plantation-1280.webp 1280w"
+             sizes="(max-width:767px) 40vw, 20vw"
+             alt="Pickers among the coffee plants on the Kodagu estate"
+             width="720" height="1280"
+             loading="eager">
+      </div>
+      <div class="hg-cell hg-tertiary">
+        <img src="media/estate/sorting-cherries-1280.webp"
+             srcset="media/estate/sorting-cherries-640.webp 640w, media/estate/sorting-cherries-1280.webp 1280w"
+             sizes="(max-width:767px) 40vw, 20vw"
+             alt="Pickers sorting freshly harvested coffee cherries by hand"
+             width="1280" height="720"
+             loading="eager">
       </div>
     </div>
   </div>
@@ -144,5 +153,6 @@
   }
 })();
 </script></body></html>
+
 
 
