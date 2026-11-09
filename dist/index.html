@@ -7,46 +7,70 @@
 <main><!-- ═══ HERO SECTION — real estate media ═══ -->
 <section class="hero-real" id="home" aria-label="Pulpoffe coffee — from Kodagu, with care">
 
-  <!-- Left copy -->
+  <!-- Left Copy Column -->
   <div class="hero-real-copy">
-    <p class="eyebrow">FROM KODAGU, WITH CARE</p>
+    <div class="hero-eyebrow">
+      <span class="eyebrow-dot"></span>
+      <span>ESTATE COFFEE · KODAGU, KARNATAKA</span>
+    </div>
+    
     <h1>Rooted in earth.<br>Crafted for<br><em>your cup.</em></h1>
-    <p class="hero-description">Good coffee begins long before the first sip. Discover a world of flavour, from our roots to your ritual.</p>
+    
+    <p class="hero-description">
+      From the shade-canopied hills of Western Ghats to your everyday ritual. Discover pure single-origin roasted, fermented, and flavoured artisanal coffees.
+    </p>
+    
     <div class="hero-actions">
       <a class="button gold" href="#coffees">Explore our coffees <span>→</span></a>
-      <a class="quiet-link" href="#story">The Pulpoffe story <span>↓</span></a>
+      <a class="button outline" href="#story">Our estate story <span>↓</span></a>
+    </div>
+
+    <!-- Heritage metrics strip -->
+    <div class="hero-metrics">
+      <div class="metric-item">
+        <strong>1,100m</strong>
+        <span>Estate Elevation</span>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-item">
+        <strong>Shade-Grown</strong>
+        <span>Silver Oak Canopy</span>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-item">
+        <strong>Hand-Sorted</strong>
+        <span>Ripe Cherries Only</span>
+      </div>
     </div>
   </div>
 
-  <!-- Right image grid -->
-  <div class="hero-grid-col" aria-label="Estate photographs from Kodagu">
-    <!-- tall portrait — primary anchor -->
-    <div class="hg-cell hg-primary">
+  <!-- Right Visual Column (Master Arch Editorial Portrait + Vector Art) -->
+  <div class="hero-visual-col" aria-label="Kodagu estate photographs">
+    <!-- Botanical Branch Vector Accent -->
+    <img src="assets/coffee-botanical.svg" class="botanical-vector-accent" alt="" aria-hidden="true">
+
+    <!-- Master Arch Card with Real Estate Photo -->
+    <div class="hero-arch-card">
       <img src="media/estate/hero-portrait-1280.webp"
            srcset="media/estate/hero-portrait-640.webp 640w, media/estate/hero-portrait-1280.webp 1280w"
-           sizes="(max-width:767px) 50vw, 28vw"
-           alt="A picker walking the estate path in Kodagu"
-           width="960" height="1280"
-           fetchpriority="high">
+           sizes="(max-width:640px) 270px, (max-width:990px) 320px, 410px"
+           alt="A coffee picker walking the misty estate path in Kodagu"
+           class="hero-main-photo estate-media"
+           fetchpriority="high"
+           width="960" height="1280">
+      
+      <div class="hero-location-chip">
+        <span>Kodagu Estate · Harvest Season</span>
+      </div>
     </div>
-    <!-- stack: second portrait + landscape -->
-    <div class="hg-stack">
-      <div class="hg-cell hg-secondary">
-        <img src="media/estate/pickers-plantation-1280.webp"
-             srcset="media/estate/pickers-plantation-640.webp 640w, media/estate/pickers-plantation-1280.webp 1280w"
-             sizes="(max-width:767px) 40vw, 20vw"
-             alt="Pickers among the coffee plants on the Kodagu estate"
-             width="720" height="1280"
-             loading="eager">
-      </div>
-      <div class="hg-cell hg-tertiary">
-        <img src="media/estate/sorting-cherries-1280.webp"
-             srcset="media/estate/sorting-cherries-640.webp 640w, media/estate/sorting-cherries-1280.webp 1280w"
-             sizes="(max-width:767px) 40vw, 20vw"
-             alt="Pickers sorting freshly harvested coffee cherries by hand"
-             width="1280" height="720"
-             loading="eager">
-      </div>
+
+    <!-- Rotating Artisan Seal Vector -->
+    <img src="assets/estate-seal.svg" class="hero-seal-stamp" alt="Kodagu Estate Artisan Seal" aria-hidden="true">
+
+    <!-- Secondary Peek Card -->
+    <div class="hero-peek-card">
+      <img src="media/estate/sorting-cherries-640.webp" alt="Hand sorting coffee cherries" class="estate-media" width="640" height="360">
+      <span>Hand Sorted</span>
     </div>
   </div>
 
@@ -153,6 +177,7 @@
   }
 })();
 </script></body></html>
+
 
 
 

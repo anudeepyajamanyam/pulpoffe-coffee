@@ -9,30 +9,78 @@ const DEFAULT_CONTACT = { email:'', phone:'', address:'Kodagu, Karnataka, India'
 const CUSTOMER_FIELDS = 'id, type, name, email, company, phone, interest, volume, message, status, created_at AS createdAt, updated_at AS updatedAt';
 const ADMIN_FIELDS = `${CUSTOMER_FIELDS}, user_id AS userId, account_email AS accountEmail`;
 
-function json(body, status = 200) {
-  return new Response(JSON.stringify(body), { status, headers: { ...SECURITY_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } });
+function json(body, status = 200, extraHeaders = {}) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      ...SECURITY_HEADERS,
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store',
+      ...extraHeaders
+    }
+  });
 }
-function userFor(request, env) {
-  // Sites dispatch establishes and overwrites these headers. Browser form fields
-  // and local storage never establish identity or administrator membership.
-  const id = request.headers.get('oai-authenticated-user-id');
-  const email = request.headers.get('oai-authenticated-user-email');
-  if (!id || !email) return null;
-  let name = email;
-  const rawName = request.headers.get('oai-authenticated-user-full-name');
-  if (rawName && request.headers.get('oai-authenticated-user-full-name-encoding') === 'percent-encoded-utf-8') {
-    try { name = decodeURIComponent(rawName); } catch {}
+
+// Native Web Crypto PBKDF2 Password Hashing (Zero external dependencies)
+async function hashPassword(password, salt = crypto.randomUUID()) {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({
+    name: 'PBKDF2',
+    salt: enc.encode(salt),
+    iterations: 50000,
+    hash: 'SHA-256'
+  }, key, 256);
+  const hashHex = Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('');
+  return `${salt}:${hashHex}`;
+}
+
+async function verifyPassword(password, stored) {
+  if (!stored || !stored.includes(':')) return false;
+  const [salt] = stored.split(':');
+  const computed = await hashPassword(password, salt);
+  return computed === stored;
+}
+
+async function userFor(request, env) {
+  if (!env.DB?.prepare) return null;
+  let token = null;
+  const authHeader = request.headers.get('Authorization') || '';
+  if (authHeader.startsWith('Bearer ')) {
+    token = authHeader.slice(7).trim();
+  } else {
+    const cookie = request.headers.get('Cookie') || '';
+    const match = cookie.match(/(?:^|;\s*)pulpoffe_token=([^;]+)/);
+    if (match) token = decodeURIComponent(match[1]);
   }
-  const admins = String(env.ADMIN_EMAILS || '').split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
-  return { id, email, name, role: admins.includes(email.toLowerCase()) ? 'admin' : 'customer' };
+  if (!token) return null;
+
+  try {
+    const now = new Date().toISOString();
+    const row = await env.DB.prepare(
+      `SELECT u.id, u.name, u.email, u.role FROM sessions s JOIN users u ON s.user_id = u.id WHERE s.token = ? AND s.expires_at > ?`
+    ).bind(token, now).first();
+
+    if (!row) return null;
+
+    const admins = String(env.ADMIN_EMAILS || '').split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
+    const role = admins.includes(row.email.toLowerCase()) ? 'admin' : (row.role || 'customer');
+    return { id: row.id, name: row.name, email: row.email, role, token };
+  } catch {
+    return null;
+  }
 }
+
 function sameOrigin(request) {
   const origin = request.headers.get('Origin');
   const source = request.headers.get('Sec-Fetch-Site');
-  return origin === new URL(request.url).origin && source !== 'cross-site';
+  return !origin || origin === new URL(request.url).origin || source === 'same-origin';
 }
-async function readBody(request,limit=MAX_BODY_BYTES) {
-  if (!/^application\/json(?:\s*;|$)/i.test(request.headers.get('Content-Type') || '')) return { error: json({ error: 'Send this request as JSON.' }, 415) };
+
+async function readBody(request, limit = MAX_BODY_BYTES) {
+  if (!/^application\/json(?:\s*;|$)/i.test(request.headers.get('Content-Type') || '')) {
+    return { error: json({ error: 'Send this request as JSON.' }, 415) };
+  }
   const declaredLength = Number(request.headers.get('Content-Length'));
   if (declaredLength > limit) return { error: json({ error: 'Your message is too long.' }, 413) };
   const reader = request.body?.getReader();
@@ -53,6 +101,7 @@ async function readBody(request,limit=MAX_BODY_BYTES) {
     return { value };
   } catch { return { error: json({ error: 'Please send a valid enquiry.' }, 400) }; }
 }
+
 function validateEnquiry(value) {
   const text = key => typeof value[key] === 'string' ? value[key].trim() : '';
   const item = Object.fromEntries(['name','email','company','phone','interest','volume','message'].map(k => [k, text(k)]));
@@ -68,6 +117,7 @@ function validateEnquiry(value) {
   if (value.consent !== true) return { error: 'Please agree to being contacted about this enquiry.' };
   return { item };
 }
+
 const groups = ['instant','flavoured','fermented','roasted'];
 const siteDefaults = {
   headline:'Rooted in earth.\nCrafted for\nyour cup.',
@@ -76,6 +126,7 @@ const siteDefaults = {
   story:'Ours begin in Kodagu, Karnataka. A place where coffee is part of the landscape, the livelihood, and the everyday.',
   instagram:'', facebook:'', linkedin:'', youtube:''
 };
+
 async function management(request, env, path, user) {
   const db = env.DB;
   if (!db?.prepare) return json({error:'The store is temporarily unavailable.'},503);
@@ -147,50 +198,157 @@ async function management(request, env, path, user) {
 }
 
 async function api(request, env, path) {
-  const user = userFor(request, env);
-  if (path === '/api/me' && request.method === 'GET') {
-    if(user && env.DB?.prepare) {
-      const now=new Date().toISOString();
-      await env.DB.prepare('INSERT INTO portal_accounts(id,name,email,first_seen,last_seen) VALUES(?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,email=excluded.email,last_seen=excluded.last_seen').bind(user.id,user.name,user.email,now,now).run();
+  const user = await userFor(request, env);
+
+  // ── Authentication Endpoints ──
+  if (path === '/api/auth/register' && request.method === 'POST') {
+    if (!env.DB?.prepare) return json({ error: 'Database service unavailable.' }, 503);
+    const payload = await readBody(request);
+    if (payload.error) return payload.error;
+    const { name, email, password } = payload.value || {};
+
+    if (typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 100) {
+      return json({ error: 'Please enter a name between 2 and 100 characters.' }, 400);
     }
-    return json({authenticated:!!user,user});
+    if (typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      return json({ error: 'Please enter a valid email address.' }, 400);
+    }
+    if (typeof password !== 'string' || password.length < 6 || password.length > 100) {
+      return json({ error: 'Password must be at least 6 characters long.' }, 400);
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const existing = await env.DB.prepare('SELECT id FROM users WHERE email = ?').bind(cleanEmail).first();
+    if (existing) {
+      return json({ error: 'An account with this email address already exists. Please sign in.' }, 409);
+    }
+
+    const admins = String(env.ADMIN_EMAILS || '').split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
+    const role = admins.includes(cleanEmail) ? 'admin' : 'customer';
+    const passwordHash = await hashPassword(password);
+    const userId = crypto.randomUUID();
+    const now = new Date().toISOString();
+
+    await env.DB.prepare(
+      'INSERT INTO users (id, name, email, password_hash, role, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+    ).bind(userId, name.trim(), cleanEmail, passwordHash, role, now).run();
+
+    // Create session (valid for 30 days)
+    const token = crypto.randomUUID() + '-' + crypto.randomUUID();
+    const expiresAt = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
+    await env.DB.prepare(
+      'INSERT INTO sessions (token, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)'
+    ).bind(token, userId, expiresAt, now).run();
+
+    // Update portal_accounts registry
+    await env.DB.prepare(
+      'INSERT INTO portal_accounts(id,name,email,first_seen,last_seen) VALUES(?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,email=excluded.email,last_seen=excluded.last_seen'
+    ).bind(userId, name.trim(), cleanEmail, now, now).run();
+
+    const cookieHeader = `pulpoffe_token=${encodeURIComponent(token)}; Path=/; Max-Age=2592000; SameSite=Lax; HttpOnly`;
+    return json({
+      token,
+      user: { id: userId, name: name.trim(), email: cleanEmail, role }
+    }, 201, { 'Set-Cookie': cookieHeader });
   }
-  if (['/api/products','/api/site-content','/api/admin/people','/api/admin/site-content'].includes(path) || /^\/api\/admin\/products(?:\/|$)/.test(path)) return management(request,env,path,user);
+
+  if (path === '/api/auth/login' && request.method === 'POST') {
+    if (!env.DB?.prepare) return json({ error: 'Database service unavailable.' }, 503);
+    const payload = await readBody(request);
+    if (payload.error) return payload.error;
+    const { email, password } = payload.value || {};
+
+    if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
+      return json({ error: 'Please enter your email and password.' }, 400);
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const row = await env.DB.prepare('SELECT id, name, email, password_hash, role FROM users WHERE email = ?').bind(cleanEmail).first();
+    if (!row || !(await verifyPassword(password, row.password_hash))) {
+      return json({ error: 'Invalid email or password.' }, 401);
+    }
+
+    const admins = String(env.ADMIN_EMAILS || '').split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
+    const role = admins.includes(cleanEmail) ? 'admin' : (row.role || 'customer');
+    const token = crypto.randomUUID() + '-' + crypto.randomUUID();
+    const now = new Date().toISOString();
+    const expiresAt = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
+
+    await env.DB.prepare(
+      'INSERT INTO sessions (token, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)'
+    ).bind(token, row.id, expiresAt, now).run();
+
+    await env.DB.prepare(
+      'INSERT INTO portal_accounts(id,name,email,first_seen,last_seen) VALUES(?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,email=excluded.email,last_seen=excluded.last_seen'
+    ).bind(row.id, row.name, cleanEmail, now, now).run();
+
+    const cookieHeader = `pulpoffe_token=${encodeURIComponent(token)}; Path=/; Max-Age=2592000; SameSite=Lax; HttpOnly`;
+    return json({
+      token,
+      user: { id: row.id, name: row.name, email: cleanEmail, role }
+    }, 200, { 'Set-Cookie': cookieHeader });
+  }
+
+  if (path === '/api/auth/logout' && request.method === 'POST') {
+    if (user?.token && env.DB?.prepare) {
+      await env.DB.prepare('DELETE FROM sessions WHERE token = ?').bind(user.token).run();
+    }
+    const cookieHeader = 'pulpoffe_token=; Path=/; Max-Age=0; SameSite=Lax; HttpOnly';
+    return json({ success: true }, 200, { 'Set-Cookie': cookieHeader });
+  }
+
+  if (path === '/api/me' && request.method === 'GET') {
+    if (user && env.DB?.prepare) {
+      const now = new Date().toISOString();
+      await env.DB.prepare('INSERT INTO portal_accounts(id,name,email,first_seen,last_seen) VALUES(?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,email=excluded.email,last_seen=excluded.last_seen').bind(user.id, user.name, user.email, now, now).run();
+    }
+    return json({ authenticated: !!user, user });
+  }
+
+  if (['/api/products','/api/site-content','/api/admin/people','/api/admin/site-content'].includes(path) || /^\/api\/admin\/products(?:\/|$)/.test(path)) {
+    return management(request, env, path, user);
+  }
+
   if (path === '/api/contact-settings' && request.method === 'GET') {
     if (!env.DB?.prepare) return json(DEFAULT_CONTACT);
     const row = await env.DB.prepare('SELECT value FROM site_settings WHERE key = ?').bind('contact').first();
     const contact = row ? JSON.parse(row.value) : DEFAULT_CONTACT;
     return json(contact.published ? contact : DEFAULT_CONTACT);
   }
+
   if (path === '/api/admin/contact-settings') {
-    if (!user) return json({ error:'Sign in to continue.' },401);
-    if (user.role !== 'admin') return json({ error:'Administrator access is required.' },403);
-    if (!env.DB?.prepare) return json({ error:'Contact settings are temporarily unavailable.' },503);
+    if (!user) return json({ error:'Sign in to continue.' }, 401);
+    if (user.role !== 'admin') return json({ error:'Administrator access is required.' }, 403);
+    if (!env.DB?.prepare) return json({ error:'Contact settings are temporarily unavailable.' }, 503);
     if (request.method === 'GET') {
       const row = await env.DB.prepare('SELECT value FROM site_settings WHERE key = ?').bind('contact').first();
       return json(row ? JSON.parse(row.value) : DEFAULT_CONTACT);
     }
-    if (request.method !== 'PATCH') return json({ error:'This action is not supported.' },405);
-    if (!sameOrigin(request)) return json({ error:'This request could not be verified. Reload the page and try again.' },403);
+    if (request.method !== 'PATCH') return json({ error:'This action is not supported.' }, 405);
+    if (!sameOrigin(request)) return json({ error:'This request could not be verified. Reload the page and try again.' }, 403);
     const payload = await readBody(request); if (payload.error) return payload.error;
-    const value=payload.value;
-    const contact={email:typeof value.email==='string'?value.email.trim():'',phone:typeof value.phone==='string'?value.phone.trim():'',address:typeof value.address==='string'?value.address.trim():'',published:value.published===true};
-    if(contact.email && (contact.email.length>254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)))return json({error:'Enter a valid business email address.'},400);
-    if(contact.phone && !/^[+()\d\s.\-]{7,40}$/.test(contact.phone))return json({error:'Enter a valid business phone number.'},400);
-    if(contact.address.length>500)return json({error:'Keep the business address within 500 characters.'},400);
-    const domain=contact.email.split('@')[1]?.toLowerCase()||'';
-    const reserved=/\.(example|invalid|test|localhost)$/.test(domain)||['example.com','example.org','example.net'].some(x=>domain===x||domain.endsWith('.'+x));
-    const digits=contact.phone.replace(/\D/g,'');
-    if(contact.published && (!contact.email&&!contact.phone || reserved || (contact.phone && (/^0+$/.test(digits)||/^910+$/.test(digits)))))return json({error:'Replace sample contact details with your business contact information before publishing.'},400);
+    const value = payload.value;
+    const contact = { email:typeof value.email==='string'?value.email.trim():'', phone:typeof value.phone==='string'?value.phone.trim():'', address:typeof value.address==='string'?value.address.trim():'', published:value.published===true };
+    if (contact.email && (contact.email.length>254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email))) return json({error:'Enter a valid business email address.'},400);
+    if (contact.phone && !/^[+()\d\s.\-]{7,40}$/.test(contact.phone)) return json({error:'Enter a valid business phone number.'},400);
+    if (contact.address.length>500) return json({error:'Keep the business address within 500 characters.'},400);
+    const domain = contact.email.split('@')[1]?.toLowerCase()||'';
+    const reserved = /\.(example|invalid|test|localhost)$/.test(domain)||['example.com','example.org','example.net'].some(x=>domain===x||domain.endsWith('.'+x));
+    const digits = contact.phone.replace(/\D/g,'');
+    if (contact.published && (!contact.email&&!contact.phone || reserved || (contact.phone && (/^0+$/.test(digits)||/^910+$/.test(digits))))) {
+      return json({error:'Replace sample contact details with your business contact information before publishing.'},400);
+    }
     await env.DB.prepare('INSERT INTO site_settings (key,value,updated_at) VALUES (?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at').bind('contact',JSON.stringify(contact),new Date().toISOString()).run();
     return json(contact);
   }
+
   const adminRoute = path === '/api/admin/enquiries' || path.startsWith('/api/admin/enquiries/');
   const enquiryRoute = path === '/api/enquiries';
   if (!adminRoute && !enquiryRoute) return json({ error: 'Not found.' }, 404);
   if (!user) return json({ error: 'Sign in to continue.' }, 401);
   if (adminRoute && user.role !== 'admin') return json({ error: 'Administrator access is required.' }, 403);
   if (!env.DB?.prepare) return json({ error: 'Enquiries are temporarily unavailable. Please try again shortly.' }, 503);
+
   if (request.method === 'GET') {
     if (path !== '/api/enquiries' && path !== '/api/admin/enquiries') return json({ error: 'Not found.' }, 404);
     const query = adminRoute
@@ -199,7 +357,9 @@ async function api(request, env, path) {
     const result = await query.all();
     return json({ enquiries: result.results || [] });
   }
+
   if (!sameOrigin(request)) return json({ error: 'This request could not be verified. Reload the page and try again.' }, 403);
+
   if (path === '/api/enquiries' && request.method === 'POST') {
     const payload = await readBody(request); if (payload.error) return payload.error;
     const validation = validateEnquiry(payload.value); if (validation.error) return json({ error: validation.error }, 400);
@@ -208,9 +368,10 @@ async function api(request, env, path) {
     if (Number(count?.count) >= 20) return json({ error: 'You have sent several enquiries recently. Please try again later.' }, 429);
     const item = validation.item, id = crypto.randomUUID(), now = new Date().toISOString();
     await env.DB.prepare('INSERT INTO enquiries (id,user_id,account_email,type,name,email,company,phone,interest,volume,message,consent,status,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-      .bind(id,user.id,user.email,item.type,item.name,item.email,item.company,item.phone,item.interest,item.volume,item.message,1,'new',now,now).run();
+      .bind(id, user.id, user.email, item.type, item.name, item.email, item.company, item.phone, item.interest, item.volume, item.message, 1, 'new', now, now).run();
     return json({ id, status: 'new', createdAt: now }, 201);
   }
+
   if (adminRoute && request.method === 'PATCH') {
     const id = path.slice('/api/admin/enquiries/'.length);
     if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) return json({ error: 'Not found.' }, 404);
@@ -219,13 +380,14 @@ async function api(request, env, path) {
     const existing = await env.DB.prepare('SELECT id FROM enquiries WHERE id = ?').bind(id).first();
     if (!existing) return json({ error: 'Not found.' }, 404);
     const now = new Date().toISOString();
-    await env.DB.prepare('UPDATE enquiries SET status = ?, updated_at = ? WHERE id = ?').bind(payload.value.status,now,id).run();
+    await env.DB.prepare('UPDATE enquiries SET status = ?, updated_at = ? WHERE id = ?').bind(payload.value.status, now, id).run();
     return json({ id, status: payload.value.status, updatedAt: now });
   }
+
   return json({ error: 'This action is not supported.' }, 405);
 }
+
 function staticResponse(request, path) {
-  // STATIC_ASSETS is generated at build time. No runtime filesystem access.
   let key = path === '/' ? '/index.html' : path;
   if (!key.includes('.') && !key.endsWith('/')) key += '.html';
   const asset = typeof STATIC_ASSETS !== 'undefined' ? STATIC_ASSETS[key] : null;
@@ -233,8 +395,15 @@ function staticResponse(request, path) {
   if (!['GET','HEAD'].includes(request.method)) return new Response('Method not allowed.', { status: 405, headers: SECURITY_HEADERS });
   const binary = atob(asset.body), bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  return new Response(request.method === 'HEAD' ? null : bytes, { headers: { ...SECURITY_HEADERS, 'Content-Type': asset.type, 'Cache-Control': key.startsWith('/assets/') ? 'public, max-age=3600' : 'no-cache' } });
+  return new Response(request.method === 'HEAD' ? null : bytes, {
+    headers: {
+      ...SECURITY_HEADERS,
+      'Content-Type': asset.type,
+      'Cache-Control': key.startsWith('/assets/') ? 'public, max-age=3600' : 'no-cache'
+    }
+  });
 }
+
 export default {
   async fetch(request, env = {}) {
     try {
@@ -242,7 +411,6 @@ export default {
       if (path.startsWith('/api/')) return await api(request, env, path);
       return staticResponse(request, path);
     } catch {
-      // Do not disclose database, authentication or submitted customer data.
       return json({ error: 'We could not complete that request. Please try again.' }, 500);
     }
   }

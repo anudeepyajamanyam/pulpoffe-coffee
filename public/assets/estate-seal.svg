@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Outer Dotted Ring -->
+  <circle cx="100" cy="100" r="92" stroke="#c4a064" stroke-width="1.2" stroke-dasharray="3 4" opacity="0.6" />
+  
+  <!-- Outer Solid Ring -->
+  <circle cx="100" cy="100" r="84" stroke="#c4a064" stroke-width="1.5" />
+  
+  <!-- Inner Ring -->
+  <circle cx="100" cy="100" r="62" stroke="#c4a064" stroke-width="1" opacity="0.7" />
+  
+  <!-- Center Star Ornaments -->
+  <path d="M 100 70 L 102 78 L 110 80 L 102 82 L 100 90 L 98 82 L 90 80 L 98 78 Z" fill="#c4a064" />
+  
+  <!-- Two Coffee Beans In Center -->
+  <g transform="translate(86, 96) scale(0.7)">
+    <!-- Bean 1 -->
+    <path d="M 10 5 C 22 2, 30 14, 28 26 C 26 38, 14 44, 4 40 C -6 36, -4 20, 0 12 C 4 6, 6 6, 10 5 Z" fill="#24160e" stroke="#c4a064" stroke-width="2" />
+    <path d="M 8 7 Q 18 20, 10 37" stroke="#c4a064" stroke-width="1.8" fill="none" stroke-linecap="round" />
+    
+    <!-- Bean 2 -->
+    <path d="M 28 8 C 40 5, 48 17, 46 29 C 44 41, 32 47, 22 43 C 12 39, 14 23, 18 15 C 22 9, 24 9, 28 8 Z" fill="#24160e" stroke="#c4a064" stroke-width="2" />
+    <path d="M 26 10 Q 36 23, 28 40" stroke="#c4a064" stroke-width="1.8" fill="none" stroke-linecap="round" />
+  </g>
+  
+  <!-- Text Along Arc / Curved Stamp -->
+  <!-- Upper Path for Text -->
+  <path id="curve-top" d="M 28 100 A 72 72 0 0 1 172 100" fill="none" />
+  <text font-family="'Cormorant Garamond', serif" font-size="9" fill="#c4a064" letter-spacing="2.5" font-weight="600">
+    <textPath href="#curve-top" startOffset="50%" text-anchor="middle">
+      KODAGU ESTATE · 1100M
+    </textPath>
+  </text>
+  
+  <!-- Lower Path for Text -->
+  <path id="curve-bottom" d="M 172 100 A 72 72 0 0 1 28 100" fill="none" />
+  <text font-family="'Poppins', sans-serif" font-size="7.5" fill="#c4a064" letter-spacing="3" opacity="0.85">
+    <textPath href="#curve-bottom" startOffset="50%" text-anchor="middle">
+      PULPOFFE COFFEE
+    </textPath>
+  </text>
+  
+  <!-- Small Star Accents -->
+  <circle cx="28" cy="100" r="2" fill="#c4a064" />
+  <circle cx="172" cy="100" r="2" fill="#c4a064" />
+</svg>

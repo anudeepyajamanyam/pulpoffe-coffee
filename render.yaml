@@ -4,22 +4,3 @@ services:
     runtime: static
     buildCommand: node scripts/build-worker.mjs && node scripts/build-render.mjs
     staticPublishPath: ./render-public
-    routes:
-      - type: rewrite
-        source: /api/products
-        destination: https://pulpoffe-coffee-atelier.linencurry.chatgpt.site/api/products
-      - type: rewrite
-        source: /api/site-content
-        destination: https://pulpoffe-coffee-atelier.linencurry.chatgpt.site/api/site-content
-      - type: redirect
-        source: /account.html
-        destination: https://pulpoffe-coffee-atelier.linencurry.chatgpt.site/account.html
-      - type: redirect
-        source: /contact.html
-        destination: https://pulpoffe-coffee-atelier.linencurry.chatgpt.site/contact.html
-      - type: redirect
-        source: /admin.html
-        destination: https://pulpoffe-coffee-atelier.linencurry.chatgpt.site/admin.html
-      - type: redirect
-        source: /shop.html
-        destination: https://pulpoffe-coffee-atelier.linencurry.chatgpt.site/shop.html

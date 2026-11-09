@@ -25,6 +25,7 @@ if(process.argv[1]&&pathToFileURL(resolve(process.argv[1])).href===import.meta.u
   if(!db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='enquiries'").get())db.exec(readFileSync(join(root,'drizzle/0000_enquiries.sql'),'utf8'));
   if(!db.prepare("SELECT name FROM sqlite_master WHERE name='products'").get()) db.exec(readFileSync(join(root,'drizzle/0001_store.sql'),'utf8'));
   if(!db.prepare("PRAGMA table_info(products)").all().some(c=>c.name==='image'))db.exec(readFileSync(join(root,'drizzle/0002_images.sql'),'utf8'));
+  if(!db.prepare("SELECT name FROM sqlite_master WHERE name='users'").get()) db.exec(readFileSync(join(root,'drizzle/0003_auth.sql'),'utf8'));
   const {default:worker}=await import(pathToFileURL(join(root,'dist/server/index.js')).href+'?v='+Date.now());
   const fixture=process.argv.includes('--test-user');
   const env={DB:new PreviewD1(db),ADMIN_EMAILS:process.env.ADMIN_EMAILS||''};
