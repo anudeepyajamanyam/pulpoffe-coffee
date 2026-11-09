@@ -63,7 +63,7 @@ async function userFor(request, env) {
 
     if (!row) return null;
 
-    const admins = String(env.ADMIN_EMAILS || '').split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
+    const admins = String(env.ADMIN_EMAILS || 'admin@pulpoffe.com').split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
     const role = admins.includes(row.email.toLowerCase()) ? 'admin' : (row.role || 'customer');
     return { id: row.id, name: row.name, email: row.email, role, token };
   } catch {
@@ -197,7 +197,31 @@ async function management(request, env, path, user) {
   return json({error:'Unsupported action.'},405);
 }
 
+async function ensureTables(db) {
+  if (!db?.prepare) return;
+  try {
+    await db.prepare(`CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY NOT NULL,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'customer',
+      created_at TEXT NOT NULL
+    )`).run();
+    await db.prepare(`CREATE TABLE IF NOT EXISTS sessions (
+      token TEXT PRIMARY KEY NOT NULL,
+      user_id TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    )`).run();
+    await db.prepare(`INSERT OR IGNORE INTO users (id, name, email, password_hash, role, created_at) VALUES
+      ('user_customer_test', 'Aarav Sharma', 'customer@pulpoffe.com', 'pulpoffe_customer_salt:ea9ac6ed0bf146187e38d7178f99d819aff2d1e85fb20de72bb073f9c2f2d1ed', 'customer', '2026-11-09T00:00:00.000Z'),
+      ('user_admin_test', 'Pulpoffe Admin', 'admin@pulpoffe.com', 'pulpoffe_admin_salt:f5eaeddc0528575570fbeaa5072305d4a2b38478dacb71051019c612296d250d', 'admin', '2026-11-09T00:00:00.000Z')`).run();
+  } catch {}
+}
+
 async function api(request, env, path) {
+  await ensureTables(env.DB);
   const user = await userFor(request, env);
 
   // ── Authentication Endpoints ──
@@ -223,7 +247,7 @@ async function api(request, env, path) {
       return json({ error: 'An account with this email address already exists. Please sign in.' }, 409);
     }
 
-    const admins = String(env.ADMIN_EMAILS || '').split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
+    const admins = String(env.ADMIN_EMAILS || 'admin@pulpoffe.com').split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
     const role = admins.includes(cleanEmail) ? 'admin' : 'customer';
     const passwordHash = await hashPassword(password);
     const userId = crypto.randomUUID();
@@ -268,7 +292,7 @@ async function api(request, env, path) {
       return json({ error: 'Invalid email or password.' }, 401);
     }
 
-    const admins = String(env.ADMIN_EMAILS || '').split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
+    const admins = String(env.ADMIN_EMAILS || 'admin@pulpoffe.com').split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
     const role = admins.includes(cleanEmail) ? 'admin' : (row.role || 'customer');
     const token = crypto.randomUUID() + '-' + crypto.randomUUID();
     const now = new Date().toISOString();
