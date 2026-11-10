@@ -3,7 +3,7 @@
     "private":  true,
     "type":  "module",
     "scripts":  {
-                    "build":  "node scripts/build-worker.mjs",
+                    "build":  "node scripts/build-worker.mjs && node scripts/build-render.mjs",
                     "preview":  "node scripts/local-preview.mjs",
                     "start":  "node server.mjs"
                 },

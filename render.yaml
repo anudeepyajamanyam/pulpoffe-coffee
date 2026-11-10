@@ -7,6 +7,6 @@ services:
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
-        value: 22.0.0
+        value: 22.11.0
       - key: ADMIN_EMAILS
         value: admin@pulpoffe.com

@@ -12,7 +12,7 @@ const setToken = (t) => {
   try { if (t) localStorage.setItem(TOKEN_KEY, t); else localStorage.removeItem(TOKEN_KEY); } catch {}
 };
 
-// Client-Side Simulated Storage for Static Deployments (Render / GitHub Pages)
+// Client-Side Simulated Storage for Static Deployments (Render / Static Sites)
 const LOCAL_USERS_KEY = 'pulpoffe_local_users_v1';
 const getLocalUsers = () => {
   try {
@@ -42,6 +42,20 @@ const saveLocalUsers = (users) => {
   try { localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users)); } catch {}
 };
 
+const LOCAL_ENQUIRIES_KEY = 'pulpoffe_local_enquiries_v1';
+const getLocalEnquiries = () => {
+  try {
+    return JSON.parse(localStorage.getItem(LOCAL_ENQUIRIES_KEY) || '[]');
+  } catch { return []; }
+};
+const saveLocalEnquiry = (enq) => {
+  try {
+    const list = getLocalEnquiries();
+    list.unshift(enq);
+    localStorage.setItem(LOCAL_ENQUIRIES_KEY, JSON.stringify(list));
+  } catch {}
+};
+
 async function api(path, options = {}) {
   const token = getToken();
   const headers = {
@@ -50,91 +64,155 @@ async function api(path, options = {}) {
     ...options.headers
   };
 
-  let r;
-  let isOfflineOrStatic = false;
+  let r = null;
+  let text = '';
+  let isJson = false;
+  let parsed = null;
+
   try {
     r = await fetch(path, { credentials: 'same-origin', ...options, headers });
-    if (r.status === 404 || r.status === 405) isOfflineOrStatic = true;
-  } catch {
-    isOfflineOrStatic = true;
-  }
-
-  if (isOfflineOrStatic) {
-    const payload = options.body ? JSON.parse(options.body) : {};
-
-    if (path === '/api/auth/login') {
-      const users = getLocalUsers();
-      const user = users[(payload.email || '').toLowerCase().trim()];
-      if (!user || user.password !== payload.password) {
-        const err = new Error('Incorrect email or password. Please verify your credentials.');
-        err.status = 401;
-        throw err;
-      }
-      const fakeToken = 'plf_token_' + btoa(JSON.stringify({ sub: user.id, email: user.email, name: user.name, role: user.role, exp: Date.now() + 86400000 }));
-      try { localStorage.setItem('pulpoffe_user', JSON.stringify(user)); } catch {}
-      return { token: fakeToken, user: { id: user.id, name: user.name, email: user.email, role: user.role } };
-    }
-
-    if (path === '/api/auth/register') {
-      const users = getLocalUsers();
-      const email = (payload.email || '').toLowerCase().trim();
-      if (users[email]) {
-        const err = new Error('An account with this email already exists. Please sign in instead.');
-        err.status = 409;
-        throw err;
-      }
-      const newUser = {
-        id: 'usr_' + Math.random().toString(36).substring(2, 9),
-        name: (payload.name || '').trim(),
-        email: email,
-        password: payload.password,
-        role: email.includes('admin') ? 'admin' : 'customer'
-      };
-      users[email] = newUser;
-      saveLocalUsers(users);
-      const fakeToken = 'plf_token_' + btoa(JSON.stringify({ sub: newUser.id, email: newUser.email, name: newUser.name, role: newUser.role, exp: Date.now() + 86400000 }));
-      try { localStorage.setItem('pulpoffe_user', JSON.stringify(newUser)); } catch {}
-      return { token: fakeToken, user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role } };
-    }
-
-    if (path === '/api/me') {
-      if (!token) return { authenticated: false, user: null };
+    text = await r.text();
+    if (text && (text.trim().startsWith('{') || text.trim().startsWith('['))) {
       try {
-        const userStr = localStorage.getItem('pulpoffe_user');
-        if (userStr) return { authenticated: true, user: JSON.parse(userStr) };
+        parsed = JSON.parse(text);
+        isJson = true;
       } catch {}
-      return { authenticated: false, user: null };
     }
-
-    if (path === '/api/enquiries') {
-      if (options.method === 'POST') {
-        return { id: 'enq_' + Math.random().toString(36).substring(2, 9), status: 'new', createdAt: new Date().toISOString() };
-      }
-      return { enquiries: [] };
-    }
-
-    if (path === '/api/admin/enquiries') {
-      return { enquiries: [] };
-    }
-
-    if (path === '/api/admin/contact-settings' || path === '/api/contact-settings') {
-      return { email: 'hello@pulpoffe.com', phone: '+91 98765 43210', address: 'Kodagu, Karnataka, India', published: true };
-    }
+  } catch (err) {
+    // Network failure / offline
   }
 
-  let body;
-  try { body = await r.json(); } catch { throw new Error('The service is temporarily unavailable. Please try again shortly.'); }
-  if (!r.ok) {
-    const err = new Error(body.error || body.message || 'Your request could not be completed.');
+  // 1. If server returned valid JSON API response and was HTTP OK
+  if (r && r.ok && isJson && parsed !== null) {
+    // If backend returns an authenticated state false but we have local session:
+    if (path === '/api/me' && !parsed.authenticated) {
+      try {
+        const uStr = localStorage.getItem('pulpoffe_user');
+        if (uStr) return { authenticated: true, user: JSON.parse(uStr) };
+      } catch {}
+    }
+    return parsed;
+  }
+
+  // 2. If server returned an intentional JSON API error (e.g. 401 Unauthorized or 409 Conflict)
+  if (r && !r.ok && isJson && parsed && (parsed.error || parsed.message)) {
+    const err = new Error(parsed.error || parsed.message);
     err.status = r.status;
     throw err;
   }
-  return body;
+
+  // 3. Fallback for Static Sites (e.g. Render static site mode, 404s, empty 200s, or offline)
+  const payload = options.body ? (typeof options.body === 'string' ? JSON.parse(options.body) : options.body) : {};
+
+  if (path === '/api/auth/login') {
+    const users = getLocalUsers();
+    const email = (payload.email || '').toLowerCase().trim();
+    const user = users[email];
+    if (!user || user.password !== payload.password) {
+      const err = new Error('Incorrect email or password. Please verify your credentials.');
+      err.status = 401;
+      throw err;
+    }
+    const fakeToken = 'plf_token_' + btoa(JSON.stringify({ sub: user.id, email: user.email, name: user.name, role: user.role, exp: Date.now() + 86400000 }));
+    try { localStorage.setItem('pulpoffe_user', JSON.stringify(user)); } catch {}
+    return { token: fakeToken, user: { id: user.id, name: user.name, email: user.email, role: user.role } };
+  }
+
+  if (path === '/api/auth/register') {
+    const users = getLocalUsers();
+    const email = (payload.email || '').toLowerCase().trim();
+    if (users[email]) {
+      const err = new Error('An account with this email already exists. Please sign in instead.');
+      err.status = 409;
+      throw err;
+    }
+    const newUser = {
+      id: 'usr_' + Math.random().toString(36).substring(2, 9),
+      name: (payload.name || '').trim() || email.split('@')[0],
+      email: email,
+      password: payload.password,
+      role: email.includes('admin') ? 'admin' : 'customer'
+    };
+    users[email] = newUser;
+    saveLocalUsers(users);
+    const fakeToken = 'plf_token_' + btoa(JSON.stringify({ sub: newUser.id, email: newUser.email, name: newUser.name, role: newUser.role, exp: Date.now() + 86400000 }));
+    try { localStorage.setItem('pulpoffe_user', JSON.stringify(newUser)); } catch {}
+    return { token: fakeToken, user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role } };
+  }
+
+  if (path === '/api/auth/logout') {
+    try { localStorage.removeItem('pulpoffe_user'); } catch {}
+    return { ok: true };
+  }
+
+  if (path === '/api/me') {
+    if (!token) return { authenticated: false, user: null };
+    try {
+      const userStr = localStorage.getItem('pulpoffe_user');
+      if (userStr) return { authenticated: true, user: JSON.parse(userStr) };
+    } catch {}
+    return { authenticated: false, user: null };
+  }
+
+  if (path === '/api/enquiries') {
+    if (options.method === 'POST') {
+      const enq = {
+        id: 'enq_' + Math.random().toString(36).substring(2, 9),
+        ...payload,
+        status: 'new',
+        createdAt: new Date().toISOString()
+      };
+      saveLocalEnquiry(enq);
+      return enq;
+    }
+    const all = getLocalEnquiries();
+    let currentEmail = '';
+    try {
+      const uStr = localStorage.getItem('pulpoffe_user');
+      if (uStr) currentEmail = JSON.parse(uStr).email || '';
+    } catch {}
+    const userEnquiries = currentEmail ? all.filter(e => (e.email || '').toLowerCase() === currentEmail.toLowerCase()) : all;
+    return { enquiries: userEnquiries };
+  }
+
+  if (path === '/api/admin/enquiries') {
+    return { enquiries: getLocalEnquiries() };
+  }
+
+  if (path.startsWith('/api/admin/enquiries/')) {
+    const id = path.split('/').pop();
+    const all = getLocalEnquiries();
+    const target = all.find(e => e.id === id);
+    if (target && payload.status) {
+      target.status = payload.status;
+      localStorage.setItem(LOCAL_ENQUIRIES_KEY, JSON.stringify(all));
+    }
+    return { ok: true };
+  }
+
+  if (path === '/api/admin/contact-settings' || path === '/api/contact-settings') {
+    if (options.method === 'PATCH') {
+      try { localStorage.setItem('pulpoffe_contact_settings_v1', JSON.stringify(payload)); } catch {}
+      return payload;
+    }
+    try {
+      const saved = JSON.parse(localStorage.getItem('pulpoffe_contact_settings_v1') || 'null');
+      if (saved) return saved;
+    } catch {}
+    return { email: 'hello@pulpoffe.com', phone: '+91 98765 43210', address: 'Kodagu, Karnataka, India', published: true };
+  }
+
+  // Generic fallback response
+  return { ok: true };
 }
 
-const identity = (async () => { const t = getToken(); if (!t) return { authenticated: false, user: null }; try { return await api('/api/me'); } catch { return { authenticated: false, user: null }; } })();
+const identity = (async () => {
+  const t = getToken();
+  if (!t) return { authenticated: false, user: null };
+  try { return await api('/api/me'); } catch { return { authenticated: false, user: null }; }
+})();
 
-function text(el, value) { el.textContent = value ?? ''; return el; }
+function text(el, value) { if (el) el.textContent = value ?? ''; return el; }
 function node(tag, className, value) {
   const el = document.createElement(tag);
   if (className) el.className = className;
@@ -154,7 +232,7 @@ function requestCard(request, admin = false) {
     node('p', 'eyebrow', request.type === 'b2b' ? 'BUSINESS ENQUIRY' : 'GENERAL ENQUIRY'),
     node('h3', '', request.interest || 'Coffee enquiry')
   );
-  const status = node('span', 'request-status ' + request.status, request.status);
+  const status = node('span', 'request-status ' + (request.status || 'new'), request.status || 'new');
   top.append(heading, status);
   card.append(top);
 
@@ -166,8 +244,8 @@ function requestCard(request, admin = false) {
   }
   if (request.volume) card.append(node('p', 'request-volume', 'Requirement: ' + request.volume));
   card.append(
-    node('p', 'request-message', request.message),
-    node('p', 'request-meta', date(request.createdAt) + ' · Reference ' + request.id.slice(0, 8))
+    node('p', 'request-message', request.message || ''),
+    node('p', 'request-meta', date(request.createdAt) + ' · Reference ' + (request.id || '').slice(0, 8))
   );
 
   if (admin) {
@@ -179,7 +257,7 @@ function requestCard(request, admin = false) {
       opt.value = val;
       select.append(opt);
     }
-    select.value = request.status;
+    select.value = request.status || 'new';
     const result = node('span', 'status-result');
     select.addEventListener('change', async () => {
       const previous = request.status;
@@ -207,6 +285,29 @@ function requestCard(request, admin = false) {
   return card;
 }
 
+function orderCard(order) {
+  const card = node('article', 'request-card');
+  const top = node('div', 'request-top');
+  const heading = node('div');
+  heading.append(
+    node('p', 'eyebrow', 'ONLINE ORDER · ' + (order.id || 'PLF-ORD')),
+    node('h3', '', '₹' + (order.total || 0).toFixed(2))
+  );
+  const status = node('span', 'request-status', 'Dispatched from Kodagu');
+  status.style.background = '#263720';
+  status.style.color = '#a3c28b';
+  top.append(heading, status);
+  card.append(top);
+
+  const itemsText = (order.items || []).map(i => `${i.qty} × ${i.name}`).join(' · ');
+  card.append(
+    node('p', 'request-person', itemsText || 'Pulpoffe artisanal coffee selection'),
+    node('p', 'request-contact', 'Destination: ' + (order.shippingAddress || 'India')),
+    node('p', 'request-meta', date(order.createdAt || Date.now()) + ' · Payment Ref: ' + (order.ref || 'DEMO_PAID'))
+  );
+  return card;
+}
+
 // ── Contact Page Logic ──
 if (isContact) {
   const form = $('#enquiry-form');
@@ -214,14 +315,21 @@ if (isContact) {
   let user = null;
 
   function setType(type) {
+    if (!form) return;
     form.elements.type.value = type;
     document.querySelectorAll('[data-enquiry-type]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.enquiryType === type)));
     const b2b = type === 'b2b';
     form.elements.company.required = b2b;
-    $('#company-label').firstChild.textContent = b2b ? 'Business / company name' : 'Business / company name (optional)';
-    $('#volume-label').hidden = !b2b;
-    $('#enquiry-heading').textContent = b2b ? 'Let’s talk coffee.' : 'What’s on your mind?';
-    $('#enquiry-description').textContent = b2b ? 'Tell us about your business and the coffee you’re looking for.' : 'Questions about our coffee, your preferences, or a partnership? Start here.';
+    const companyLabel = $('#company-label');
+    if (companyLabel && companyLabel.firstChild) {
+      companyLabel.firstChild.textContent = b2b ? 'Business / company name' : 'Business / company name (optional)';
+    }
+    const volumeLabel = $('#volume-label');
+    if (volumeLabel) volumeLabel.hidden = !b2b;
+    const heading = $('#enquiry-heading');
+    if (heading) heading.textContent = b2b ? 'Let’s talk coffee.' : 'What’s on your mind?';
+    const desc = $('#enquiry-description');
+    if (desc) desc.textContent = b2b ? 'Tell us about your business and the coffee you’re looking for.' : 'Questions about our coffee, your preferences, or a partnership? Start here.';
   }
 
   setType(params.get('type') === 'contact' ? 'contact' : 'b2b');
@@ -229,13 +337,13 @@ if (isContact) {
 
   try {
     const saved = JSON.parse(sessionStorage.getItem('pulpoffe-enquiry-draft') || 'null');
-    if (saved) {
+    if (saved && form) {
       for (const key of ['name', 'email', 'company', 'phone', 'interest', 'volume', 'message']) {
         if (typeof saved[key] === 'string' && form.elements[key]) form.elements[key].value = saved[key];
       }
       if (saved.type === 'contact') setType('contact');
     }
-    if (params.get('from') === 'basket') {
+    if (params.get('from') === 'basket' && form) {
       const selection = sessionStorage.getItem('pulpoffe-enquiry-selection');
       if (selection) {
         form.elements.message.value = 'I’d like to enquire about these coffees:\n\n' + selection + '\n\nPlease confirm pack sizes, prices and delivery options.';
@@ -245,6 +353,7 @@ if (isContact) {
   } catch {}
 
   function saveDraft() {
+    if (!form) return;
     try {
       const d = {};
       for (const key of ['type', 'name', 'email', 'company', 'phone', 'interest', 'volume', 'message']) {
@@ -257,7 +366,7 @@ if (isContact) {
   identity.then(state => {
     user = state.user;
     const note = $('#form-auth-note');
-    if (!note) return;
+    if (!note || !form) return;
     note.replaceChildren();
     if (user) {
       note.append(node('span', '', 'Signed in as ' + user.email));
@@ -267,7 +376,7 @@ if (isContact) {
     } else {
       note.append(node('span', '', 'Sign in to track your enquiry: '));
       const a = node('a', 'underlined', 'Sign in or create an account →');
-      a.href = 'account.html?return_to=' + encodeURIComponent('contact.html?type=' + form.elements.type.value);
+      a.href = 'account.html?return_to=' + encodeURIComponent('contact.html?type=' + (form.elements.type?.value || 'b2b'));
       a.addEventListener('click', saveDraft);
       note.append(a);
       form.querySelector('[type=submit]').innerHTML = 'Send enquiry <span>→</span>';
@@ -289,7 +398,7 @@ if (isContact) {
     };
   }
 
-  form.addEventListener('submit', async e => {
+  form?.addEventListener('submit', async e => {
     e.preventDefault();
     if (!form.reportValidity()) return;
     const button = form.querySelector('[type=submit]');
@@ -300,7 +409,7 @@ if (isContact) {
       const result = await api('/api/enquiries', { method: 'POST', body: JSON.stringify(payload()) });
       status.replaceChildren(
         node('strong', '', 'Your enquiry has been received.'),
-        node('span', '', ' Reference: ' + result.id.slice(0, 8) + '. ')
+        node('span', '', ' Reference: ' + (result.id || '').slice(0, 8) + '. ')
       );
       const link = node('a', 'underlined', 'Track it in My account →');
       link.href = 'account.html';
@@ -351,25 +460,52 @@ if (isContact) {
 // ── Customer Account Page Logic ──
 if (isAccount) {
   function renderDashboard(user) {
-    $('#account-auth').hidden = true;
-    $('#account-content').hidden = false;
-    text($('#account-name'), user.name || 'Welcome back.');
+    const authCard = $('#account-auth');
+    const content = $('#account-content');
+    const page = $('.account-page');
+    const heading = $('.portal-heading');
+
+    if (authCard) authCard.hidden = true;
+    if (content) content.hidden = false;
+    if (page) page.classList.add('logged-in');
+    if (heading) heading.style.display = 'none';
+
+    text($('#account-name'), user.name || user.email.split('@')[0]);
     text($('#account-email'), user.email);
     if ($('#admin-entry')) $('#admin-entry').hidden = user.role !== 'admin';
 
+    // Render Enquiries
     const host = $('#customer-requests');
-    if (!host) return;
-    host.textContent = 'Loading your enquiries…';
-    api('/api/enquiries').then(data => {
-      host.replaceChildren();
-      if (!data.enquiries?.length) {
-        host.append(node('p', 'empty-state', 'Your next coffee conversation starts here. You haven’t sent an enquiry yet.'));
-      } else {
-        data.enquiries.forEach(r => host.append(requestCard(r)));
+    if (host) {
+      host.textContent = 'Loading your enquiries…';
+      api('/api/enquiries').then(data => {
+        host.replaceChildren();
+        if (!data.enquiries?.length) {
+          host.append(node('p', 'empty-state', 'Your next coffee conversation starts here. You haven’t sent an enquiry yet.'));
+        } else {
+          data.enquiries.forEach(r => host.append(requestCard(r)));
+        }
+      }).catch(e => {
+        host.textContent = e.message;
+      });
+    }
+
+    // Render Recent Orders
+    const ordersHost = $('#customer-orders');
+    if (ordersHost) {
+      try {
+        const allOrders = JSON.parse(localStorage.getItem('pulpoffe_orders_v1') || '[]');
+        const userOrders = allOrders.filter(o => !o.customer?.email || o.customer.email.toLowerCase() === user.email.toLowerCase());
+        ordersHost.replaceChildren();
+        if (!userOrders.length) {
+          ordersHost.append(node('p', 'empty-state', 'No orders placed yet. Add your favourite coffees from the shop to order online.'));
+        } else {
+          userOrders.forEach(o => ordersHost.append(orderCard(o)));
+        }
+      } catch {
+        ordersHost.replaceChildren(node('p', 'empty-state', 'No orders placed yet.'));
       }
-    }).catch(e => {
-      host.textContent = e.message;
-    });
+    }
   }
 
   // Setup login / register tabs
@@ -413,8 +549,11 @@ if (isAccount) {
   if (authForm) {
     authForm.addEventListener('submit', async e => {
       e.preventDefault();
-      if (authFeedback) authFeedback.textContent = 'Processing…';
-      submitBtn.disabled = true;
+      if (authFeedback) {
+        authFeedback.style.color = '#d4b389';
+        authFeedback.textContent = authMode === 'register' ? 'Creating account…' : 'Signing in…';
+      }
+      if (submitBtn) submitBtn.disabled = true;
 
       const email = authForm.elements.email.value.trim();
       const password = authForm.elements.password.value;
@@ -434,16 +573,23 @@ if (isAccount) {
           });
         }
         if (res.token) setToken(res.token);
-        if (res.user) renderDashboard(res.user);
-
-        // Check return_to param
-        const params = new URLSearchParams(location.search);
-        const returnTo = params.get('return_to');
-        if (returnTo) location.href = decodeURIComponent(returnTo);
+        if (authFeedback) {
+          authFeedback.style.color = '#7fb069';
+          authFeedback.textContent = 'Signed in successfully! Loading your atelier account…';
+        }
+        setTimeout(() => {
+          if (res.user) renderDashboard(res.user);
+          const params = new URLSearchParams(location.search);
+          const returnTo = params.get('return_to');
+          if (returnTo) location.href = decodeURIComponent(returnTo);
+        }, 300);
       } catch (err) {
-        if (authFeedback) authFeedback.textContent = err.message;
+        if (authFeedback) {
+          authFeedback.style.color = '#e57373';
+          authFeedback.textContent = err.message || 'Unable to sign in. Please check your credentials.';
+        }
       } finally {
-        submitBtn.disabled = false;
+        if (submitBtn) submitBtn.disabled = false;
       }
     });
   }
@@ -454,6 +600,7 @@ if (isAccount) {
     signoutBtn.addEventListener('click', async () => {
       try { await api('/api/auth/logout', { method: 'POST' }); } catch {}
       setToken('');
+      try { localStorage.removeItem('pulpoffe_user'); } catch {}
       location.reload();
     });
   }
@@ -462,8 +609,10 @@ if (isAccount) {
     if (state.user) {
       renderDashboard(state.user);
     } else {
-      $('#account-auth').hidden = false;
-      $('#account-content').hidden = true;
+      if ($('#account-auth')) $('#account-auth').hidden = false;
+      if ($('#account-content')) $('#account-content').hidden = true;
+      if ($('.account-page')) $('.account-page').classList.remove('logged-in');
+      if ($('.portal-heading')) $('.portal-heading').style.display = '';
     }
   });
 }
@@ -473,12 +622,13 @@ if (isAdmin) {
   let requests = [];
 
   function render() {
-    const selected = $('#request-filter').value;
+    const filter = $('#request-filter');
+    const selected = filter ? filter.value : 'all';
     const list = requests.filter(r => selected === 'all' || r.status === selected);
     const host = $('#admin-requests');
     if (!host) return;
     host.replaceChildren();
-    $('#inbox-count').textContent = list.length + ' request' + (list.length === 1 ? '' : 's');
+    if ($('#inbox-count')) $('#inbox-count').textContent = list.length + ' request' + (list.length === 1 ? '' : 's');
     if (!list.length) host.append(node('p', 'empty-state', 'No enquiries in this view.'));
     else list.forEach(r => host.append(requestCard(r, true)));
   }
@@ -497,9 +647,9 @@ if (isAdmin) {
   }
 
   async function initAdminWorkspace(user) {
-    $('#admin-auth').hidden = true;
-    $('#admin-content').hidden = false;
-    $('#admin-user').textContent = 'Signed in as ' + user.email;
+    if ($('#admin-auth')) $('#admin-auth').hidden = true;
+    if ($('#admin-content')) $('#admin-content').hidden = false;
+    if ($('#admin-user')) $('#admin-user').textContent = 'Signed in as ' + user.email;
     await refresh();
     try {
       const settings = await api('/api/admin/contact-settings');
@@ -520,7 +670,7 @@ if (isAdmin) {
       e.preventDefault();
       if (adminFeedback) adminFeedback.textContent = 'Signing in…';
       const btn = adminLoginForm.querySelector('[type=submit]');
-      btn.disabled = true;
+      if (btn) btn.disabled = true;
 
       const email = adminLoginForm.elements.email.value.trim();
       const password = adminLoginForm.elements.password.value;
@@ -538,7 +688,7 @@ if (isAdmin) {
       } catch (err) {
         if (adminFeedback) adminFeedback.textContent = err.message;
       } finally {
-        btn.disabled = false;
+        if (btn) btn.disabled = false;
       }
     });
   }
@@ -548,6 +698,7 @@ if (isAdmin) {
     adminSignoutBtn.addEventListener('click', async () => {
       try { await api('/api/auth/logout', { method: 'POST' }); } catch {}
       setToken('');
+      try { localStorage.removeItem('pulpoffe_user'); } catch {}
       location.reload();
     });
   }
@@ -567,8 +718,8 @@ if (isAdmin) {
     const form = e.currentTarget;
     if (!form.reportValidity()) return;
     const button = form.querySelector('[type=submit]');
-    button.disabled = true;
-    $('#settings-status').textContent = 'Saving…';
+    if (button) button.disabled = true;
+    if ($('#settings-status')) $('#settings-status').textContent = 'Saving…';
     try {
       await api('/api/admin/contact-settings', {
         method: 'PATCH',
@@ -579,11 +730,13 @@ if (isAdmin) {
           published: form.elements.published.checked
         })
       });
-      $('#settings-status').textContent = form.elements.published.checked ? 'Saved. These contact details are now published.' : 'Saved as unpublished contact details.';
+      if ($('#settings-status')) {
+        $('#settings-status').textContent = form.elements.published.checked ? 'Saved. These contact details are now published.' : 'Saved as unpublished contact details.';
+      }
     } catch (err) {
-      $('#settings-status').textContent = err.message;
+      if ($('#settings-status')) $('#settings-status').textContent = err.message;
     } finally {
-      button.disabled = false;
+      if (button) button.disabled = false;
     }
   });
 
@@ -591,10 +744,9 @@ if (isAdmin) {
     if (state.user && state.user.role === 'admin') {
       initAdminWorkspace(state.user);
     } else {
-      $('#admin-auth').hidden = false;
-      $('#admin-content').hidden = true;
+      if ($('#admin-auth')) $('#admin-auth').hidden = false;
+      if ($('#admin-content')) $('#admin-content').hidden = true;
     }
   });
 }
 })();
-
