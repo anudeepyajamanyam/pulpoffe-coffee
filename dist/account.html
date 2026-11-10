@@ -6,8 +6,8 @@
 <main class="account-page section"><div class="portal-heading"><p class="eyebrow">YOUR PULPOFFE ACCOUNT</p><h1>A little closer<br><em>to your coffee.</em></h1><p>Track your conversations with Pulpoffe, from your first question to your next business enquiry.</p></div><section id="account-auth" class="auth-card">
   <img src="assets/pulpoffe-mark-light.svg" alt="" width="48" style="margin-bottom:18px;">
   <div class="auth-tabs" style="display:flex;gap:10px;margin-bottom:24px;">
-    <button type="button" class="button gold auth-tab-btn" data-auth-mode="login" aria-pressed="true" style="padding:10px 18px;font-size:10px;">Sign In</button>
-    <button type="button" class="button outline auth-tab-btn" data-auth-mode="register" aria-pressed="false" style="padding:10px 18px;font-size:10px;">Create Account</button>
+    <button type="button" class="button gold auth-tab-btn" data-auth-mode="login" aria-pressed="true" style="padding:10px 18px;font-size:10px;background:var(--gold);color:var(--deep);border:1px solid var(--gold);">Sign In</button>
+    <button type="button" class="button outline auth-tab-btn" data-auth-mode="register" aria-pressed="false" style="padding:10px 18px;font-size:10px;background:var(--panel);color:var(--muted);border:1px solid var(--line);">Create Account</button>
   </div>
   <form id="auth-form" style="display:flex;flex-direction:column;gap:14px;">
     <h2 id="auth-title" style="font-size:32px;margin-bottom:4px;">Sign in to Pulpoffe.</h2>
@@ -24,7 +24,7 @@
       <span>Password</span>
       <input type="password" name="password" required minlength="6" placeholder="At least 6 characters" style="background:#1a100c;border:1px solid #b08d5755;color:var(--cream);padding:11px;font-size:11px;">
     </label>
-    <button type="submit" id="auth-submit" class="button gold" style="width:100%;justify-content:center;margin-top:8px;">
+    <button type="submit" id="auth-submit" class="button gold" style="width:auto;align-self:flex-start;margin-top:8px;padding:12px 24px;">
       <span>Sign In</span> <span>→</span>
     </button>
     <div style="margin-top:16px;padding:12px;background:rgba(176,141,87,0.08);border:1px solid rgba(176,141,87,0.2);border-radius:4px;font-size:10px;color:var(--muted);line-height:1.6;">
@@ -36,3 +36,4 @@
   </form>
 </section><section id="account-content" hidden><div class="account-bar"><div><span class="eyebrow">SIGNED IN</span><h2 id="account-name"></h2><p id="account-email"></p></div><div><a class="button outline" href="contact.html?type=b2b">New enquiry <span>↗</span></a><a id="admin-entry" class="underlined" href="admin.html" hidden>Open admin inbox ↗</a><button type="button" id="signout-btn" class="signout" style="background:none;border:none;cursor:pointer;color:var(--gold);">Sign out</button></div></div><h2 class="requests-title">Your enquiries.</h2><div id="customer-requests" class="request-list" aria-live="polite"></div></section><p id="account-error" role="status"></p></main><footer><div class="footer-top"><a class="brand" href="index.html#home" aria-label="Pulpoffe home"><img class="brand-lockup" src="assets/pulpoffe-horizontal-light.svg" alt="Pulpoffe — Moments brewed. Impacts grown."></a><p>Rooted in Kodagu.<br>Crafted for your everyday.</p><div><span>EXPLORE</span><a href="index.html#story">Our story</a><a href="index.html#coffees">Our coffees</a><a href="shop.html">Shop coffee</a><a href="index.html#blend">Create your blend</a><a href="contact.html">Contact us</a><a href="account.html">My account</a><a href="admin.html">Admin</a></div><div><span>OUR ORIGIN</span><p>Kodagu, Karnataka<br>India</p><a href="index.html#home">Back to top ↑</a></div></div><div class="footer-bottom"><span>© <span id="year"></span> Pulpoffe. All rights reserved.</span><span>Purely grown. Honestly brewed.</span></div></footer>
 <dialog id="basket-dialog" aria-labelledby="basket-title"><div class="basket-header"><div><p class="eyebrow">YOUR COFFEE SELECTION</p><h2 id="basket-title">Your basket.</h2></div><button class="basket-close" aria-label="Close shopping basket">×</button></div><div id="basket-items"></div><div class="basket-bottom"><p class="basket-total">Basket <strong>Request a quote</strong></p><p>Online checkout is not available yet. Save your selection to request prices and pack options. No payment will be taken.</p><button id="save-basket" class="button gold">Save basket enquiry <span>↓</span></button><a class="button outline basket-send" href="contact.html?type=b2b&amp;from=basket">Request a quote <span>↗</span></a><p id="basket-status" role="status"></p></div></dialog><div class="basket-toast" role="status" aria-live="polite"></div><button id="motion-control" class="motion-control" aria-pressed="false">Pause animations <span>Ⅱ</span></button><script src="feedback.js"></script><script src="shop.js"></script><script src="portal.js"></script><script src="experience.js"></script><script src="site-content.js"></script></body></html>
+
