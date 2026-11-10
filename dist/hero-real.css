@@ -521,3 +521,30 @@
 .story-media-card:hover video {
   filter: contrast(1.06) brightness(1.08) saturate(1.2) sepia(0.05) !important;
 }
+
+/* -- Editorial Film Graded Aesthetic for Story Media -- */
+.story-media-card {
+  position: relative;
+  overflow: hidden;
+}
+.story-media-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 40%, rgba(14,8,5,0.45) 100%),
+              linear-gradient(180deg, rgba(176,141,87,0.06) 0%, transparent 60%, rgba(14,8,5,0.3) 100%);
+  pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: multiply;
+}
+.story-media-card img,
+.story-media-card video,
+.estate-media {
+  /* Rich, warm Kodagu estate film grade */
+  filter: contrast(1.12) brightness(0.96) saturate(0.92) sepia(0.18) hue-rotate(-8deg) !important;
+  transition: filter 0.5s ease, transform 0.5s ease;
+}
+.story-media-card:hover img,
+.story-media-card:hover video {
+  filter: contrast(1.16) brightness(1.0) saturate(0.98) sepia(0.14) hue-rotate(-5deg) !important;
+}

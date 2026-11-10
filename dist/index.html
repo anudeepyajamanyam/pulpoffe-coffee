@@ -155,7 +155,7 @@
 <dialog id="coffee-dialog" aria-labelledby="dialog-title"><button class="dialog-close" aria-label="Close coffee details">×</button><div class="dialog-layout"><img id="dialog-image" alt=""><div><p id="dialog-kicker" class="eyebrow"></p><h2 id="dialog-title"></h2><p id="dialog-description"></p><div id="dialog-variants"></div><a class="button gold" href="#blend" id="dialog-blend">Create your blend <span>↗</span></a></div></div></dialog><dialog id="basket-dialog" aria-labelledby="basket-title">
   <div class="basket-header">
     <div>
-      <p class="eyebrow" style="margin-bottom:4px;">YOUR COFFEE SELECTION</p>
+      <p class="eyebrow" style="margin-bottom:2px;">YOUR COFFEE SELECTION</p>
       <h2 id="basket-title">Your basket.</h2>
     </div>
     <button class="basket-close" aria-label="Close shopping basket">?</button>
@@ -166,23 +166,114 @@
   </div>
   <div id="basket-items"></div>
   <div class="basket-bottom">
-    <p class="basket-total">
-      <span>Subtotal (Estimated)</span>
-      <strong id="basket-total-amount">?0.00</strong>
-    </p>
+    <div class="basket-breakdown">
+      <div class="breakdown-row">
+        <span>Items Subtotal</span>
+        <span id="breakdown-subtotal">?0.00</span>
+      </div>
+      <div class="breakdown-row">
+        <span>Estimated Delivery (Coorg to You)</span>
+        <span id="breakdown-shipping">?60.00</span>
+      </div>
+      <div class="breakdown-row total-row">
+        <span>Total Payable</span>
+        <strong id="basket-total-amount">?0.00</strong>
+      </div>
+    </div>
     <div class="basket-actions-grid">
       <button id="buy-razorpay-btn" class="button gold btn-buy-now">
-        <span>Pay with Razorpay (Demo)</span> <span>??</span>
+        <span>Proceed to Online Order</span> <span>??</span>
       </button>
       <a class="button outline basket-send" href="contact.html?type=b2b&amp;from=basket">
-        <span>Request B2B Quote / Custom Blend</span> <span>?</span>
+        <span>Request B2B Quote</span> <span>?</span>
       </a>
-      <button id="save-basket" class="button outline" style="font-size:8.5px;padding:8px 12px;opacity:0.8;">
-        <span>Save Selection (Text Brief)</span> <span>?</span>
+      <button id="save-basket" class="button outline" style="font-size:8px;padding:6px 10px;opacity:0.75;height:30px;">
+        <span>Download Selection Brief</span> <span>?</span>
       </button>
     </div>
-    <p id="basket-status" role="status" style="font-size:9.5px;color:#d5bb91;margin-top:10px;text-align:center;"></p>
+    <p id="basket-status" role="status" style="font-size:9.5px;color:#d5bb91;margin-top:8px;text-align:center;"></p>
   </div>
+</dialog>
+<!-- Modern Multi-Step Online Checkout Modal -->
+<dialog id="checkout-modal" aria-labelledby="checkout-modal-title" style="padding:0;border:1px solid var(--gold);background:var(--panel);color:var(--cream);width:min(520px,94vw);max-height:90svh;border-radius:4px;box-shadow:0 25px 70px rgba(0,0,0,0.85);z-index:10001;">
+  <div style="padding:24px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);">
+    <div>
+      <p class="eyebrow" style="margin-bottom:4px;">PULPOFFE EXPRESS CHECKOUT</p>
+      <h2 id="checkout-modal-title" style="font-size:24px;margin:0;">Complete Your Order</h2>
+    </div>
+    <button type="button" id="close-checkout-modal" style="background:none;border:1px solid var(--line);color:var(--cream);width:30px;height:30px;cursor:pointer;">?</button>
+  </div>
+  
+  <form id="online-checkout-form" style="padding:24px 28px;display:flex;flex-direction:column;gap:18px;overflow-y:auto;max-height:calc(90svh - 90px);">
+    <!-- Step 1: Account / Contact -->
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:10px;font-weight:600;color:var(--gold);letter-spacing:1px;">01. CONTACT &amp; ACCOUNT</span>
+        <span id="checkout-user-status" style="font-size:9px;color:var(--muted);"></span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:9.5px;color:#dfcbb0;">
+          <span>Full Name *</span>
+          <input type="text" id="chk-name" required placeholder="Your full name" style="background:#1a100c;border:1px solid #b08d5755;color:var(--cream);padding:9px 11px;font-size:11px;">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:9.5px;color:#dfcbb0;">
+          <span>Phone / WhatsApp *</span>
+          <input type="tel" id="chk-phone" required placeholder="+91 98765 43210" style="background:#1a100c;border:1px solid #b08d5755;color:var(--cream);padding:9px 11px;font-size:11px;">
+        </label>
+      </div>
+      <label style="display:flex;flex-direction:column;gap:5px;font-size:9.5px;color:#dfcbb0;margin-top:10px;">
+        <span>Email Address * (For order invoice &amp; tracking)</span>
+        <input type="email" id="chk-email" required placeholder="you@example.com" style="background:#1a100c;border:1px solid #b08d5755;color:var(--cream);padding:9px 11px;font-size:11px;">
+      </label>
+    </div>
+
+    <!-- Step 2: Delivery Address -->
+    <div style="border-top:1px solid rgba(176,141,87,0.18);padding-top:16px;">
+      <span style="font-size:10px;font-weight:600;color:var(--gold);letter-spacing:1px;display:block;margin-bottom:10px;">02. SHIPPING DESTINATION</span>
+      <label style="display:flex;flex-direction:column;gap:5px;font-size:9.5px;color:#dfcbb0;">
+        <span>Street Address / Apartment *</span>
+        <input type="text" id="chk-address" required placeholder="Flat / House No., Street, Area" style="background:#1a100c;border:1px solid #b08d5755;color:var(--cream);padding:9px 11px;font-size:11px;">
+      </label>
+      <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px;margin-top:10px;">
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:9.5px;color:#dfcbb0;">
+          <span>City *</span>
+          <input type="text" id="chk-city" required placeholder="e.g. Bangalore" style="background:#1a100c;border:1px solid #b08d5755;color:var(--cream);padding:9px 11px;font-size:11px;">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:9.5px;color:#dfcbb0;">
+          <span>State *</span>
+          <input type="text" id="chk-state" required placeholder="Karnataka" style="background:#1a100c;border:1px solid #b08d5755;color:var(--cream);padding:9px 11px;font-size:11px;">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:9.5px;color:#dfcbb0;">
+          <span>PIN Code *</span>
+          <input type="text" id="chk-pincode" required maxlength="6" placeholder="560001" style="background:#1a100c;border:1px solid #b08d5755;color:var(--cream);padding:9px 11px;font-size:11px;">
+        </label>
+      </div>
+    </div>
+
+    <!-- Step 3: Order Summary & Payment Method -->
+    <div style="border-top:1px solid rgba(176,141,87,0.18);padding-top:16px;">
+      <span style="font-size:10px;font-weight:600;color:var(--gold);letter-spacing:1px;display:block;margin-bottom:10px;">03. ORDER SUMMARY &amp; PAYMENT</span>
+      <div style="background:rgba(0,0,0,0.25);border:1px solid var(--line);padding:12px 14px;border-radius:2px;font-size:10px;line-height:1.6;">
+        <div style="display:flex;justify-content:space-between;color:var(--muted);">
+          <span>Items Total:</span> <span id="modal-subtotal">?0.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;color:var(--muted);">
+          <span>Packaging &amp; Cold Seal:</span> <span style="color:#7fb069;">FREE</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;color:var(--muted);">
+          <span>Delivery Across India:</span> <span id="modal-shipping">?60.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;color:var(--cream);font-weight:600;border-top:1px solid var(--line);margin-top:6px;padding-top:6px;font-size:11px;">
+          <span>Total Payable:</span> <strong id="modal-grand-total" style="color:var(--gold);font-size:13px;">?0.00</strong>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" id="modal-pay-btn" class="button gold btn-buy-now" style="width:100%;height:44px;font-size:10.5px;margin-top:4px;">
+      <span>Proceed to Secure Payment (Razorpay UPI / Cards)</span> <span>??</span>
+    </button>
+    <p id="checkout-feedback" role="status" style="font-size:10px;color:#d5bb91;text-align:center;min-height:16px;margin:0;"></p>
+  </form>
 </dialog><div class="basket-toast" role="status" aria-live="polite"></div><button id="motion-control" class="motion-control" aria-pressed="false">Pause animations <span>Ⅱ</span></button><script src="feedback.js"></script><script src="app.js"></script><script src="shop.js"></script><script src="portal.js"></script><script src="vendor/gsap.js"></script><script src="vendor/ScrollTrigger.js"></script><script src="vendor/lenis.js"></script><script type="module" src="hero-stages.js"></script><script src="site-content.js"></script><script>
 // Wire motion-control button to pause/play all estate videos
 (function(){
@@ -209,6 +300,7 @@
   }
 })();
 </script></body></html>
+
 
 
 

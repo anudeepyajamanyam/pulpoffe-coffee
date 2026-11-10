@@ -36,15 +36,22 @@ function renderBasket(){
     }
   }
 
-  let total = 0;
+  let subtotal = 0;
   for(const [id,n] of entries){
     const item = list.find(x=>x.id===id);
-    if(item && item.price) total += item.price * n;
+    if(item && item.price) subtotal += item.price * n;
   }
-  const totalEl = $('#basket-total-amount');
-  if(totalEl){
-    totalEl.textContent = total > 0 ? new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(total) : 'On enquiry';
-  }
+  const shipping = subtotal > 0 ? (subtotal >= 1000 ? 0 : 60) : 0;
+  const grandTotal = subtotal + shipping;
+
+  const inr = v => new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(v);
+  if($('#breakdown-subtotal')) $('#breakdown-subtotal').textContent = subtotal > 0 ? inr(subtotal) : '?0.00';
+  if($('#breakdown-shipping')) $('#breakdown-shipping').textContent = subtotal === 0 ? '?0.00' : (shipping === 0 ? 'FREE' : '?60.00');
+  if($('#basket-total-amount')) $('#basket-total-amount').textContent = subtotal > 0 ? inr(grandTotal) : '?0.00';
+
+  if($('#modal-subtotal')) $('#modal-subtotal').textContent = inr(subtotal);
+  if($('#modal-shipping')) $('#modal-shipping').textContent = shipping === 0 ? 'FREE' : '?60.00';
+  if($('#modal-grand-total')) $('#modal-grand-total').textContent = inr(grandTotal);
 
   if(!entries.length){const p=document.createElement('p');p.className='basket-empty';p.textContent='Your basket is waiting for a favourite.';const a=document.createElement('a');a.href='shop.html';a.className='button outline';a.textContent='Explore the coffees ↗';host.append(p,a);return;}
 for(const [id,n] of entries){const p=list.find(p=>p.id===id),row=document.createElement('div');row.className='basket-item';const img=document.createElement('img');img.src=p.image||`assets/${p.group}.webp`;img.alt='';const copy=document.createElement('div'),h=document.createElement('h3'),note=document.createElement('p'),controls=document.createElement('div');h.textContent=p.name;note.textContent=priceText(p);controls.className='quantity-controls';for(const [text,label,delta] of [['−','Decrease '+p.name,-1],['+','Increase '+p.name,1]]){const b=document.createElement('button');b.textContent=text;b.setAttribute('aria-label',label);b.disabled=delta===1&&n>=99;b.addEventListener('click',()=>{const next=n+delta;if(next<=0)delete basket[id];else basket[id]=Math.min(99,next);persist();renderBasket();});controls.append(b);if(delta===-1){const amount=document.createElement('span');amount.textContent=n;amount.setAttribute('aria-label','Quantity '+n);controls.append(amount);}}const remove=document.createElement('button');remove.className='remove-item';remove.textContent='Remove';remove.setAttribute('aria-label','Remove '+p.name);remove.addEventListener('click',()=>{delete basket[id];persist();renderBasket();});controls.append(remove);copy.append(h,note,controls);row.append(img,copy);host.append(row);}}
@@ -64,7 +71,17 @@ let toastTimer;function addToBasket(p){
     document.body.style.overflow='hidden';
   }
 }
-// Razorpay Checkout Integration
+// Full Online Order Steps & Checkout Modal Flow
+  const chkModal = $('#checkout-modal');
+  const closeChkModal = () => chkModal?.close();
+  $('#close-checkout-modal')?.addEventListener('click', closeChkModal);
+  chkModal?.addEventListener('click', e => {
+    if(e.target === chkModal){
+      const r = chkModal.getBoundingClientRect();
+      if(e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) closeChkModal();
+    }
+  });
+
   const buyBtn = $('#buy-razorpay-btn');
   if(buyBtn){
     buyBtn.addEventListener('click', ()=>{
@@ -73,69 +90,127 @@ let toastTimer;function addToBasket(p){
 
       const token = localStorage.getItem('pulpoffe_token') || localStorage.getItem('pulpoffe-jwt');
       if(!token){
-        const proceed = confirm("Tip: Sign in first to track your order and blend history in My Account.\n\nClick OK to continue to payment, or Cancel to sign in first.");
-        if(!proceed){
+        const proceed = confirm("Track Your Order & Blends:\n\nWould you like to sign in to save this order to your Pulpoffe account history?\n\n� Click OK to sign in / create account first\n� Click Cancel to continue as guest express checkout");
+        if(proceed){
           sessionStorage.setItem('pulpoffe-enquiry-selection', entries.map(([id,n])=> n + ' � ' + (list.find(p=>p.id===id)||{}).name).join('\n'));
           location.href = 'account.html';
           return;
         }
       }
 
-      let subtotal = 0;
-      const itemsDesc = entries.map(([id,n])=>{
-        const item = list.find(x=>x.id===id);
-        if(item && item.price) subtotal += item.price * n;
-        return (item ? item.name : id) + ' (x' + n + ')';
-      }).join(', ');
+      if($('#checkout-user-status')){
+        $('#checkout-user-status').textContent = token ? '? Signed In' : 'Guest Express Checkout';
+      }
+      
+      try {
+        const savedUser = JSON.parse(localStorage.getItem('pulpoffe_user') || '{}');
+        if(savedUser.name && $('#chk-name')) $('#chk-name').value = savedUser.name;
+        if(savedUser.email && $('#chk-email')) $('#chk-email').value = savedUser.email;
+      } catch{}
 
-      if(subtotal === 0) subtotal = 490;
+      renderBasket();
+      dialog.close();
+      chkModal?.showModal();
+    });
+  }
 
-      const options = {
-        key: "rzp_test_placeholderKey",
-        amount: Math.round(subtotal * 100),
-        currency: "INR",
-        name: "Pulpoffe Coffee Atelier",
-        description: itemsDesc.slice(0, 120),
-        image: "assets/pulpoffe-mark-light.svg",
-        handler: function(response){
-          $('#basket-status').textContent = 'Payment successful! Payment ID: ' + (response.razorpay_payment_id || 'DEMO_PAYMENT_OK');
+  $('#online-checkout-form')?.addEventListener('submit', e => {
+    e.preventDefault();
+    const entries = Object.entries(basket);
+    if(!entries.length) return;
+
+    let subtotal = 0;
+    for(const [id,n] of entries){
+      const item = list.find(x=>x.id===id);
+      if(item && item.price) subtotal += item.price * n;
+    }
+    const shipping = subtotal >= 1000 ? 0 : 60;
+    const payable = subtotal + shipping;
+
+    const name = $('#chk-name').value.trim();
+    const phone = $('#chk-phone').value.trim();
+    const email = $('#chk-email').value.trim();
+    const address = $('#chk-address').value.trim() + ', ' + $('#chk-city').value.trim() + ', ' + $('#chk-state').value.trim() + ' - ' + $('#chk-pincode').value.trim();
+
+    const itemsDesc = entries.map(([id,n])=>{
+      const item = list.find(x=>x.id===id);
+      return (item ? item.name : id) + ' � ' + n;
+    }).join(', ');
+
+    const feedback = $('#checkout-feedback');
+    const payBtn = $('#modal-pay-btn');
+    payBtn.disabled = true;
+    feedback.textContent = 'Connecting to Razorpay secure gateway�';
+
+    const rzpOptions = {
+      key: "rzp_test_placeholderKey",
+      amount: Math.round(payable * 100),
+      currency: "INR",
+      name: "Pulpoffe Coffee Atelier",
+      description: "Order: " + itemsDesc.slice(0, 100),
+      image: "assets/pulpoffe-mark-light.svg",
+      prefill: {
+        name: name,
+        email: email,
+        contact: phone
+      },
+      notes: {
+        shipping_address: address
+      },
+      theme: {
+        color: "#b08d57"
+      },
+      handler: function(resp){
+        chkModal.close();
+        basket = {};
+        persist();
+        renderBasket();
+        alert('Order placed successfully!\n\nPayment Reference: ' + (resp.razorpay_payment_id || 'RZP_DEMO_OK') + '\n\nDelivering fresh Kodagu coffee to:\n' + address);
+      },
+      modal: {
+        ondismiss: function(){
+          payBtn.disabled = false;
+          feedback.textContent = 'Checkout was cancelled.';
+        }
+      }
+    };
+
+    let opened = false;
+    if(typeof Razorpay !== 'undefined'){
+      try {
+        const rzp = new Razorpay(rzpOptions);
+        rzp.open();
+        opened = true;
+      } catch(err) {
+        opened = false;
+      }
+    }
+
+    if(!opened){
+      setTimeout(()=>{
+        const simSuccess = confirm(
+          "PULPOFFE SECURE PAYMENT (DEMO GATEWAY)\n" +
+          "----------------------------------------\n" +
+          "Customer: " + name + "\n" +
+          "Shipping Address: " + address + "\n" +
+          "Total Payable: ?" + payable.toFixed(2) + "\n\n" +
+          "Razorpay test keys require merchant verification.\n" +
+          "Click OK to simulate a successful payment transaction."
+        );
+        payBtn.disabled = false;
+        if(simSuccess){
+          chkModal.close();
+          const orderRef = 'PLF-' + Math.random().toString(36).substring(2,8).toUpperCase();
           basket = {};
           persist();
           renderBasket();
-        },
-        prefill: {
-          name: "Coffee Lover",
-          email: "customer@pulpoffe.com",
-          contact: "+91 98765 43210"
-        },
-        theme: {
-          color: "#b08d57"
-        },
-        modal: {
-          ondismiss: function(){
-            $('#basket-status').textContent = 'Checkout was cancelled.';
-          }
+          alert('Payment Successful!\n\nOrder ID: ' + orderRef + '\n\nThank you, ' + name + '! Your Kodagu coffee order is now being packed.');
+        } else {
+          feedback.textContent = 'Payment cancelled.';
         }
-      };
-
-      if(typeof Razorpay !== 'undefined'){
-        try {
-          const rzp = new Razorpay(options);
-          rzp.open();
-        } catch(err) {
-          const confirmed = confirm("Demo Razorpay order ready for " + new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(subtotal) + ".\n\nConnect your live Razorpay Key in settings to accept real UPI/card payments.\n\nMark this order as simulated test success?");
-          if(confirmed){
-            $('#basket-status').textContent = 'Demo order confirmed! Reference #' + Math.random().toString(36).substring(2,9).toUpperCase();
-            basket = {};
-            persist();
-            renderBasket();
-          }
-        }
-      } else {
-        alert("Razorpay payment gateway initialized for " + new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(subtotal));
-      }
-    });
-  }
+      }, 400);
+    }
+  });
 
   $('#save-basket').addEventListener('click',()=>{if(!Object.keys(basket).length)return;const lines=Object.entries(basket).map(([id,n])=>`${n} × ${list.find(p=>p.id===id).name} — ${priceText(list.find(p=>p.id===id))}`);const text='PULPOFFE — COFFEE ENQUIRY\n\n'+lines.join('\n')+'\n\nPlease confirm available pack sizes, prices, shipping and payment options.\n\nThis is a saved selection, not an order or submitted enquiry. No payment has been taken.\n';const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='Pulpoffe-coffee-enquiry.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('#basket-status').textContent='Selection downloaded. No enquiry has been sent.';});
 document.querySelectorAll('.basket-send').forEach(a=>a.addEventListener('click',()=>{try{const lines=Object.entries(basket).map(([id,n])=>`${n} × ${list.find(p=>p.id===id).name}`);sessionStorage.setItem('pulpoffe-enquiry-selection',lines.join('\n'));}catch{}}));
