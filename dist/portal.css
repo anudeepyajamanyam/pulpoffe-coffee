@@ -66,3 +66,36 @@
   min-width: 140px !important;
   padding: 12px 24px !important;
 }
+
+/* -- Split Layout for Account & Auth Page -- */
+.account-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8%;
+  align-items: start;
+  padding-top: 70px;
+}
+.account-page .portal-heading {
+  max-width: 520px;
+  margin-bottom: 0;
+}
+.account-page .auth-card {
+  width: 100%;
+  max-width: 500px;
+  margin-left: auto;
+}
+.account-page #account-content {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+@media (max-width: 900px) {
+  .account-page {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding-top: 45px;
+  }
+  .account-page .auth-card {
+    margin-left: 0;
+    max-width: 100%;
+  }
+}

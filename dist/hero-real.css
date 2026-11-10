@@ -509,3 +509,15 @@
   .story-media-card.ken-burns img { animation: none; }
   .story-media-card video { display: none; }
 }
+
+/* -- Warmer, richer tone for story media & cards -- */
+.story-media-card img,
+.story-media-card video,
+.estate-media {
+  filter: contrast(1.04) brightness(1.06) saturate(1.15) sepia(0.08) !important;
+  transition: filter 0.4s ease;
+}
+.story-media-card:hover img,
+.story-media-card:hover video {
+  filter: contrast(1.06) brightness(1.08) saturate(1.2) sepia(0.05) !important;
+}

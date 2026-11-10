@@ -30,7 +30,7 @@ async function api(path, options = {}) {
   return body;
 }
 
-const identity = api('/api/me').catch(() => ({ authenticated: false, user: null }));
+const identity = (async () => { const t = getToken(); if (!t) return { authenticated: false, user: null }; try { return await api('/api/me'); } catch { return { authenticated: false, user: null }; } })();
 
 function text(el, value) { el.textContent = value ?? ''; return el; }
 function node(tag, className, value) {
@@ -495,3 +495,4 @@ if (isAdmin) {
   });
 }
 })();
+

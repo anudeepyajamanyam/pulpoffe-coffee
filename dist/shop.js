@@ -6,7 +6,7 @@ let drawProducts=()=>{};
 const priceText=p=>[p.pack,p.price==null?'Price on enquiry':new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(p.price)].filter(Boolean).join(' · ');
 const storageKey='pulpoffe-basket-v1';let basket={};
 async function loadProducts(){
-const response=await fetch('/api/products');if(!response.ok)throw Error();
+let response=await fetch('/api/products').catch(()=>null);if(!response||!response.ok){response=await fetch('/api/products.json').catch(()=>null);}if(!response||!response.ok)throw Error();
 list=(await response.json()).products;
 try{const saved=JSON.parse(localStorage.getItem(storageKey)||'{}');if(saved&&typeof saved==='object'&&!Array.isArray(saved))for(const p of list){const n=Number(saved[p.id]);if(Number.isInteger(n)&&n>0)basket[p.id]=Math.min(n,99);}}catch{}
 persist();drawProducts();
@@ -36,3 +36,4 @@ control.addEventListener('click',()=>{motionPaused=!motionPaused;motionState();}
 let pending=false;function updateScroll(){const y=scrollY;$('.progress').style.width=`${y/Math.max(1,document.documentElement.scrollHeight-innerHeight)*100}%`;if(!motionPaused){for(const selector of ['.hero-image','.story-art>img','.craft-image>img','.closing>img']){const img=$(selector);if(!img)continue;const parent=img.parentElement,r=parent.getBoundingClientRect();if(r.bottom>0&&r.top<innerHeight){const p=(innerHeight/2-(r.top+r.height/2))/innerHeight;img.style.transform=`translateY(${p*42}px) scale(1.08)`;}}const ribbon=$('.word-ribbon');if(ribbon){const r=ribbon.getBoundingClientRect();if(r.bottom>0&&r.top<innerHeight)ribbon.style.transform=`translateX(${(innerHeight/2-r.top)*-.12}px)`;}}pending=false;}
 addEventListener('scroll',()=>{if(!pending){pending=true;requestAnimationFrame(updateScroll);}},{passive:true});motionState();
 })();
+

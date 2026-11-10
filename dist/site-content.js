@@ -1,5 +1,5 @@
 (async()=>{
-  const response=await fetch('/api/site-content');
+  let response=await fetch('/api/site-content').catch(()=>null);if(!response||!response.ok){response=await fetch('/api/site-content.json').catch(()=>null);}
   if(!response.ok)return;
   const data=await response.json();
   const headline=document.querySelector('#film-phase-a h1');
@@ -21,3 +21,4 @@
     const link=document.createElement('a');link.href=data[key];link.textContent=label;footer.append(link);
   }
 })().catch(()=>{});
+

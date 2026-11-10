@@ -1,0 +1,28 @@
+{
+  "products": [
+    {"id": "freeze-dried", "group": "instant", "name": "Freeze-dried pure instant", "note": "100% coffee", "pack": "100g jar", "price": 420},
+    {"id": "agglomerated-pure", "group": "instant", "name": "Agglomerated pure instant", "note": "100% coffee", "pack": "100g pouch", "price": 340},
+    {"id": "agglomerated-60", "group": "instant", "name": "Agglomerated 60 / 40", "note": "60% coffee · 40% chicory", "pack": "200g pouch", "price": 280},
+    {"id": "agglomerated-70", "group": "instant", "name": "Agglomerated 70 / 30", "note": "70% coffee · 30% chicory", "pack": "200g pouch", "price": 310},
+    {"id": "spray-pure", "group": "instant", "name": "Spray-dried pure instant", "note": "100% coffee", "pack": "100g pouch", "price": 290},
+    {"id": "spray-60", "group": "instant", "name": "Spray-dried 60 / 40", "note": "60% coffee · 40% chicory", "pack": "200g pouch", "price": 240},
+    {"id": "spray-70", "group": "instant", "name": "Spray-dried 70 / 30", "note": "70% coffee · 30% chicory", "pack": "200g pouch", "price": 260},
+    {"id": "flavour-spiced", "group": "flavoured", "name": "Spiced instant coffee", "note": "Warm cardamom and cinnamon infusion", "pack": "100g tin", "price": 490},
+    {"id": "flavour-almond", "group": "flavoured", "name": "Almond instant coffee", "note": "Nutty, subtly sweet toasted almond notes", "pack": "100g tin", "price": 490},
+    {"id": "flavour-hazelnut", "group": "flavoured", "name": "Hazelnut instant coffee", "note": "Rich creamy roasted hazelnut notes", "pack": "100g tin", "price": 490},
+    {"id": "flavour-choco-orange", "group": "flavoured", "name": "Choco Orange instant coffee", "note": "Dark cocoa with vibrant zesty orange", "pack": "100g tin", "price": 490},
+    {"id": "flavour-caramel", "group": "flavoured", "name": "Caramel instant coffee", "note": "Silky burnt sugar & butterscotch finish", "pack": "100g tin", "price": 490},
+    {"id": "flavour-cardamom", "group": "flavoured", "name": "Cardamom instant coffee", "note": "Traditional aromatic Coorg cardamom", "pack": "100g tin", "price": 490},
+    {"id": "flavour-vanilla", "group": "flavoured", "name": "Vanilla instant coffee", "note": "Madagascar Bourbon vanilla aroma", "pack": "100g tin", "price": 490},
+    {"id": "flavour-mint", "group": "flavoured", "name": "Mint instant coffee", "note": "Crisp peppermint balanced with rich coffee", "pack": "100g tin", "price": 490},
+    {"id": "flavour-berry", "group": "flavoured", "name": "Berry instant coffee", "note": "Wild blackberry and red currant notes", "pack": "100g tin", "price": 490},
+    {"id": "fermented-whiskey-barrel-aged", "group": "fermented", "name": "Whiskey barrel aged coffee", "note": "Oak, peat and caramel fermented notes", "pack": "250g bag", "price": 850},
+    {"id": "fermented-pineapple", "group": "fermented", "name": "Pineapple coffee", "note": "Tropical anaerobic fruit fermentation", "pack": "250g bag", "price": 780},
+    {"id": "fermented-cinnamon", "group": "fermented", "name": "Cinnamon coffee", "note": "Co-fermented with real Ceylon cinnamon", "pack": "250g bag", "price": 780},
+    {"id": "fermented-wine", "group": "fermented", "name": "Wine yeast fermented coffee", "note": "Red berry acidity and winey sweetness", "pack": "250g bag", "price": 820},
+    {"id": "roasted-pure", "group": "roasted", "name": "Pure roasted coffee", "note": "Medium-dark roast 100% Arabica & Robusta", "pack": "250g bag", "price": 450},
+    {"id": "roasted-60", "group": "roasted", "name": "60 / 40 roasted blend", "note": "Traditional South Indian filter coffee blend", "pack": "500g bag", "price": 380},
+    {"id": "roasted-70", "group": "roasted", "name": "70 / 30 roasted blend", "note": "Bold body, balanced filter coffee blend", "pack": "500g bag", "price": 420},
+    {"id": "roasted-80", "group": "roasted", "name": "80 / 20 roasted blend", "note": "High coffee intensity with smooth finish", "pack": "500g bag", "price": 460}
+  ]
+}
