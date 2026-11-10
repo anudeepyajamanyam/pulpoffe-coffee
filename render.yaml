@@ -1,16 +1,12 @@
 services:
   - type: web
     name: pulpoffe-coffee
-    runtime: static
-    buildCommand: node scripts/build-worker.mjs && node scripts/build-render.mjs
-    staticPublishPath: ./render-public
-    routes:
-      - type: rewrite
-        source: /api/products
-        destination: /api/products.json
-      - type: rewrite
-        source: /api/site-content
-        destination: /api/site-content.json
-      - type: rewrite
-        source: /api/me
-        destination: /api/me.json
+    env: node
+    plan: free
+    buildCommand: npm install && node scripts/build-worker.mjs && node scripts/build-render.mjs
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.0.0
+      - key: ADMIN_EMAILS
+        value: admin@pulpoffe.com
