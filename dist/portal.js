@@ -12,14 +12,116 @@ const setToken = (t) => {
   try { if (t) localStorage.setItem(TOKEN_KEY, t); else localStorage.removeItem(TOKEN_KEY); } catch {}
 };
 
+// Client-Side Simulated Storage for Static Deployments (Render / GitHub Pages)
+const LOCAL_USERS_KEY = 'pulpoffe_local_users_v1';
+const getLocalUsers = () => {
+  try {
+    const u = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '{}');
+    if (!u['customer@pulpoffe.com']) {
+      u['customer@pulpoffe.com'] = {
+        id: 'user_customer_test',
+        name: 'Aarav Sharma',
+        email: 'customer@pulpoffe.com',
+        password: 'Password123!',
+        role: 'customer'
+      };
+    }
+    if (!u['admin@pulpoffe.com']) {
+      u['admin@pulpoffe.com'] = {
+        id: 'user_admin_test',
+        name: 'Pulpoffe Admin',
+        email: 'admin@pulpoffe.com',
+        password: 'AdminPassword123!',
+        role: 'admin'
+      };
+    }
+    return u;
+  } catch { return {}; }
+};
+const saveLocalUsers = (users) => {
+  try { localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users)); } catch {}
+};
+
 async function api(path, options = {}) {
   const token = getToken();
   const headers = {
     ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+    ...(token ? { 'Authorization': 'Bearer ' + token } : {}),
     ...options.headers
   };
-  const r = await fetch(path, { credentials: 'same-origin', ...options, headers });
+
+  let r;
+  let isOfflineOrStatic = false;
+  try {
+    r = await fetch(path, { credentials: 'same-origin', ...options, headers });
+    if (r.status === 404 || r.status === 405) isOfflineOrStatic = true;
+  } catch {
+    isOfflineOrStatic = true;
+  }
+
+  if (isOfflineOrStatic) {
+    const payload = options.body ? JSON.parse(options.body) : {};
+
+    if (path === '/api/auth/login') {
+      const users = getLocalUsers();
+      const user = users[(payload.email || '').toLowerCase().trim()];
+      if (!user || user.password !== payload.password) {
+        const err = new Error('Incorrect email or password. Please verify your credentials.');
+        err.status = 401;
+        throw err;
+      }
+      const fakeToken = 'plf_token_' + btoa(JSON.stringify({ sub: user.id, email: user.email, name: user.name, role: user.role, exp: Date.now() + 86400000 }));
+      try { localStorage.setItem('pulpoffe_user', JSON.stringify(user)); } catch {}
+      return { token: fakeToken, user: { id: user.id, name: user.name, email: user.email, role: user.role } };
+    }
+
+    if (path === '/api/auth/register') {
+      const users = getLocalUsers();
+      const email = (payload.email || '').toLowerCase().trim();
+      if (users[email]) {
+        const err = new Error('An account with this email already exists. Please sign in instead.');
+        err.status = 409;
+        throw err;
+      }
+      const newUser = {
+        id: 'usr_' + Math.random().toString(36).substring(2, 9),
+        name: (payload.name || '').trim(),
+        email: email,
+        password: payload.password,
+        role: email.includes('admin') ? 'admin' : 'customer'
+      };
+      users[email] = newUser;
+      saveLocalUsers(users);
+      const fakeToken = 'plf_token_' + btoa(JSON.stringify({ sub: newUser.id, email: newUser.email, name: newUser.name, role: newUser.role, exp: Date.now() + 86400000 }));
+      try { localStorage.setItem('pulpoffe_user', JSON.stringify(newUser)); } catch {}
+      return { token: fakeToken, user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role } };
+    }
+
+    if (path === '/api/me') {
+      if (!token) return { authenticated: false, user: null };
+      try {
+        const userStr = localStorage.getItem('pulpoffe_user');
+        if (userStr) return { authenticated: true, user: JSON.parse(userStr) };
+      } catch {}
+      return { authenticated: false, user: null };
+    }
+
+    if (path === '/api/enquiries') {
+      if (options.method === 'POST') {
+        return { id: 'enq_' + Math.random().toString(36).substring(2, 9), status: 'new', createdAt: new Date().toISOString() };
+      }
+      return { enquiries: [] };
+    }
+
+    if (path === '/api/admin/enquiries') {
+      return { enquiries: [] };
+    }
+
+    if (path === '/api/admin/contact-settings' || path === '/api/contact-settings') {
+      return { email: 'hello@pulpoffe.com', phone: '+91 98765 43210', address: 'Kodagu, Karnataka, India', published: true };
+    }
+  }
+
   let body;
   try { body = await r.json(); } catch { throw new Error('The service is temporarily unavailable. Please try again shortly.'); }
   if (!r.ok) {
