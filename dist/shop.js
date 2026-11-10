@@ -18,10 +18,126 @@ document.querySelectorAll('.basket-open').forEach(b=>b.addEventListener('click',
 function close(){dialog.close();document.body.style.overflow='';basketTrigger?.focus();}
 $('.basket-close').addEventListener('click',close);dialog.addEventListener('cancel',()=>{document.body.style.overflow='';});
 dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)close();}});
-function renderBasket(){const host=$('#basket-items');host.replaceChildren();const entries=Object.entries(basket);$('#save-basket').disabled=!entries.length;$('#basket-status').textContent='';if(!entries.length){const p=document.createElement('p');p.className='basket-empty';p.textContent='Your basket is waiting for a favourite.';const a=document.createElement('a');a.href='shop.html';a.className='button outline';a.textContent='Explore the coffees ↗';host.append(p,a);return;}
+function renderBasket(){
+  const host=$('#basket-items');
+  host.replaceChildren();
+  const entries=Object.entries(basket);
+  if($('#save-basket')) $('#save-basket').disabled=!entries.length;
+  if($('#buy-razorpay-btn')) $('#buy-razorpay-btn').disabled=!entries.length;
+  if($('#basket-status')) $('#basket-status').textContent='';
+
+  const token = localStorage.getItem('pulpoffe_token') || localStorage.getItem('pulpoffe-jwt');
+  const badge = $('#cart-auth-notice');
+  if(badge){
+    if(token){
+      badge.innerHTML = '<span>Signed in</span><a href="account.html">View order & blend history ?</a>';
+    } else {
+      badge.innerHTML = '<span>Track orders & blend brief:</span> <a href="account.html">Sign in / Register ?</a>';
+    }
+  }
+
+  let total = 0;
+  for(const [id,n] of entries){
+    const item = list.find(x=>x.id===id);
+    if(item && item.price) total += item.price * n;
+  }
+  const totalEl = $('#basket-total-amount');
+  if(totalEl){
+    totalEl.textContent = total > 0 ? new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(total) : 'On enquiry';
+  }
+
+  if(!entries.length){const p=document.createElement('p');p.className='basket-empty';p.textContent='Your basket is waiting for a favourite.';const a=document.createElement('a');a.href='shop.html';a.className='button outline';a.textContent='Explore the coffees ↗';host.append(p,a);return;}
 for(const [id,n] of entries){const p=list.find(p=>p.id===id),row=document.createElement('div');row.className='basket-item';const img=document.createElement('img');img.src=p.image||`assets/${p.group}.webp`;img.alt='';const copy=document.createElement('div'),h=document.createElement('h3'),note=document.createElement('p'),controls=document.createElement('div');h.textContent=p.name;note.textContent=priceText(p);controls.className='quantity-controls';for(const [text,label,delta] of [['−','Decrease '+p.name,-1],['+','Increase '+p.name,1]]){const b=document.createElement('button');b.textContent=text;b.setAttribute('aria-label',label);b.disabled=delta===1&&n>=99;b.addEventListener('click',()=>{const next=n+delta;if(next<=0)delete basket[id];else basket[id]=Math.min(99,next);persist();renderBasket();});controls.append(b);if(delta===-1){const amount=document.createElement('span');amount.textContent=n;amount.setAttribute('aria-label','Quantity '+n);controls.append(amount);}}const remove=document.createElement('button');remove.className='remove-item';remove.textContent='Remove';remove.setAttribute('aria-label','Remove '+p.name);remove.addEventListener('click',()=>{delete basket[id];persist();renderBasket();});controls.append(remove);copy.append(h,note,controls);row.append(img,copy);host.append(row);}}
-let toastTimer;function addToBasket(p){basket[p.id]=Math.min(99,(basket[p.id]||0)+1);persist();const toast=$('.basket-toast');toast.textContent=p.name+' added to your basket';toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2800);}
-$('#save-basket').addEventListener('click',()=>{if(!Object.keys(basket).length)return;const lines=Object.entries(basket).map(([id,n])=>`${n} × ${list.find(p=>p.id===id).name} — ${priceText(list.find(p=>p.id===id))}`);const text='PULPOFFE — COFFEE ENQUIRY\n\n'+lines.join('\n')+'\n\nPlease confirm available pack sizes, prices, shipping and payment options.\n\nThis is a saved selection, not an order or submitted enquiry. No payment has been taken.\n';const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='Pulpoffe-coffee-enquiry.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('#basket-status').textContent='Selection downloaded. No enquiry has been sent.';});
+let toastTimer;function addToBasket(p){
+  basket[p.id]=Math.min(99,(basket[p.id]||0)+1);
+  persist();
+  const toast=$('.basket-toast');
+  if(toast){
+    toast.textContent=p.name+' added to your basket';
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>toast.classList.remove('show'),2800);
+  }
+  renderBasket();
+  if(!dialog.open){
+    dialog.showModal();
+    document.body.style.overflow='hidden';
+  }
+}
+// Razorpay Checkout Integration
+  const buyBtn = $('#buy-razorpay-btn');
+  if(buyBtn){
+    buyBtn.addEventListener('click', ()=>{
+      const entries = Object.entries(basket);
+      if(!entries.length) return;
+
+      const token = localStorage.getItem('pulpoffe_token') || localStorage.getItem('pulpoffe-jwt');
+      if(!token){
+        const proceed = confirm("Tip: Sign in first to track your order and blend history in My Account.\n\nClick OK to continue to payment, or Cancel to sign in first.");
+        if(!proceed){
+          sessionStorage.setItem('pulpoffe-enquiry-selection', entries.map(([id,n])=> n + ' � ' + (list.find(p=>p.id===id)||{}).name).join('\n'));
+          location.href = 'account.html';
+          return;
+        }
+      }
+
+      let subtotal = 0;
+      const itemsDesc = entries.map(([id,n])=>{
+        const item = list.find(x=>x.id===id);
+        if(item && item.price) subtotal += item.price * n;
+        return (item ? item.name : id) + ' (x' + n + ')';
+      }).join(', ');
+
+      if(subtotal === 0) subtotal = 490;
+
+      const options = {
+        key: "rzp_test_placeholderKey",
+        amount: Math.round(subtotal * 100),
+        currency: "INR",
+        name: "Pulpoffe Coffee Atelier",
+        description: itemsDesc.slice(0, 120),
+        image: "assets/pulpoffe-mark-light.svg",
+        handler: function(response){
+          $('#basket-status').textContent = 'Payment successful! Payment ID: ' + (response.razorpay_payment_id || 'DEMO_PAYMENT_OK');
+          basket = {};
+          persist();
+          renderBasket();
+        },
+        prefill: {
+          name: "Coffee Lover",
+          email: "customer@pulpoffe.com",
+          contact: "+91 98765 43210"
+        },
+        theme: {
+          color: "#b08d57"
+        },
+        modal: {
+          ondismiss: function(){
+            $('#basket-status').textContent = 'Checkout was cancelled.';
+          }
+        }
+      };
+
+      if(typeof Razorpay !== 'undefined'){
+        try {
+          const rzp = new Razorpay(options);
+          rzp.open();
+        } catch(err) {
+          const confirmed = confirm("Demo Razorpay order ready for " + new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(subtotal) + ".\n\nConnect your live Razorpay Key in settings to accept real UPI/card payments.\n\nMark this order as simulated test success?");
+          if(confirmed){
+            $('#basket-status').textContent = 'Demo order confirmed! Reference #' + Math.random().toString(36).substring(2,9).toUpperCase();
+            basket = {};
+            persist();
+            renderBasket();
+          }
+        }
+      } else {
+        alert("Razorpay payment gateway initialized for " + new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(subtotal));
+      }
+    });
+  }
+
+  $('#save-basket').addEventListener('click',()=>{if(!Object.keys(basket).length)return;const lines=Object.entries(basket).map(([id,n])=>`${n} × ${list.find(p=>p.id===id).name} — ${priceText(list.find(p=>p.id===id))}`);const text='PULPOFFE — COFFEE ENQUIRY\n\n'+lines.join('\n')+'\n\nPlease confirm available pack sizes, prices, shipping and payment options.\n\nThis is a saved selection, not an order or submitted enquiry. No payment has been taken.\n';const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='Pulpoffe-coffee-enquiry.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('#basket-status').textContent='Selection downloaded. No enquiry has been sent.';});
 document.querySelectorAll('.basket-send').forEach(a=>a.addEventListener('click',()=>{try{const lines=Object.entries(basket).map(([id,n])=>`${n} × ${list.find(p=>p.id===id).name}`);sessionStorage.setItem('pulpoffe-enquiry-selection',lines.join('\n'));}catch{}}));
 if($('#product-grid')){let group=new URLSearchParams(location.search).get('collection')||'all';if(!Object.hasOwn(groups,group))group='all';let term='';function render(){document.querySelectorAll('[data-shop-filter]').forEach(b=>{const on=b.dataset.shopFilter===group;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});const selected=list.filter(p=>(group==='all'||p.group===group)&&`${p.name} ${p.note}`.toLowerCase().includes(term));const grid=$('#product-grid');grid.replaceChildren();for(const [i,p] of selected.entries()){const card=document.createElement('article');card.className='product-card';card.style.setProperty('--i',i%4);const img=document.createElement('img');img.src=p.image||`assets/${p.group}.webp`;img.alt=`Illustrative ${groups[p.group].toLowerCase()} scene`;img.loading='lazy';const copy=document.createElement('div'),category=document.createElement('p'),h=document.createElement('h2'),note=document.createElement('p'),price=document.createElement('p'),button=document.createElement('button');category.className='product-category';category.textContent=groups[p.group];h.textContent=p.name;note.className='product-note';note.textContent=p.note;price.className='product-price';price.textContent=priceText(p);button.className='add-basket';button.textContent='Add to basket +';button.setAttribute('aria-label','Add '+p.name+' to basket');button.addEventListener('click',()=>addToBasket(p));copy.append(category,h,note,price,button);card.append(img,copy);grid.append(card);}$('#product-count').textContent=`${selected.length} coffee${selected.length===1?'':'s'} to explore`;$('#no-products').hidden=!!selected.length;}
 document.querySelectorAll('[data-shop-filter]').forEach(b=>b.addEventListener('click',()=>{group=b.dataset.shopFilter;const u=new URL(location.href);if(group==='all')u.searchParams.delete('collection');else u.searchParams.set('collection',group);history.replaceState(null,'',u);render();}));$('#product-search').addEventListener('input',e=>{term=e.target.value.trim().toLowerCase();render();});drawProducts=render;}

@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1a100c"><title>Pulpoffe — Rooted in Kodagu. Crafted for your cup.</title><meta name="description" content="Discover Pulpoffe’s instant, flavoured, fermented and roasted coffees. Rooted in Kodagu, crafted for your everyday coffee ritual."><link rel="preload" as="image" href="media/posters/hero-picker-path-poster.webp" fetchpriority="high">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="catalogue.css"><link rel="stylesheet" href="portal.css"><link rel="stylesheet" href="experience.css"><link rel="icon" href="assets/pulpoffe-mark-light.svg"><link rel="stylesheet" href="hero-film.css"><link rel="stylesheet" href="hero-real.css"><link rel="stylesheet" href="feedback.css"></head>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="catalogue.css"><link rel="stylesheet" href="portal.css"><link rel="stylesheet" href="experience.css"><link rel="icon" href="assets/pulpoffe-mark-light.svg"><link rel="stylesheet" href="hero-film.css"><link rel="stylesheet" href="hero-real.css"><link rel="stylesheet" href="feedback.css"><script src="https://checkout.razorpay.com/v1/checkout.js"></script></head>
 <body><div class="progress" aria-hidden="true"></div><div class="announcement">Rooted in Kodagu. &nbsp; Crafted for the moments that matter.</div>
 <header class="nav"><a class="brand" href="#home" aria-label="Pulpoffe home"><img class="brand-lockup" src="assets/pulpoffe-horizontal-light.svg" alt="Pulpoffe — Moments brewed. Impacts grown."></a><nav aria-label="Main navigation"><a href="#story">Our story</a><a href="#coffees">Our coffees</a><a href="#craft">The craft</a><a href="contact.html?type=b2b">For business</a><a href="account.html">My account</a></nav><a class="nav-cta" href="contact.html">Contact us <span>↗</span></a><button id="menu-toggle" aria-expanded="false" aria-controls="mobile-menu">Menu <span>☰</span></button><button class="basket-open" aria-label="Open shopping basket">Basket <span class="basket-count">0</span></button></header>
 <nav id="mobile-menu" hidden aria-label="Mobile navigation"><a href="#story">Our story</a><a href="#coffees">Our coffees</a><a href="#craft">The craft</a><a href="#blend">Create your blend</a><a href="contact.html?type=b2b">For business</a><a href="account.html">My account</a></nav>
@@ -152,7 +152,38 @@
       <div class="blend-summary" aria-live="polite"><span>YOUR STARTING POINT</span><p id="blend-summary"></p></div><button class="download-button" type="submit">Save my blend brief <span>↓</span></button><p class="form-note">Download your preferences as a text file. This does not send an enquiry or place an order. Custom blends are subject to confirmation.</p><p id="download-status" role="status"></p></form></section>
 <section class="business-invite section reveal"><div><p class="eyebrow">COFFEE FOR YOUR BUSINESS</p><h2>Your next chapter.<br><em>Our coffee.</em></h2></div><div><p>For cafés, retailers, distributors and businesses exploring coffee. Tell us what you need, from a familiar format to a custom blend.</p><a class="button gold" href="contact.html?type=b2b">Start a business enquiry <span>↗</span></a></div></section><section class="closing"><img src="assets/hero.webp" alt="" loading="lazy"><div><p class="eyebrow">TAKE A MOMENT FOR YOURSELF</p><h2>There’s a little more<br><em>in every cup.</em></h2><a href="#coffees" class="button gold">Find your coffee <span>↗</span></a></div></section>
 </main><footer><div class="footer-top"><a class="brand" href="#home" aria-label="Pulpoffe home"><img class="brand-lockup" src="assets/pulpoffe-horizontal-light.svg" alt="Pulpoffe — Moments brewed. Impacts grown."></a><p>Rooted in Kodagu.<br>Crafted for your everyday.</p><div><span>EXPLORE</span><a href="#story">Our story</a><a href="#coffees">Our coffees</a><a href="shop.html">Shop coffee</a><a href="#blend">Create your blend</a><a href="contact.html">Contact us</a><a href="account.html">My account</a><a href="admin.html">Admin</a></div><div><span>OUR ORIGIN</span><p>Kodagu, Karnataka<br>India</p><a href="#home">Back to top ↑</a></div></div><div class="footer-bottom"><span>© <span id="year"></span> Pulpoffe. All rights reserved.</span><span>Purely grown. Honestly brewed.</span></div></footer>
-<dialog id="coffee-dialog" aria-labelledby="dialog-title"><button class="dialog-close" aria-label="Close coffee details">×</button><div class="dialog-layout"><img id="dialog-image" alt=""><div><p id="dialog-kicker" class="eyebrow"></p><h2 id="dialog-title"></h2><p id="dialog-description"></p><div id="dialog-variants"></div><a class="button gold" href="#blend" id="dialog-blend">Create your blend <span>↗</span></a></div></div></dialog><dialog id="basket-dialog" aria-labelledby="basket-title"><div class="basket-header"><div><p class="eyebrow">YOUR COFFEE SELECTION</p><h2 id="basket-title">Your basket.</h2></div><button class="basket-close" aria-label="Close shopping basket">×</button></div><div id="basket-items"></div><div class="basket-bottom"><p class="basket-total">Basket <strong>Request a quote</strong></p><p>Online checkout is not available yet. Save your selection to request prices and pack options. No payment will be taken.</p><button id="save-basket" class="button gold">Save basket enquiry <span>↓</span></button><a class="button outline basket-send" href="contact.html?type=b2b&amp;from=basket">Request a quote <span>↗</span></a><p id="basket-status" role="status"></p></div></dialog><div class="basket-toast" role="status" aria-live="polite"></div><button id="motion-control" class="motion-control" aria-pressed="false">Pause animations <span>Ⅱ</span></button><script src="feedback.js"></script><script src="app.js"></script><script src="shop.js"></script><script src="portal.js"></script><script src="vendor/gsap.js"></script><script src="vendor/ScrollTrigger.js"></script><script src="vendor/lenis.js"></script><script type="module" src="hero-stages.js"></script><script src="site-content.js"></script><script>
+<dialog id="coffee-dialog" aria-labelledby="dialog-title"><button class="dialog-close" aria-label="Close coffee details">×</button><div class="dialog-layout"><img id="dialog-image" alt=""><div><p id="dialog-kicker" class="eyebrow"></p><h2 id="dialog-title"></h2><p id="dialog-description"></p><div id="dialog-variants"></div><a class="button gold" href="#blend" id="dialog-blend">Create your blend <span>↗</span></a></div></div></dialog><dialog id="basket-dialog" aria-labelledby="basket-title">
+  <div class="basket-header">
+    <div>
+      <p class="eyebrow" style="margin-bottom:4px;">YOUR COFFEE SELECTION</p>
+      <h2 id="basket-title">Your basket.</h2>
+    </div>
+    <button class="basket-close" aria-label="Close shopping basket">?</button>
+  </div>
+  <div id="cart-auth-notice" class="cart-user-badge">
+    <span>Order history &amp; blend tracking</span>
+    <a href="account.html">Sign in / Register ?</a>
+  </div>
+  <div id="basket-items"></div>
+  <div class="basket-bottom">
+    <p class="basket-total">
+      <span>Subtotal (Estimated)</span>
+      <strong id="basket-total-amount">?0.00</strong>
+    </p>
+    <div class="basket-actions-grid">
+      <button id="buy-razorpay-btn" class="button gold btn-buy-now">
+        <span>Pay with Razorpay (Demo)</span> <span>??</span>
+      </button>
+      <a class="button outline basket-send" href="contact.html?type=b2b&amp;from=basket">
+        <span>Request B2B Quote / Custom Blend</span> <span>?</span>
+      </a>
+      <button id="save-basket" class="button outline" style="font-size:8.5px;padding:8px 12px;opacity:0.8;">
+        <span>Save Selection (Text Brief)</span> <span>?</span>
+      </button>
+    </div>
+    <p id="basket-status" role="status" style="font-size:9.5px;color:#d5bb91;margin-top:10px;text-align:center;"></p>
+  </div>
+</dialog><div class="basket-toast" role="status" aria-live="polite"></div><button id="motion-control" class="motion-control" aria-pressed="false">Pause animations <span>Ⅱ</span></button><script src="feedback.js"></script><script src="app.js"></script><script src="shop.js"></script><script src="portal.js"></script><script src="vendor/gsap.js"></script><script src="vendor/ScrollTrigger.js"></script><script src="vendor/lenis.js"></script><script type="module" src="hero-stages.js"></script><script src="site-content.js"></script><script>
 // Wire motion-control button to pause/play all estate videos
 (function(){
   var btn = document.getElementById('motion-control');
@@ -178,6 +209,7 @@
   }
 })();
 </script></body></html>
+
 
 
 

@@ -4,3 +4,279 @@
 @media(prefers-reduced-motion:reduce){.motion-enabled .reveal{opacity:1;transform:none}.product-card,.hero-copy{animation:none!important}.basket-toast{transition:none}}
 html,body{overflow-x:clip} .story-art{padding-right:0;padding-bottom:0}.origin-stamp{right:18px;bottom:25px}
 @media(max-width:640px){.coffees .coffee-grid{overflow-y:hidden}.coffees .coffee-card{align-self:stretch}}
+
+/* -- Modern Compact Shop Intro (UX Refinement) -- */
+.shop-intro {
+  padding-top: 36px !important;
+  padding-bottom: 24px !important;
+  background: radial-gradient(ellipse at 80% 0, rgba(87,58,32,0.18), transparent 60%) !important;
+  border-bottom: 1px solid var(--line);
+}
+.shop-intro .eyebrow {
+  font-size: 8px !important;
+  letter-spacing: 2.2px !important;
+  margin-bottom: 12px !important;
+}
+.shop-intro h1 {
+  font-size: clamp(38px, 4.2vw, 54px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -1.2px !important;
+  margin-bottom: 12px !important;
+}
+.shop-intro > p:not(.eyebrow) {
+  max-width: 520px !important;
+  font-size: 11px !important;
+  line-height: 1.7 !important;
+  color: var(--muted) !important;
+  margin-bottom: 14px !important;
+}
+.shop-intro .underlined {
+  font-size: 9px !important;
+  padding-bottom: 4px !important;
+  margin-top: 0 !important;
+}
+
+/* -- Product Grid & Compact Luxury Cards -- */
+.shop-section {
+  padding-top: 28px !important;
+  padding-bottom: 70px !important;
+}
+.shop-toolbar {
+  padding-bottom: 18px !important;
+  margin-bottom: 16px !important;
+}
+.product-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+.product-card {
+  border: 1px solid var(--line) !important;
+  background: var(--panel) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+.product-card:hover {
+  transform: translateY(-4px) !important;
+  border-color: rgba(176,141,87,0.6) !important;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35) !important;
+}
+.product-card > img {
+  height: 140px !important;
+  width: 100% !important;
+  object-fit: cover !important;
+  border-bottom: 1px solid rgba(176,141,87,0.15) !important;
+}
+.product-card > div {
+  padding: 14px 13px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+}
+.product-category {
+  font-size: 7px !important;
+  letter-spacing: 1.2px !important;
+  color: var(--gold) !important;
+  margin-bottom: 6px !important;
+  text-transform: uppercase !important;
+}
+.product-card h2 {
+  font-size: 18px !important;
+  line-height: 1.15 !important;
+  min-height: 42px !important;
+  margin-bottom: 6px !important;
+  letter-spacing: -0.3px !important;
+  color: var(--cream) !important;
+}
+.product-note {
+  font-size: 8px !important;
+  line-height: 1.6 !important;
+  color: var(--muted) !important;
+  min-height: 26px !important;
+  margin-bottom: 10px !important;
+}
+.product-price {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  color: #dfcaa8 !important;
+  margin-bottom: 12px !important;
+  margin-top: auto !important;
+}
+.product-card .add-basket {
+  background: rgba(176,141,87,0.08) !important;
+  border: 1px solid var(--gold) !important;
+  color: var(--gold) !important;
+  font-size: 8.5px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.5px !important;
+  padding: 8px 10px !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+}
+.product-card .add-basket:hover {
+  background: var(--gold) !important;
+  color: var(--deep) !important;
+}
+
+/* -- Modern Slide-Over Cart Drawer (UX Overhaul) -- */
+#basket-dialog {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  margin: 0 !important;
+  width: min(440px, 100vw) !important;
+  height: 100svh !important;
+  max-height: 100svh !important;
+  background: #190f0b !important;
+  border: none !important;
+  border-left: 1px solid rgba(176,141,87,0.3) !important;
+  box-shadow: -15px 0 45px rgba(0,0,0,0.7) !important;
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  z-index: 9999 !important;
+}
+#basket-dialog[open] {
+  transform: translateX(0) !important;
+}
+#basket-dialog::backdrop {
+  background: rgba(10,5,3,0.75) !important;
+  backdrop-filter: blur(4px) !important;
+  animation: fadeIn 0.25s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.basket-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  border-bottom: 1px solid var(--line) !important;
+  padding-bottom: 16px !important;
+  margin-bottom: 16px !important;
+  flex-shrink: 0 !important;
+}
+.basket-header h2 {
+  font-size: 28px !important;
+  margin: 4px 0 0 !important;
+  letter-spacing: -0.8px !important;
+}
+.basket-close {
+  background: rgba(176,141,87,0.08) !important;
+  color: var(--cream) !important;
+  border: 1px solid rgba(176,141,87,0.3) !important;
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 18px !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  transition: background 0.2s !important;
+}
+.basket-close:hover {
+  background: rgba(176,141,87,0.2) !important;
+}
+#basket-items {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  padding-right: 4px !important;
+}
+.basket-item {
+  display: grid !important;
+  grid-template-columns: 56px 1fr !important;
+  gap: 14px !important;
+  padding: 14px 0 !important;
+  border-bottom: 1px solid rgba(176,141,87,0.12) !important;
+}
+.basket-item > img {
+  width: 56px !important;
+  height: 62px !important;
+  object-fit: cover !important;
+  border: 1px solid rgba(176,141,87,0.2) !important;
+}
+.basket-item h3 {
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  margin-bottom: 4px !important;
+}
+.basket-bottom {
+  padding-top: 16px !important;
+  border-top: 1px solid var(--line) !important;
+  flex-shrink: 0 !important;
+}
+.basket-actions-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin-top: 14px !important;
+}
+.basket-actions-grid button,
+.basket-actions-grid a {
+  width: 100% !important;
+  justify-content: center !important;
+  padding: 12px 16px !important;
+  font-size: 9.5px !important;
+  letter-spacing: 0.5px !important;
+}
+.btn-buy-now {
+  background: linear-gradient(135deg, #d4af37, #aa820a) !important;
+  color: #120b08 !important;
+  border: none !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  transition: transform 0.2s, filter 0.2s !important;
+}
+.btn-buy-now:hover {
+  filter: brightness(1.1) !important;
+  transform: translateY(-1px) !important;
+}
+.cart-user-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(176,141,87,0.08);
+  border: 1px solid rgba(176,141,87,0.2);
+  padding: 7px 12px;
+  font-size: 8.5px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.cart-user-badge strong {
+  color: var(--gold);
+  font-weight: 500;
+}
+.cart-user-badge a {
+  color: var(--cream);
+  text-decoration: underline;
+}
+
+/* Responsive adjustment */
+@media (max-width: 1100px) {
+  .product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 680px) {
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+  .product-card > img {
+    height: 115px !important;
+  }
+  .product-card h2 {
+    font-size: 15px !important;
+    min-height: 36px !important;
+  }
+  .shop-intro h1 {
+    font-size: 34px !important;
+  }
+}
