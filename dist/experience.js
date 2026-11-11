@@ -152,3 +152,21 @@
   measure();
   updateMotion();
 })();
+
+// Sticky header on scroll
+(function() {
+  const nav = document.querySelector('.nav');
+  if (!nav) return;
+  let ticking = false;
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        nav.classList.toggle('scrolled', window.scrollY > 10);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll(); // initial
+})();

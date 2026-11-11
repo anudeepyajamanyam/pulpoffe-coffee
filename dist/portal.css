@@ -16,8 +16,9 @@
   background: var(--panel) !important;
   color: var(--muted) !important;
   border: 1px solid var(--line) !important;
-  padding: 10px 20px !important;
-  font-size: 10px !important;
+  padding: 12px 22px !important;
+  min-height: 48px !important;
+  font-size: 14px !important;
   letter-spacing: 0.5px !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
@@ -64,7 +65,9 @@
   align-self: flex-start !important;
   width: auto !important;
   min-width: 140px !important;
-  padding: 12px 24px !important;
+  padding: 14px 28px !important;
+  min-height: 48px !important;
+  font-size: 14px !important;
 }
 
 /* -- Split Layout for Account & Auth Page -- */

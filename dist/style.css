@@ -3,3 +3,729 @@
 @media(max-width:640px){h2{font-size:44px;letter-spacing:-.6px}.announcement{font-size:7px;padding:7px 12px}.nav{height:82px;padding-inline:5%}.brand-emblem{width:46px;height:57px}.brand>span{font-size:19px;letter-spacing:2px}.brand small{font-size:4.6px;letter-spacing:.65px}.nav nav,.nav-cta{display:none}#menu-toggle{display:flex;align-items:center;gap:10px;font-size:10px;border:0;background:none;color:var(--cream);padding:10px 0}#mobile-menu{top:110px}.hero{height:760px;min-height:0}.hero-image{object-fit:cover;object-position:82% center;height:430px;top:330px}.hero-shade{background:linear-gradient(180deg,#120b08 0%,#120b08 36%,#120b0840 58%,transparent 78%,#120b08 100%)}.hero-copy{padding:40px 7% 0;width:100%}.hero .eyebrow{font-size:6.5px;letter-spacing:1.5px;margin-bottom:18px}h1{font-size:clamp(46px,14vw,58px);letter-spacing:-1.5px;line-height:.96;margin-bottom:20px}.hero-description{font-size:9px;line-height:1.9;max-width:280px;margin-bottom:20px}.hero-description br{display:none}.hero-actions{gap:20px}.button{font-size:9px;padding:12px 17px;gap:18px}.quiet-link{font-size:8px}.quiet-link span{margin-left:10px}.hero-foot{left:7%;right:7%;bottom:20px}.hero-foot>span{display:none}.scroll-link{font-size:6px;letter-spacing:1.2px}.scroll-link>span{font-size:20px}.principles{grid-template-columns:1fr;padding:25px 8%;gap:18px}.principles>div{justify-content:flex-start;gap:20px}.principles>div+div{border:0;padding-top:18px;border-top:1px solid var(--line)}.line-icon{width:25px;font-size:28px}.principles strong{font-size:11px}.principles p>span{font-size:8px}.section{padding:60px 7%}.story{grid-template-columns:1fr;gap:40px}.story-art{padding:0 18px 18px 0;margin-right:15px}.story-art>img{height:330px}.story-art:before{inset:18px 0 0 18px}.origin-stamp{right:-15px;bottom:38px;padding:18px 22px}.origin-stamp span{font-size:23px}.origin-stamp small{font-size:5px}.eyebrow{font-size:7px;letter-spacing:1.6px;margin-bottom:18px}.story-copy p:not(.eyebrow){font-size:10px}.gold-rule{margin-bottom:22px}.underlined{font-size:9px}.section-heading>p:last-child{font-size:9px;max-width:260px;margin-inline:auto}.coffees{padding-top:55px}.filter-row{gap:6px;margin:26px 0}.filter-row button{font-size:8px;padding:8px 12px}.coffee-grid{grid-template-columns:1fr;gap:22px}.card-image{height:290px}.card-copy{padding:21px}.card-copy h3{font-size:29px}.card-copy>p{font-size:9px}.card-tag{top:16px;left:16px;font-size:6px}.collection-note{font-size:7px;max-width:280px;margin-inline:auto}.craft{grid-template-columns:1fr;gap:35px}.craft-copy>p:not(.eyebrow){font-size:10px;max-width:290px}.craft-image{margin-left:25px}.craft-image img{height:370px}.craft-caption{left:-25px;right:20px;padding:18px 22px}.craft-caption em{font-size:24px}.word-ribbon{font-size:28px;letter-spacing:2px;padding:10px 0;word-spacing:12px}.blend{grid-template-columns:1fr;gap:30px}.blend-intro>p:not(.eyebrow){font-size:10px}.blend-note{margin-top:25px;padding-top:22px}.blend-note strong{font-size:10px}.blend-note p{font-size:8px}.blend-form{padding:23px}.closing{height:380px}.closing>img{object-position:68% center}.closing>div{padding:55px 7%;background:linear-gradient(90deg,#120b08d9,#120b0830)}.closing h2{font-size:44px}.closing .eyebrow{font-size:6px}footer{padding:45px 7% 23px}.footer-top{grid-template-columns:1fr 1fr;gap:30px}.footer-brand{grid-column:1/-1}.footer-brand>span{font-size:23px}.footer-brand .brand-emblem{width:60px;height:65px}.footer-brand small{font-size:6px}.footer-bottom{gap:20px;flex-wrap:wrap;font-size:7px}.dialog-layout{grid-template-columns:1fr}.dialog-layout>img{height:220px;min-height:0}.dialog-layout>div{padding:28px 23px}.dialog-layout h2{font-size:37px}.dialog-close{position:fixed;right:8%;top:9%}}
 @media(max-width:360px){h1{font-size:54px}.hero-actions{gap:12px}.quiet-link{font-size:7px}.hero{height:740px}.hero-image{top:330px;height:410px}.card-image{height:250px}.filter-row button{padding:7px 10px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}.js-motion .reveal{opacity:1;transform:none}}
+
+/* ═══════════════════════════════════════════════════════════════
+   PULPOFFE DESIGN SYSTEM UPGRADE — Phases a-g
+   Presentation layer only. No JS/behaviour changes.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Phase (a): Design Tokens */
+:root {
+  --bg-0: #120C09;
+  --bg-1: #1A120D;
+  --bg-2: #241811;
+  --bg-cream: #EFE4D0;
+  --text-primary: #F1E6D3;
+  --text-secondary: #CDBFA8;
+  --text-muted: #A89877;
+  --gold: #C49A5C;
+  --gold-hover: #D8B070;
+  --gold-border: rgba(196,154,92,0.22);
+  --gold-border-hover: rgba(196,154,92,0.45);
+  --transition-fast: 200ms ease-out;
+  --transition-med: 300ms ease-out;
+}
+
+/* Phase (a): Global Typography — minimum 12px everywhere, 17px body */
+body {
+  font-size: 1.0625rem !important; /* 17px */
+  line-height: 1.65 !important;
+  color: var(--text-primary) !important;
+  background: var(--bg-1) !important;
+}
+
+/* Eyebrows: minimum 12px, 0.16em tracking */
+.eyebrow {
+  font-size: 0.75rem !important; /* 12px */
+  letter-spacing: 0.16em !important;
+  line-height: 1.6 !important;
+}
+
+/* Body paragraphs */
+p:not(.eyebrow) {
+  font-size: 1rem !important;
+  line-height: 1.65 !important;
+}
+
+/* Phase (a): Buttons — 48px min-height, consistent sizing */
+.button, .nav-cta, .add-basket, .submit-enquiry, .basket-send, #auth-submit,
+#admin-login-form button[type="submit"], .filter-row button, .enquiry-tabs button,
+.admin-tabs button, .auth-tab-btn, button.gold, button.outline {
+  min-height: 48px !important;
+  font-size: 0.875rem !important; /* 14px */
+  letter-spacing: 0.08em !important;
+}
+
+.button {
+  padding: 14px 24px !important;
+}
+
+/* Phase (a): focus rings */
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--gold) !important;
+  outline-offset: 3px !important;
+}
+
+/* Phase (b): Sticky header with blur */
+.nav {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 50 !important;
+  transition: backdrop-filter var(--transition-med), box-shadow var(--transition-med), background var(--transition-med) !important;
+}
+
+.nav.scrolled {
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  background: rgba(26,16,12,0.92) !important;
+  box-shadow: 0 1px 20px rgba(0,0,0,0.5) !important;
+}
+
+/* Phase (b): Nav links — 15px minimum */
+.nav nav a {
+  font-size: 0.9375rem !important; /* 15px */
+  color: var(--text-secondary) !important;
+  transition: color var(--transition-fast) !important;
+  padding: 4px 0 !important;
+  border-bottom: 1px solid transparent !important;
+}
+
+.nav nav a:hover, .nav nav a[aria-current="page"] {
+  color: var(--gold) !important;
+  border-bottom-color: var(--gold-border) !important;
+}
+
+/* Phase (b): Nav CTA button */
+.nav-cta {
+  font-size: 0.875rem !important; /* 14px */
+  border-color: var(--gold) !important;
+  color: var(--text-primary) !important;
+  padding: 12px 20px !important;
+  transition: background var(--transition-fast), color var(--transition-fast) !important;
+}
+
+.nav-cta:hover {
+  background: var(--gold) !important;
+  color: var(--bg-1) !important;
+}
+
+/* Phase (b): Basket count badge */
+.basket-count {
+  font-size: 12px !important;
+  min-width: 24px !important;
+  height: 24px !important;
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+}
+
+.basket-open {
+  font-size: 0.875rem !important; /* 14px */
+  color: var(--text-secondary) !important;
+}
+
+/* Phase (b): Announcement bar */
+.announcement {
+  font-size: 0.75rem !important; /* 12px */
+  letter-spacing: 0.08em !important;
+  color: var(--text-secondary) !important;
+  background: #2A1A12 !important;
+  padding: 10px 20px !important;
+}
+
+/* Phase (b): Footer */
+footer {
+  background: var(--bg-0) !important;
+}
+
+.footer-top {
+  display: grid !important;
+  gap: 40px !important;
+}
+
+.footer-top a, .footer-top p {
+  font-size: 0.875rem !important; /* 14px */
+  color: var(--text-secondary) !important;
+  line-height: 2 !important;
+}
+
+.footer-top a:hover {
+  color: var(--gold) !important;
+}
+
+.footer-top h3 {
+  font-size: 0.75rem !important; /* 12px */
+  letter-spacing: 0.16em !important;
+  color: var(--text-muted) !important;
+  margin-bottom: 16px !important;
+  text-transform: uppercase !important;
+}
+
+.footer-brand > span {
+  font-size: 1.25rem !important; /* 20px */
+}
+
+.footer-brand small {
+  font-size: 0.75rem !important; /* 12px — was 5-6px */
+  color: var(--text-muted) !important;
+  letter-spacing: 0.08em !important;
+}
+
+.footer-bottom {
+  font-size: 0.8125rem !important; /* 13px */
+  color: var(--text-muted) !important;
+}
+
+/* Phase (c): Principles/Trust strip */
+.principles {
+  background: var(--bg-2) !important;
+  padding: 32px 9% !important;
+}
+
+.principles strong {
+  font-size: 1rem !important; /* 16px */
+  font-weight: 500 !important;
+  color: var(--text-primary) !important;
+  display: block !important;
+  margin-bottom: 4px !important;
+}
+
+.principles p > span {
+  font-size: 0.875rem !important; /* 14px */
+  color: var(--text-muted) !important;
+}
+
+/* Phase (c): Story sections — tighten vertical gaps, alternate backgrounds */
+.section {
+  padding: clamp(4rem, 9vw, 8rem) 9% !important;
+}
+
+.story-real .story-panel {
+  padding: clamp(3rem, 7vw, 6rem) 9% !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10% !important;
+  align-items: center !important;
+}
+
+.story-real .story-panel:nth-child(odd) {
+  background: var(--bg-1) !important;
+}
+
+.story-real .story-panel:nth-child(even) {
+  background: var(--bg-2) !important;
+}
+
+/* Story media — gradient overlay treatment */
+.story-media-card {
+  position: relative !important;
+  overflow: hidden !important;
+  border-radius: 2px !important;
+}
+
+.story-media-card::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(135deg, rgba(18,8,4,0.3) 0%, rgba(196,154,92,0.08) 50%, rgba(18,8,4,0.4) 100%) !important;
+  pointer-events: none !important;
+}
+
+.story-media-card img {
+  width: 100% !important;
+  height: 420px !important;
+  object-fit: cover !important;
+  display: block !important;
+  filter: saturate(0.75) contrast(1.08) !important;
+  transition: transform 8s ease !important;
+}
+
+.story-impact-line {
+  font-size: 0.75rem !important; /* 12px */
+  letter-spacing: 0.16em !important;
+  color: var(--text-muted) !important;
+  text-transform: uppercase !important;
+  margin-top: 24px !important;
+  padding-top: 20px !important;
+  border-top: 1px solid var(--gold-border) !important;
+}
+
+/* Story copy */
+.story-copy-col h2 {
+  font-size: clamp(2rem, 3.6vw, 3.25rem) !important;
+  margin-bottom: 20px !important;
+}
+
+.story-copy-col p:not(.eyebrow):not(.story-impact-line) {
+  font-size: 1.0625rem !important;
+  line-height: 1.75 !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Cinematic treatment for Grown under Shade panel */
+.story-panel:first-child .story-media-card img {
+  filter: saturate(0.6) contrast(1.1) brightness(0.9) !important;
+}
+
+.story-panel:first-child .story-media-card::after {
+  background: linear-gradient(
+    135deg,
+    rgba(18, 8, 4, 0.5) 0%,
+    rgba(196, 154, 92, 0.1) 40%,
+    rgba(18, 8, 4, 0.55) 100%
+  ) !important;
+}
+
+/* Phase (c): H1 sizing */
+h1 {
+  font-size: clamp(2.75rem, 6vw, 5.25rem) !important;
+  line-height: 1.0 !important;
+  letter-spacing: -1.5px !important;
+}
+
+/* Phase (c): H2 sizing */
+h2 {
+  font-size: clamp(2rem, 3.6vw, 3.25rem) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.5px !important;
+}
+
+/* Phase (c): Hero description */
+.hero-description {
+  font-size: 1rem !important; /* 16px */
+  line-height: 1.75 !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Phase (c): Hero metrics */
+.hero-metrics {
+  margin-top: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+}
+
+.metric-item strong {
+  font-size: 0.9375rem !important; /* 15px */
+  font-weight: 600 !important;
+  display: block !important;
+  color: var(--gold) !important;
+}
+
+.metric-item span {
+  font-size: 0.75rem !important; /* 12px */
+  color: var(--text-muted) !important;
+  letter-spacing: 0.08em !important;
+}
+
+.metric-divider {
+  width: 1px !important;
+  height: 36px !important;
+  background: var(--gold-border) !important;
+  margin: 0 20px !important;
+}
+
+/* Phase (c): Hero eyebrow */
+.hero-eyebrow {
+  font-size: 0.75rem !important; /* 12px */
+  letter-spacing: 0.16em !important;
+  color: var(--gold) !important;
+  margin-bottom: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+/* Phase (c): scroll link */
+.scroll-link, .film-skip {
+  font-size: 0.75rem !important; /* 12px */
+  letter-spacing: 0.1em !important;
+}
+
+/* Hero foot text */
+.hero-foot > span {
+  font-size: 0.75rem !important; /* 12px */
+}
+
+/* Phase (c): Pause animations control — more visible */
+.motion-control {
+  font-size: 0.75rem !important; /* 12px */
+  min-height: 36px !important;
+  padding: 8px 14px !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Phase (d): Product cards */
+.product-card h2 {
+  font-size: 1.25rem !important; /* 20px */
+  line-height: 1.2 !important;
+  min-height: auto !important;
+}
+
+.product-category {
+  font-size: 0.6875rem !important; /* 11px */
+  letter-spacing: 0.12em !important;
+  color: var(--gold) !important;
+  text-transform: uppercase !important;
+}
+
+.product-note {
+  font-size: 0.875rem !important; /* 14px */
+  line-height: 1.6 !important;
+  color: var(--text-muted) !important;
+  min-height: auto !important;
+}
+
+.product-price {
+  font-size: 1rem !important; /* 16px */
+  color: var(--text-primary) !important;
+  margin-bottom: 14px !important;
+}
+
+.add-basket {
+  min-height: 44px !important;
+  font-size: 0.8125rem !important; /* 13px */
+  letter-spacing: 0.08em !important;
+  border-color: var(--gold) !important;
+  transition: background var(--transition-fast), color var(--transition-fast) !important;
+}
+
+/* Phase (d): Shop intro */
+.shop-intro > p:not(.eyebrow) {
+  font-size: 1.0625rem !important; /* 17px */
+  color: var(--text-secondary) !important;
+}
+
+/* Phase (d): Filter tabs */
+.filter-row button, .shop-toolbar .filter-row button {
+  font-size: 0.8125rem !important; /* 13px */
+  padding: 10px 18px !important;
+  min-height: 40px !important;
+  letter-spacing: 0.06em !important;
+}
+
+/* Phase (d): Product count */
+#product-count {
+  font-size: 0.875rem !important; /* 14px */
+  color: var(--text-muted) !important;
+}
+
+/* Phase (d): Product search */
+.product-search {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+.product-search input {
+  font-size: 0.9375rem !important; /* 15px */
+}
+
+/* Phase (d): Basket dialog */
+#basket-dialog .eyebrow {
+  font-size: 0.75rem !important; /* 12px */
+}
+
+.basket-header h2 {
+  font-size: 1.75rem !important; /* 28px */
+}
+
+.basket-item h3 {
+  font-size: 1rem !important; /* 16px */
+}
+
+.basket-item p {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+.quantity-controls {
+  font-size: 0.9375rem !important; /* 15px */
+}
+
+.quantity-controls .remove-item {
+  font-size: 0.75rem !important; /* 12px */
+}
+
+.basket-bottom > p:not(.basket-total) {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+.basket-total {
+  font-size: 1rem !important; /* 16px */
+}
+
+.basket-empty {
+  font-size: 1rem !important; /* 16px */
+}
+
+/* Phase (d): Basket toast */
+.basket-toast {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+/* Phase (e): Contact/portal forms */
+.enquiry-card form > label, .field-pair > label, #contact-settings-form > label {
+  font-size: 0.875rem !important; /* 14px */
+  color: var(--text-secondary) !important;
+}
+
+.enquiry-card label > span {
+  font-size: 0.8125rem !important; /* 13px */
+}
+
+.enquiry-card input:not([type=checkbox]), .enquiry-card textarea,
+#contact-settings-form input:not([type=checkbox]), #contact-settings-form textarea {
+  font-size: 1rem !important; /* 16px */
+  min-height: 48px !important;
+  padding: 12px 14px !important;
+  border-color: var(--gold-border) !important;
+  transition: border-color var(--transition-fast) !important;
+}
+
+.enquiry-card input:focus, .enquiry-card textarea:focus,
+#contact-settings-form input:focus, #contact-settings-form textarea:focus {
+  border-color: var(--gold) !important;
+  outline: 2px solid var(--gold) !important;
+  outline-offset: 2px !important;
+}
+
+.enquiry-tabs button, .admin-tabs button {
+  font-size: 0.875rem !important; /* 14px */
+  padding: 12px 20px !important;
+}
+
+.enquiry-card h2 {
+  font-size: clamp(1.75rem, 3vw, 2.5rem) !important;
+}
+
+.enquiry-card > p {
+  font-size: 1rem !important; /* 16px */
+}
+
+/* Phase (e): Contact details */
+.contact-details a, .contact-details p {
+  font-size: 1rem !important; /* 16px */
+}
+
+.contact-details h2 {
+  font-size: 1.5rem !important; /* 24px */
+}
+
+/* Phase (e): Form auth note */
+.form-auth-note, .form-auth-note > a {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+/* Phase (f): Auth card */
+.auth-card h2 {
+  font-size: clamp(1.75rem, 3vw, 2.5rem) !important;
+}
+
+.auth-card > p {
+  font-size: 1rem !important; /* 16px */
+}
+
+#auth-form label, #admin-login-form label {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+#auth-form input, #admin-login-form input {
+  font-size: 1rem !important; /* 16px */
+  min-height: 48px !important;
+  padding: 12px 14px !important;
+}
+
+/* Phase (f): Account bar */
+.account-bar h2 {
+  font-size: 1.75rem !important; /* 28px */
+}
+
+.account-bar p {
+  font-size: 1rem !important; /* 16px */
+}
+
+.account-bar .eyebrow {
+  font-size: 0.75rem !important; /* 12px */
+}
+
+.signout {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+/* Phase (f): Request cards */
+.requests-title {
+  font-size: clamp(1.75rem, 3vw, 2.5rem) !important;
+}
+
+.request-card h3 {
+  font-size: 1.5rem !important; /* 24px */
+}
+
+.request-top .eyebrow {
+  font-size: 0.6875rem !important; /* 11px */
+}
+
+.request-status {
+  font-size: 0.75rem !important; /* 12px */
+}
+
+.request-message {
+  font-size: 0.9375rem !important; /* 15px */
+}
+
+.request-person {
+  font-size: 1rem !important; /* 16px */
+}
+
+.request-contact, .request-volume {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+/* Phase (f): Admin section */
+.admin-tabs button {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+/* Phase (g): Skip to content */
+.skip-link {
+  position: absolute !important;
+  top: -100px !important;
+  left: 16px !important;
+  background: var(--gold) !important;
+  color: var(--bg-1) !important;
+  padding: 12px 20px !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  z-index: 999 !important;
+  text-decoration: none !important;
+  transition: top var(--transition-fast) !important;
+}
+
+.skip-link:focus {
+  top: 16px !important;
+}
+
+/* Phase (g): Consent checkbox */
+.consent {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+.consent span {
+  font-size: 0.875rem !important; /* 14px */
+  color: var(--text-muted) !important;
+}
+
+/* Auth card width on account page (right column) */
+.auth-card-btn {
+  font-size: 0.875rem !important;
+}
+
+/* basket-actions-grid buttons — fix 48px min-height */
+.basket-actions-grid button, .basket-actions-grid a {
+  min-height: 48px !important;
+  font-size: 0.875rem !important; /* 14px */
+  padding: 12px 18px !important;
+  letter-spacing: 0.06em !important;
+}
+
+/* cart user badge */
+.cart-user-badge {
+  font-size: 0.8125rem !important; /* 13px */
+}
+
+/* breakdown rows */
+.breakdown-row {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+.breakdown-row.total-row {
+  font-size: 1rem !important; /* 16px */
+}
+
+.breakdown-row.total-row strong {
+  font-size: 1.0625rem !important; /* 17px */
+}
+
+/* portal heading */
+.portal-heading > p:not(.eyebrow), .contact-intro > p:not(.eyebrow) {
+  font-size: 1.0625rem !important;
+}
+
+/* Business invite section */
+.business-invite p:not(.eyebrow) {
+  font-size: 1.0625rem !important;
+}
+
+/* Collection note */
+.collection-note {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+/* filter-row link/underlined */
+.underlined, .quiet-link {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+/* Word ribbon marquee */
+.word-ribbon {
+  font-size: clamp(1.5rem, 4vw, 2.5rem) !important;
+}
+
+/* blend form labels */
+.blend-intro > p:not(.eyebrow) {
+  font-size: 1.0625rem !important;
+}
+
+.blend-note strong {
+  font-size: 1rem !important; /* 16px */
+}
+
+.blend-note p {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+/* Mobile nav */
+#mobile-menu a {
+  font-size: 1rem !important; /* 16px */
+}
+
+/* Mobile menu toggle */
+#menu-toggle {
+  font-size: 0.875rem !important; /* 14px */
+}
+
+/* prefers-reduced-motion: keep existing behaviour */
+@media (prefers-reduced-motion: reduce) {
+  .story-media-card::after {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE OVERRIDES
+   ═══════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .story-real .story-panel {
+    grid-template-columns: 1fr !important;
+    padding: clamp(2rem, 6vw, 4rem) 7% !important;
+  }
+  .story-media-card img {
+    height: 280px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 1rem !important; /* 16px on mobile */
+  }
+  h1 {
+    font-size: clamp(2.25rem, 10vw, 3rem) !important;
+  }
+  h2 {
+    font-size: clamp(1.75rem, 7vw, 2.5rem) !important;
+  }
+  .nav nav a {
+    font-size: 1rem !important;
+  }
+  .footer-top h3 {
+    font-size: 0.875rem !important;
+  }
+}

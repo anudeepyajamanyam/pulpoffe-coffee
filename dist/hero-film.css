@@ -14,7 +14,7 @@
 .stage-visual figcaption{text-align:center;color:var(--gold);height:56px}
 .stage-visual figcaption span,.stage-visual figcaption small{display:block}
 .stage-visual figcaption span{font-size:21px;letter-spacing:.3em}
-.stage-visual figcaption small{font-size:10px;letter-spacing:.12em;margin-top:4px}
+.stage-visual figcaption small{font-size:12px;letter-spacing:.12em;margin-top:4px}
 .film-panel{grid-template-rows:minmax(0,1fr)}
 .film-stage.is-static .stage-stack{animation:still-in .45s ease-out}
 @keyframes still-in{from{opacity:.35}to{opacity:1}}

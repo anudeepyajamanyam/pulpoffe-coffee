@@ -16,8 +16,8 @@
 .bean-experience-ready .hero-copy{z-index:6}
 .bean-experience-ready .hero-foot{z-index:6;bottom:24px}
 .hero-timeline{position:absolute;z-index:7;left:60%;right:5%;bottom:80px;display:flex;gap:18px;pointer-events:none}
-.hero-timeline>span{flex:1;display:flex;flex-direction:column;gap:6px;color:#aa8e6f;font-size:8px;line-height:1.3;border-top:1px solid #b08d573d;padding-top:10px;transition:color .25s,border-color .25s}
-.hero-timeline b{font-size:7px;font-weight:400;letter-spacing:1px;color:#8e7357}
+.hero-timeline>span{flex:1;display:flex;flex-direction:column;gap:6px;color:#aa8e6f;font-size:12px;line-height:1.4;border-top:1px solid #b08d573d;padding-top:10px;transition:color .25s,border-color .25s}
+.hero-timeline b{font-size:12px;font-weight:400;letter-spacing:1px;color:#8e7357}
 .hero-timeline>span.active{color:#f3eadb;border-color:#c9a66f}
 .hero-timeline>span.active b{color:#cfac78}
 .hero-brew-paused .hero-cinema,.hero-brew-paused .hero-timeline{display:none}
@@ -35,8 +35,8 @@
   .hero-coffee-ripple{top:52%;width:35%;height:3.5%}
   .bean-experience-ready .hero-shade{background:linear-gradient(180deg,#120b08 0%,#120b08 36%,#120b0800 54%,transparent 78%,#120b08 100%)}
   .hero-timeline{left:7%;right:7%;bottom:42px;gap:10px}
-  .hero-timeline>span{font-size:7px;padding-top:7px;gap:3px}
-  .hero-timeline b{font-size:6px}
+  .hero-timeline>span{font-size:12px;padding-top:7px;gap:3px}
+  .hero-timeline b{font-size:12px}
   .bean-experience-ready .hero-foot{bottom:15px}
 }
 @media(max-width:360px){.brand-lockup{width:144px;height:54px}.bean-experience-ready .hero-stage>.hero{min-height:700px}.hero-cinema{height:410px}}
