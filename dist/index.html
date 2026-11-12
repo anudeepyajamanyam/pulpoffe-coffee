@@ -16,9 +16,7 @@
   <header>
     <div class="w">
       <a class="logo" href="#top" aria-label="Pulpoffe home">
-        <svg width="26" height="34" viewBox="0 0 26 34" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-          <path d="M4 2h18M4 32h18M6 2c0 9 7 10 7 15s-7 6-7 15M20 2c0 9-7 10-7 15s7 6 7 15"/>
-        </svg>
+        <img src="brand/pulpoffe-gold.svg" alt="Pulpoffe emblem" width="28" height="36" style="height:34px;width:auto;display:inline-block">
         <span>PULPOFFE<small>MOMENTS BREWED · IMPACTS GROWN</small></span>
       </a>
       <nav aria-label="Main navigation">
@@ -36,7 +34,10 @@
   <main id="main-content">
     <!-- HERO SECTION -->
     <div class="hero" id="top">
-      <div class="w">
+      <video class="hero-video-bg" autoplay muted loop playsinline poster="media/estate/estate-hero-landscape-1280.webp" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0">
+        <source src="media/videos/hero-video.mp4" type="video/mp4">
+      </video>
+      <div class="w" style="position:relative;z-index:2">
         <span class="eye">Estate coffee · Kodagu, Karnataka</span>
         <h1>Purely grown. <em>Honestly brewed.</em></h1>
         <p>Single-origin instant coffee from high-altitude estates in Kodagu, traced from estate to cup.</p>
@@ -144,25 +145,25 @@
         </div>
         <div class="g4">
           <a class="tile t1" href="shop.html?collection=gold">
-            <img src="media/products/gold-choco-orange.webp" alt="Gold Range pouch" loading="lazy" style="position:absolute;right:14px;top:14px;width:72px;height:90px;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,0.4))">
+            <img class="tile-packshot" src="media/products/gold-choco-orange.webp" alt="Gold Range pouch" loading="lazy">
             <small>8 Flavoured Coffees</small>
             <h3>Gold Range</h3>
             <span>Explore flavours →</span>
           </a>
           <a class="tile t2" href="shop.html?collection=silver">
-            <img src="media/products/silver-agglo-pure.webp" alt="Silver Range pouch" loading="lazy" style="position:absolute;right:14px;top:14px;width:72px;height:90px;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,0.4))">
+            <img class="tile-packshot" src="media/products/silver-agglo-pure.webp" alt="Silver Range pouch" loading="lazy">
             <small>5 Filter &amp; Pure Blends</small>
             <h3>Silver Range</h3>
             <span>Explore blends →</span>
           </a>
           <a class="tile t3" href="shop.html?collection=diamond">
-            <img src="media/products/diamond-freeze_dried.webp" alt="Diamond Range jar" loading="lazy" style="position:absolute;right:14px;top:14px;width:72px;height:90px;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,0.4))">
+            <img class="tile-packshot" src="media/products/diamond-freeze_dried.webp" alt="Diamond Range jar" loading="lazy">
             <small>2 Single-Estate Coffees</small>
             <h3>Diamond Range</h3>
             <span>Explore reserve →</span>
           </a>
           <a class="tile t4" href="contact.html?type=b2b">
-            <img src="media/estate/estate-cherries-hands-1-1280.webp" alt="Harvest cherries" loading="lazy" style="position:absolute;right:14px;top:14px;width:72px;height:90px;object-fit:cover;border-radius:4px;filter:drop-shadow(0 6px 14px rgba(0,0,0,0.4))">
+            <img class="tile-packshot" src="media/estate/estate-cherries-hands-1-1280.webp" alt="Harvest cherries" loading="lazy" style="object-fit:cover;border-radius:6px">
             <small>Commercial &amp; Bulk</small>
             <h3>For Business</h3>
             <span>Custom quote →</span>
@@ -201,7 +202,7 @@
           <span class="eye">People · Place</span>
           <h2>A shared rhythm.</h2>
           <p>Behind every jar is a community of pickers, sorters and farmers. We work with them directly, so the care in the cup is the care in the estate.</p>
-          <a class="link" href="shop.html">Meet the estate →</a>
+          <a class="link" href="#story">Meet our growers &amp; terroir →</a>
         </div>
         <img src="media/estate/estate-canopy-1-1280.webp" alt="Sunlit shade trees over coffee plants on a Kodagu estate" loading="lazy">
       </div>

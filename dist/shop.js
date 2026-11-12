@@ -423,11 +423,31 @@ dialog?.addEventListener('click', e => {
   }
 });
 
-function addToBasket(productOrVariant) {
+function addToBasket(productOrVariant, triggerBtn) {
   const id = productOrVariant.id;
   basket[id] = (basket[id] || 0) + 1;
   persist();
-  toast(`Added ${productOrVariant.name} to basket.`);
+
+  // Visual & tactile feedback on clicked button
+  if (triggerBtn) {
+    triggerBtn.classList.add('added');
+    const oldText = triggerBtn.textContent;
+    triggerBtn.textContent = '✓ Added to basket!';
+    setTimeout(() => {
+      triggerBtn.classList.remove('added');
+      triggerBtn.textContent = oldText;
+    }, 1400);
+  }
+
+  // Header badge bump animation
+  document.querySelectorAll('.basket-count').forEach(b => {
+    b.classList.remove('bump');
+    void b.offsetWidth;
+    b.classList.add('bump');
+  });
+
+  // Floating toast notification
+  toast(productOrVariant);
   renderBasket();
 }
 
@@ -544,12 +564,30 @@ function renderBasket() {
   }
 }
 
-function toast(msg) {
+function toast(productOrVariant) {
   const el = $('.basket-toast');
   if (!el) return;
-  el.textContent = msg;
+  el.replaceChildren();
+
+  const name = typeof productOrVariant === 'string' ? productOrVariant : (productOrVariant.name || 'Coffee');
+  const rawPack = typeof productOrVariant === 'object' ? (productOrVariant.pack || '') : '';
+  const pack = rawPack && !name.includes(rawPack) ? ` (${rawPack})` : '';
+
+  const msg = document.createElement('span');
+  msg.innerHTML = `✓ Added <strong>${name}</strong>${pack} to basket`;
+
+  const viewBtn = document.createElement('button');
+  viewBtn.type = 'button';
+  viewBtn.textContent = 'View basket →';
+  viewBtn.onclick = () => {
+    document.querySelector('.basket-open')?.click();
+    el.classList.remove('visible');
+  };
+
+  el.append(msg, viewBtn);
   el.classList.add('visible');
-  setTimeout(() => el.classList.remove('visible'), 2800);
+  if (window._toastTimer) clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => el.classList.remove('visible'), 3600);
 }
 
 // ── Online Checkout Modal & Razorpay ──
@@ -586,10 +624,55 @@ if (buyBtn) {
   });
 }
 
+// ── Postal PIN Code Auto-Lookup via Official India Post API ──
+const pinInput = $('#chk-pincode');
+const cityInput = $('#chk-city');
+const stateInput = $('#chk-state');
+const pinStatus = $('#pincode-status');
+
+pinInput?.addEventListener('input', async e => {
+  const pin = e.target.value.trim();
+  if (/^\d{6}$/.test(pin)) {
+    if (pinStatus) {
+      pinStatus.style.color = 'var(--honey-lt)';
+      pinStatus.textContent = 'Detecting city & state…';
+    }
+    try {
+      const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.[0]?.Status === 'Success' && data[0].PostOffice?.length) {
+          const po = data[0].PostOffice[0];
+          if (cityInput) cityInput.value = po.District || po.Name;
+          if (stateInput) stateInput.value = po.State;
+          if (pinStatus) {
+            pinStatus.style.color = '#7fb069';
+            pinStatus.textContent = `✓ ${po.District || po.Name}, ${po.State}`;
+          }
+          return;
+        }
+      }
+    } catch {}
+    if (pinStatus) {
+      pinStatus.style.color = 'var(--honey-lt)';
+      pinStatus.textContent = 'PIN code format valid';
+    }
+  } else {
+    if (pinStatus) pinStatus.textContent = '';
+  }
+});
+
 $('#online-checkout-form')?.addEventListener('submit', async e => {
   e.preventDefault();
   const form = e.currentTarget;
   if (!form.reportValidity()) return;
+
+  const pinVal = $('#chk-pincode')?.value.trim() || '';
+  if (!/^\d{6}$/.test(pinVal)) {
+    alert('Please enter a valid 6-digit postal PIN Code (numbers only, e.g. 560001).');
+    $('#chk-pincode')?.focus();
+    return;
+  }
 
   const btn = $('#modal-pay-btn');
   const feedback = $('#checkout-feedback');
@@ -614,7 +697,7 @@ $('#online-checkout-form')?.addEventListener('submit', async e => {
       phone: $('#chk-phone').value.trim(),
       email: $('#chk-email').value.trim()
     },
-    shippingAddress: `${$('#chk-address').value.trim()}, ${$('#chk-city').value.trim()}, ${$('#chk-state').value.trim()} - ${$('#chk-pincode').value.trim()}`,
+    shippingAddress: `${$('#chk-address').value.trim()}, ${$('#chk-city').value.trim()}, ${$('#chk-state').value.trim()} - ${pinVal}`,
     items,
     subtotal,
     shipping,
@@ -641,7 +724,7 @@ $('#online-checkout-form')?.addEventListener('submit', async e => {
       currency: 'INR',
       name: 'Pulpoffe Coffee',
       description: `Artisanal Coffee Order #${orderId}`,
-      image: 'assets/pulpoffe-mark-light.svg',
+      image: 'brand/pulpoffe-gold.svg',
       order_id: rzpOrderId,
       prefill: {
         name: orderPayload.customer.name,
@@ -683,7 +766,18 @@ $('#online-checkout-form')?.addEventListener('submit', async e => {
       }
     };
 
-    if (window.Razorpay) {
+    const isMock = !orderRes?.key || orderRes.key === 'rzp_test_PulpoffeDemoKey' || orderRes.key.includes('DemoKey');
+
+    if (isMock) {
+      // Local/Test mode without real merchant credentials: simulate successful Razorpay sandbox checkout
+      if (feedback) {
+        feedback.style.color = '#d5bb91';
+        feedback.textContent = 'Simulating secure payment (Razorpay Sandbox)…';
+      }
+      setTimeout(() => {
+        options.handler({ razorpay_payment_id: 'pay_test_' + Date.now().toString(36) });
+      }, 1200);
+    } else if (window.Razorpay) {
       const rzp = new window.Razorpay(options);
       rzp.on('payment.failed', function (resp) {
         if (btn) btn.disabled = false;
@@ -695,7 +789,7 @@ $('#online-checkout-form')?.addEventListener('submit', async e => {
       rzp.open();
     } else {
       setTimeout(() => {
-        options.handler({ razorpay_payment_id: 'DEMO_PAY_' + Date.now() });
+        options.handler({ razorpay_payment_id: 'pay_demo_' + Date.now().toString(36) });
       }, 1000);
     }
   } catch (err) {
@@ -798,8 +892,8 @@ $('#save-basket')?.addEventListener('click', () => {
     if (addBtn) {
       addBtn.onclick = () => {
         const variant = resolveProduct(`${p.id}__${selectedModalSize}`);
-        addToBasket(variant);
-        dlg.close();
+        addToBasket(variant, addBtn);
+        setTimeout(() => dlg.close(), 600);
       };
     }
 
@@ -836,7 +930,7 @@ $('#save-basket')?.addEventListener('click', () => {
   };
   checkProductDeepLink();
   window.addEventListener('hashchange', checkProductDeepLink);
-});
+
 $('#cupping-dialog')?.addEventListener('click', e => {
   const dlg = $('#cupping-dialog');
   if (e.target === dlg) dlg.close();
@@ -874,13 +968,12 @@ if ($('#product-grid')) {
 
       // Image header
       const imgWrap = document.createElement('div');
-      imgWrap.style.cssText = 'position:relative;background:#18100a;aspect-ratio:4/3;overflow:hidden;cursor:pointer';
+      imgWrap.className = 'product-card-img-wrap';
       
       const img = document.createElement('img');
       img.src = p.image || 'media/products/gold-choco-orange.webp';
       img.alt = `${p.name} packaging`;
       img.loading = 'lazy';
-      img.style.cssText = 'width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease';
       imgWrap.append(img);
 
       imgWrap.addEventListener('click', () => openCuppingDialog(p, activeSize));
@@ -962,7 +1055,7 @@ if ($('#product-grid')) {
       addBtn.setAttribute('aria-label', `Add ${p.name} (${activeSize}) to basket`);
       addBtn.addEventListener('click', () => {
         const variant = resolveProduct(`${p.id}__${activeSize}`);
-        addToBasket(variant);
+        addToBasket(variant, addBtn);
       });
 
       // Sensory profile link

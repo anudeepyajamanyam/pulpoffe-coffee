@@ -16,9 +16,7 @@
   <header>
     <div class="w">
       <a class="logo" href="index.html#top" aria-label="Pulpoffe home">
-        <svg width="26" height="34" viewBox="0 0 26 34" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-          <path d="M4 2h18M4 32h18M6 2c0 9 7 10 7 15s-7 6-7 15M20 2c0 9-7 10-7 15s7 6 7 15"/>
-        </svg>
+        <img src="brand/pulpoffe-gold.svg" alt="Pulpoffe emblem" width="28" height="36" style="height:34px;width:auto;display:inline-block">
         <span>PULPOFFE<small>MOMENTS BREWED · IMPACTS GROWN</small></span>
       </a>
       <nav aria-label="Main navigation">
@@ -95,7 +93,7 @@
     <div style="position:relative;display:grid;grid-template-columns:1fr 1.25fr;max-height:85vh;overflow-y:auto">
       <button id="close-cupping-modal" aria-label="Close details" style="position:absolute;top:14px;right:14px;background:none;border:1px solid rgba(255,255,255,0.2);color:#fff;width:32px;height:32px;cursor:pointer;border-radius:4px;z-index:2">&times;</button>
       <div style="background:#110b07;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:32px;border-right:1px solid rgba(255,255,255,0.08)">
-        <img id="cupping-img" src="media/products/gold-choco-orange.webp" alt="Coffee packshot" style="width:100%;max-width:280px;aspect-ratio:4/3;object-fit:cover;border-radius:6px;box-shadow:0 12px 30px rgba(0,0,0,0.5)">
+        <img id="cupping-img" src="media/products/gold-choco-orange.webp" alt="Coffee packshot" style="width:100%;max-width:280px;aspect-ratio:1/1;object-fit:contain;background:#fff;padding:14px;border-radius:8px;box-shadow:0 12px 30px rgba(0,0,0,0.5)">
         <span id="cupping-range" class="eye" style="margin-top:20px;color:var(--honey-lt);font-size:0.75rem;letter-spacing:1px"></span>
         <p id="cupping-origin" style="font-size:0.85rem;color:#D9CDB6;margin:4px 0 0"></p>
       </div>
@@ -214,10 +212,17 @@
       </div>
       <label style="font-size:0.85rem;color:#D9CDB6">Email *<input type="email" id="chk-email" required placeholder="you@example.com" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px"></label>
       <label style="font-size:0.85rem;color:#D9CDB6">Street Address *<input type="text" id="chk-address" required placeholder="House / Street / Area" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px"></label>
-      <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px">
-        <label style="font-size:0.85rem;color:#D9CDB6">City *<input type="text" id="chk-city" required placeholder="Bangalore" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px"></label>
-        <label style="font-size:0.85rem;color:#D9CDB6">State *<input type="text" id="chk-state" required placeholder="Karnataka" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px"></label>
-        <label style="font-size:0.85rem;color:#D9CDB6">PIN Code *<input type="text" id="chk-pincode" required maxlength="6" placeholder="560001" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px"></label>
+      <div style="display:grid;grid-template-columns:1fr 1.2fr 1.2fr;gap:10px">
+        <label style="font-size:0.85rem;color:#D9CDB6">PIN Code *
+          <input type="text" id="chk-pincode" required pattern="[0-9]{6}" maxlength="6" placeholder="560001" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px">
+          <small id="pincode-status" style="display:block;font-size:0.72rem;color:var(--honey-lt);margin-top:4px;min-height:14px"></small>
+        </label>
+        <label style="font-size:0.85rem;color:#D9CDB6">City / District *
+          <input type="text" id="chk-city" required placeholder="Bangalore" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px">
+        </label>
+        <label style="font-size:0.85rem;color:#D9CDB6">State *
+          <input type="text" id="chk-state" required placeholder="Karnataka" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px">
+        </label>
       </div>
       <div style="background:rgba(0,0,0,0.3);padding:12px;border-radius:4px;margin-top:6px">
         <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:#D9CDB6"><span>Items Total:</span><span id="modal-subtotal">₹0.00</span></div>

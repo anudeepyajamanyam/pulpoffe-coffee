@@ -333,6 +333,12 @@ async function api(request, env, path) {
     return management(request, env, path, user);
   }
 
+  if (path === '/api/orders/create' && request.method === 'POST') {
+    const orderId = 'PLF-' + Math.floor(100000 + Math.random() * 900000);
+    const key = env.RAZORPAY_KEY_ID || 'rzp_test_PulpoffeDemoKey';
+    return json({ orderId, key, status: 'created' });
+  }
+
   if (path === '/api/contact-settings' && request.method === 'GET') {
     if (!env.DB?.prepare) return json(DEFAULT_CONTACT);
     const row = await env.DB.prepare('SELECT value FROM site_settings WHERE key = ?').bind('contact').first();
