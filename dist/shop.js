@@ -669,7 +669,11 @@ $('#online-checkout-form')?.addEventListener('submit', async e => {
 
   const pinVal = $('#chk-pincode')?.value.trim() || '';
   if (!/^\d{6}$/.test(pinVal)) {
-    alert('Please enter a valid 6-digit postal PIN Code (numbers only, e.g. 560001).');
+    const fb = $('#checkout-feedback');
+    if (fb) {
+      fb.style.color = '#e57373';
+      fb.textContent = 'Please enter a valid 6-digit postal PIN Code (e.g. 560001).';
+    }
     $('#chk-pincode')?.focus();
     return;
   }
@@ -738,16 +742,26 @@ $('#online-checkout-form')?.addEventListener('submit', async e => {
           feedback.textContent = 'Payment verified! Packing your Kodagu coffee…';
         }
 
+                const fullOrder = {
+          orderId,
+          paymentId: response.razorpay_payment_id || 'pay_test_' + Date.now().toString(36),
+          date: new Date().toISOString(),
+          customer: orderPayload.customer,
+          address: orderPayload.address,
+          items: orderPayload.items,
+          subtotal: orderPayload.subtotal,
+          tax: orderPayload.tax,
+          total: orderPayload.total
+        };
+
         try {
           const orders = JSON.parse(localStorage.getItem('pulpoffe_orders_v1') || '[]');
-          orders.unshift({
-            id: orderId,
-            date: new Date().toISOString(),
-            ...orderPayload,
-            paymentId: response.razorpay_payment_id || 'PAY_' + Date.now()
-          });
+          orders.unshift(fullOrder);
           localStorage.setItem('pulpoffe_orders_v1', JSON.stringify(orders));
-        } catch {}
+          localStorage.setItem('pulpoffe_latest_order', JSON.stringify(fullOrder));
+        } catch (e) {
+          console.error(e);
+        }
 
         basket = {};
         persist();
@@ -755,8 +769,8 @@ $('#online-checkout-form')?.addEventListener('submit', async e => {
 
         setTimeout(() => {
           closeChkModal();
-          alert(`Thank you for your order, ${orderPayload.customer.name}!\n\nOrder Ref: #${orderId}\nPayment ID: ${response.razorpay_payment_id || 'Verified'}\n\nWe will roast and dispatch your artisanal coffee from Kodagu directly to your doorstep.`);
-        }, 800);
+          window.location.href = 'order-confirmation.html?orderId=' + encodeURIComponent(orderId);
+        }, 400);
       },
       modal: {
         ondismiss: function () {
