@@ -728,86 +728,114 @@ $('#save-basket')?.addEventListener('click', () => {
   URL.revokeObjectURL(a.href);
 });
 
-// ── Sensory & Cupping Details Dialog ──
-function openCuppingDialog(p, currentSize = '100g') {
-  const dlg = $('#cupping-dialog');
-  if (!dlg) return;
+  // Sensory & Cupping Details Dialog
+  function openCuppingDialog(p, currentSize = '100g') {
+    const dlg = $('#cupping-dialog');
+    if (!dlg) return;
 
-  if ($('#cupping-title')) $('#cupping-title').textContent = p.name;
-  if ($('#cupping-range')) $('#cupping-range').textContent = p.range;
-  if ($('#cupping-origin')) $('#cupping-origin').textContent = p.origin;
-  if ($('#cupping-img')) $('#cupping-img').src = p.image;
-  if ($('#cupping-desc')) $('#cupping-desc').textContent = p.description;
+    if ($('#cupping-title')) $('#cupping-title').textContent = p.name;
+    if ($('#cupping-range')) $('#cupping-range').textContent = p.range;
+    if ($('#cupping-origin')) $('#cupping-origin').textContent = p.origin;
+    if ($('#cupping-img')) $('#cupping-img').src = p.image;
+    if ($('#cupping-desc')) $('#cupping-desc').textContent = p.description;
 
-  // Flavor pills
-  const tagsHost = $('#cupping-tags');
-  if (tagsHost) {
-    tagsHost.replaceChildren();
-    (p.flavorNotes || []).forEach(f => {
-      const tag = document.createElement('span');
-      tag.className = 'flavor-tag';
-      tag.textContent = f;
-      tagsHost.append(tag);
-    });
-  }
-
-  // Sensory meters
-  if ($('#meter-acidity')) $('#meter-acidity').style.width = (p.acidity || 50) + '%';
-  if ($('#meter-body')) $('#meter-body').style.width = (p.body || 50) + '%';
-  if ($('#meter-aroma')) $('#meter-aroma').style.width = (p.aroma || 50) + '%';
-  if ($('#meter-sweetness')) $('#meter-sweetness').style.width = (p.sweetness || 50) + '%';
-  if ($('#val-acidity')) $('#val-acidity').textContent = (p.acidity || 50) + '/100';
-  if ($('#val-body')) $('#val-body').textContent = (p.body || 50) + '/100';
-  if ($('#val-aroma')) $('#val-aroma').textContent = (p.aroma || 50) + '/100';
-  if ($('#val-sweetness')) $('#val-sweetness').textContent = (p.sweetness || 50) + '/100';
-
-  // Brew specs
-  if ($('#cup-temp')) $('#cup-temp').textContent = p.waterTemp || '90°C';
-  if ($('#cup-ratio')) $('#cup-ratio').textContent = p.ratio || '1.5 tsp / 150ml';
-  if ($('#cup-steep')) $('#cup-steep').textContent = p.steepTime || 'Instant dissolution';
-  if ($('#cup-pairing')) $('#cup-pairing').textContent = p.servingSuggestion || 'Serve with warm milk or over ice.';
-
-  // Pack selector inside modal
-  let selectedModalSize = currentSize;
-  const updateModalPrice = () => {
-    const price = p.prices?.[selectedModalSize] ?? p.price;
-    if ($('#cupping-price')) $('#cupping-price').textContent = inr(price);
-    if ($('#cupping-pack-size')) $('#cupping-pack-size').textContent = selectedModalSize;
-  };
-
-  const packRow = $('#cupping-pack-row');
-  if (packRow) {
-    packRow.replaceChildren();
-    for (const size of ['100g', '200g', '250g', '500g']) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'pack-btn' + (size === selectedModalSize ? ' active' : '');
-      btn.textContent = size;
-      btn.addEventListener('click', () => {
-        selectedModalSize = size;
-        packRow.querySelectorAll('.pack-btn').forEach(b => b.classList.toggle('active', b === btn));
-        updateModalPrice();
+    // Flavor pills
+    const tagsHost = $('#cupping-tags');
+    if (tagsHost) {
+      tagsHost.replaceChildren();
+      (p.flavorNotes || []).forEach(f => {
+        const tag = document.createElement('span');
+        tag.className = 'flavor-tag';
+        tag.textContent = f;
+        tagsHost.append(tag);
       });
-      packRow.append(btn);
     }
-  }
 
-  updateModalPrice();
+    // Sensory meters
+    if ($('#meter-acidity')) $('#meter-acidity').style.width = (p.acidity || 50) + '%';
+    if ($('#meter-body')) $('#meter-body').style.width = (p.body || 50) + '%';
+    if ($('#meter-aroma')) $('#meter-aroma').style.width = (p.aroma || 50) + '%';
+    if ($('#meter-sweetness')) $('#meter-sweetness').style.width = (p.sweetness || 50) + '%';
+    if ($('#val-acidity')) $('#val-acidity').textContent = (p.acidity || 50) + '/100';
+    if ($('#val-body')) $('#val-body').textContent = (p.body || 50) + '/100';
+    if ($('#val-aroma')) $('#val-aroma').textContent = (p.aroma || 50) + '/100';
+    if ($('#val-sweetness')) $('#val-sweetness').textContent = (p.sweetness || 50) + '/100';
 
-  const addBtn = $('#cupping-add-btn');
-  if (addBtn) {
-    addBtn.onclick = () => {
-      const variant = resolveProduct(`${p.id}__${selectedModalSize}`);
-      addToBasket(variant);
-      dlg.close();
+    // Brew specs
+    if ($('#cup-temp')) $('#cup-temp').textContent = p.waterTemp || '90°C';
+    if ($('#cup-ratio')) $('#cup-ratio').textContent = p.ratio || '1.5 tsp / 150ml';
+    if ($('#cup-steep')) $('#cup-steep').textContent = p.steepTime || 'Instant dissolution';
+    if ($('#cup-pairing')) $('#cup-pairing').textContent = p.servingSuggestion || 'Serve with warm milk or over ice.';
+
+    // Pack selector inside modal
+    let selectedModalSize = currentSize;
+    const updateModalPrice = () => {
+      const price = p.prices?.[selectedModalSize] ?? p.price;
+      if ($('#cupping-price')) $('#cupping-price').textContent = inr(price);
+      if ($('#cupping-pack-size')) $('#cupping-pack-size').textContent = selectedModalSize;
     };
+
+    const packRow = $('#cupping-pack-row');
+    if (packRow) {
+      packRow.replaceChildren();
+      for (const size of ['100g', '200g', '250g', '500g']) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pack-btn' + (size === selectedModalSize ? ' active' : '');
+        btn.textContent = size;
+        btn.addEventListener('click', () => {
+          selectedModalSize = size;
+          packRow.querySelectorAll('.pack-btn').forEach(b => b.classList.toggle('active', b === btn));
+          updateModalPrice();
+        });
+        packRow.append(btn);
+      }
+    }
+
+    updateModalPrice();
+
+    const addBtn = $('#cupping-add-btn');
+    if (addBtn) {
+      addBtn.onclick = () => {
+        const variant = resolveProduct(`${p.id}__${selectedModalSize}`);
+        addToBasket(variant);
+        dlg.close();
+      };
+    }
+
+    try {
+      history.replaceState(null, '', '#product=' + p.id);
+    } catch {}
+
+    dlg.showModal();
   }
 
-  dlg.showModal();
-}
+  $('#close-cupping-modal')?.addEventListener('click', () => {
+    $('#cupping-dialog')?.close();
+  });
 
-$('#close-cupping-modal')?.addEventListener('click', () => {
-  $('#cupping-dialog')?.close();
+  $('#cupping-dialog')?.addEventListener('close', () => {
+    try {
+      if (location.hash.startsWith('#product=')) {
+        history.replaceState(null, '', location.pathname + location.search);
+      }
+    } catch {}
+  });
+
+  // Handle direct product link via URL hash or search param
+  const checkProductDeepLink = () => {
+    const hash = location.hash;
+    const search = new URLSearchParams(location.search);
+    const targetId = search.get('product') || (hash.startsWith('#product=') ? hash.replace('#product=', '') : null);
+    if (targetId) {
+      const p = OFFICIAL_PRODUCTS.find(x => x.id === targetId);
+      if (p) {
+        setTimeout(() => openCuppingDialog(p, '100g'), 150);
+      }
+    }
+  };
+  checkProductDeepLink();
+  window.addEventListener('hashchange', checkProductDeepLink);
 });
 $('#cupping-dialog')?.addEventListener('click', e => {
   const dlg = $('#cupping-dialog');
@@ -874,6 +902,9 @@ if ($('#product-grid')) {
       // Name
       const h = document.createElement('h2');
       h.textContent = p.name;
+      h.style.cursor = 'pointer';
+      h.title = `View details for ${p.name}`;
+      h.addEventListener('click', () => openCuppingDialog(p, activeSize));
 
       // Flavor pills
       const flavorPills = document.createElement('div');
@@ -938,7 +969,7 @@ if ($('#product-grid')) {
       const sensoryLink = document.createElement('button');
       sensoryLink.type = 'button';
       sensoryLink.className = 'cupping-link-btn';
-      sensoryLink.textContent = 'Cupping notes & brew tips ↗';
+      sensoryLink.textContent = 'View product details & cupping notes ↗';
       sensoryLink.style.cssText = 'background:none;border:none;color:var(--accent);font:500 0.85rem var(--body);padding:8px 0 0;cursor:pointer;text-align:center;text-decoration:underline';
       sensoryLink.addEventListener('click', () => openCuppingDialog(p, activeSize));
 

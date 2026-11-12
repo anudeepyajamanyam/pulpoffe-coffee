@@ -682,6 +682,11 @@ a:focus-visible, button:focus-visible {
   color: var(--ink) !important;
   margin: 0 0 6px !important;
   line-height: 1.2 !important;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.product-card h2:hover {
+  color: var(--accent) !important;
 }
 
 .product-note {
