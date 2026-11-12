@@ -673,7 +673,7 @@ a:focus-visible, button:focus-visible {
 /* Image header with generous 1:1 aspect ratio and clean studio backdrop */
 .product-card-img-wrap {
   position: relative !important;
-  background: #FFFFFF !important;
+  background: radial-gradient(circle at 50% 45%, #F5EFE6 0%, #E5D9C5 100%) !important;
   aspect-ratio: 1 / 1 !important;
   overflow: hidden !important;
   cursor: pointer !important;
@@ -681,13 +681,13 @@ a:focus-visible, button:focus-visible {
   align-items: center !important;
   justify-content: center !important;
   border-bottom: 1px solid var(--line) !important;
-  padding: 16px !important;
+  padding: 12px !important;
 }
 
 :root[data-theme="dark"] .product-card-img-wrap,
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .product-card-img-wrap {
-    background: #241812 !important;
+    background: radial-gradient(circle at 50% 45%, #291C14 0%, #160D08 100%) !important;
   }
 }
 
@@ -1226,4 +1226,15 @@ a:focus-visible, button:focus-visible {
   .g4 {
     grid-template-columns: 1fr !important;
   }
+}
+
+/* Dialog Headings */
+#checkout-modal h2,
+#basket-dialog h2,
+#cupping-dialog h2,
+#checkout-modal-title {
+  font-size: 1.4rem !important;
+  color: #FFFFFF !important;
+  margin: 0 !important;
+  line-height: 1.25 !important;
 }

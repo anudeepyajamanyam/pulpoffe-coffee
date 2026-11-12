@@ -1,1 +1,62 @@
-.request-loader{position:fixed;bottom:28px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:10000;display:flex;align-items:center;gap:12px;background:#2e2117f5;color:#edce9c;border:1px solid #a9844f;border-radius:40px;padding:13px 22px;box-shadow:0 8px 32px #0007;font:12px Poppins,sans-serif;transition:opacity .18s,transform .18s}.request-loader.active{opacity:1;transform:translate(-50%,0)}.loader-bean{height:18px;width:12px;border-radius:50%;border:1px solid #dfb978;background:linear-gradient(100deg,transparent 42%,#dfb978 47%,transparent 54%);animation:turn-bean 1.1s infinite ease-in-out}.is-busy{cursor:wait!important;position:relative}.is-busy:after{content:'';display:inline-block;vertical-align:middle;width:11px;height:11px;margin-left:9px;border:1px solid currentColor;border-right-color:transparent;border-radius:50%;animation:turn-bean .8s linear infinite}.button-pressed{transform:scale(.97)!important}button{transition:color .18s,background .18s,transform .18s}button:focus-visible{outline:2px solid #ebc383;outline-offset:3px}@keyframes turn-bean{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.loader-bean,.is-busy:after{animation:none}.request-loader,button{transition:none}}
+.request-loader {
+  position: fixed !important;
+  bottom: 28px !important;
+  left: 50% !important;
+  transform: translate(-50%, 20px) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  z-index: 10000 !important;
+  display: none !important;
+  align-items: center !important;
+  gap: 12px !important;
+  background: #231710f2 !important;
+  color: #EBD3AC !important;
+  border: 1px solid #A87D43 !important;
+  border-radius: 40px !important;
+  padding: 12px 22px !important;
+  box-shadow: 0 10px 32px rgba(0,0,0,0.55) !important;
+  font: 500 13px Poppins, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+.request-loader.active {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: translate(-50%, 0) !important;
+}
+.loader-bean {
+  display: inline-block !important;
+  height: 16px !important;
+  width: 12px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid #DFB978 !important;
+  background: linear-gradient(100deg, transparent 42%, #DFB978 47%, transparent 54%) !important;
+  animation: turn-bean 1.1s infinite ease-in-out !important;
+}
+.is-busy {
+  cursor: wait !important;
+  position: relative !important;
+}
+.is-busy:after {
+  content: '' !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  width: 11px !important;
+  height: 11px !important;
+  margin-left: 9px !important;
+  border: 1.5px solid currentColor !important;
+  border-right-color: transparent !important;
+  border-radius: 50% !important;
+  animation: turn-bean 0.8s linear infinite !important;
+}
+.button-pressed {
+  transform: scale(0.97) !important;
+}
+@keyframes turn-bean {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loader-bean, .is-busy:after { animation: none !important; }
+  .request-loader { transition: none !important; }
+}
