@@ -108,7 +108,9 @@ async function api(path, options = {}) {
     const users = getLocalUsers();
     const email = (payload.email || '').toLowerCase().trim();
     const user = users[email];
-    if (!user || user.password !== payload.password) {
+    const pass = (payload.password || '').trim();
+    const isMatch = user && (user.password === payload.password || user.password === pass);
+    if (!user || !isMatch) {
       const err = new Error('Incorrect email or password. Please verify your credentials.');
       err.status = 401;
       throw err;
@@ -534,16 +536,39 @@ if (isAccount) {
         if (nameField) nameField.style.display = 'flex';
         if (authTitle) authTitle.textContent = 'Create an account';
         if (authDesc) authDesc.textContent = 'Sign up to submit enquiries and view your blend history.';
-        if (submitBtn) submitBtn.querySelector('span').textContent = 'Create Account';
+        if (submitBtn) {
+          const span = submitBtn.querySelector('span');
+          if (span) span.textContent = 'Create Account';
+          else submitBtn.textContent = 'Create Account →';
+        }
       } else {
         if (nameField) nameField.style.display = 'none';
         if (authTitle) authTitle.textContent = 'Sign in to Pulpoffe';
         if (authDesc) authDesc.textContent = 'Access your coffee enquiries and blend preferences.';
-        if (submitBtn) submitBtn.querySelector('span').textContent = 'Sign In';
+        if (submitBtn) {
+          const span = submitBtn.querySelector('span');
+          if (span) span.textContent = 'Sign In';
+          else submitBtn.textContent = 'Sign In →';
+        }
       }
       if (authFeedback) authFeedback.textContent = '';
     });
   });
+
+  const demoFillBtn = $('#demo-fill-btn');
+  if (demoFillBtn) {
+    demoFillBtn.addEventListener('click', () => {
+      const form = $('#auth-form');
+      if (form) {
+        if (form.elements.email) form.elements.email.value = 'customer@pulpoffe.com';
+        if (form.elements.password) form.elements.password.value = 'Password123!';
+        if (authFeedback) {
+          authFeedback.style.color = 'var(--honey)';
+          authFeedback.textContent = 'Demo credentials filled. Ready to sign in!';
+        }
+      }
+    });
+  }
 
   const authForm = $('#auth-form');
   if (authForm) {
@@ -634,7 +659,7 @@ if (isAdmin) {
   }
 
   async function refresh() {
-    const host = $('#admin-requests');
+    const host = $('#admin-requests') || $('#admin-inbox-list');
     if (!host) return;
     host.textContent = 'Loading enquiries…';
     try {
@@ -649,6 +674,8 @@ if (isAdmin) {
   async function initAdminWorkspace(user) {
     if ($('#admin-auth')) $('#admin-auth').hidden = true;
     if ($('#admin-content')) $('#admin-content').hidden = false;
+    if ($('#admin-dashboard')) $('#admin-dashboard').hidden = false;
+    if ($('#admin-signout-btn')) $('#admin-signout-btn').hidden = false;
     if ($('#admin-user')) $('#admin-user').textContent = 'Signed in as ' + user.email;
     await refresh();
     try {
@@ -664,7 +691,7 @@ if (isAdmin) {
   }
 
   const adminLoginForm = $('#admin-login-form');
-  const adminFeedback = $('#admin-auth-feedback');
+  const adminFeedback = $('#admin-auth-feedback') || $('#admin-error');
   if (adminLoginForm) {
     adminLoginForm.addEventListener('submit', async e => {
       e.preventDefault();

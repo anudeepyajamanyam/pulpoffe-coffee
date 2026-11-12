@@ -1,28 +1,90 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#F5F5F5"><title>Admin — Pulpoffe</title><meta name="description" content="Discover Pulpoffe’s instant, flavoured, fermented and roasted coffees. Rooted in Kodagu, crafted for your everyday coffee ritual."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="catalogue.css"><link rel="stylesheet" href="portal.css"><link rel="stylesheet" href="experience.css"><link rel="icon" href="assets/pulpoffe-mark-light.svg"><link rel="stylesheet" href="dashboard.css"><link rel="stylesheet" href="feedback.css"><link rel="stylesheet" href="brand/v2-tokens.css"></head>
-<body class="dashboard">
-<a class="skip-link" href="#main-content">Skip to main content</a><header class="desk-header"><a href="/"><img src="assets/pulpoffe-horizontal-light.svg" alt="Pulpoffe"></a><a href="/">View storefront ↗</a></header><main id="main-content"><section id="admin-auth" class="auth-card">
-  <img src="assets/pulpoffe-mark-light.svg" alt="" width="48" style="margin-bottom:18px;">
-  <h2>Admin sign-in.</h2>
-  <p>Enter your administrator credentials to manage the Pulpoffe store and view enquiries.</p>
-  <form id="admin-login-form" style="display:flex;flex-direction:column;gap:14px;margin-top:20px;">
-    <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;color:#dfcbb0;">
-      <span>Admin email</span>
-      <input type="email" name="email" required placeholder="admin@pulpoffe.com" style="background:#1a100c;border:1px solid #b08d5755;color:var(--cream);padding:11px;font-size:14px;">
-    </label>
-    <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;color:#dfcbb0;">
-      <span>Password</span>
-      <input type="password" name="password" required placeholder="Password" style="background:#1a100c;border:1px solid #b08d5755;color:var(--cream);padding:11px;font-size:14px;">
-    </label>
-    <button type="submit" class="button gold" style="width:auto;align-self:flex-start;margin-top:8px;padding:12px 24px;">
-      <span>Sign In to Admin</span> <span>→</span>
-    </button>
-    <div style="margin-top:16px;padding:12px;background:rgba(176,141,87,0.08);border:1px solid rgba(176,141,87,0.2);border-radius:4px;font-size:14px;color:var(--muted);line-height:1.6;">
-      <strong style="color:var(--gold);display:block;margin-bottom:4px;">Demo Admin Credentials:</strong>
-      Email: <code style="color:var(--cream);">admin@pulpoffe.com</code><br>
-      Password: <code style="color:var(--cream);">AdminPassword123!</code>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Admin Dashboard — Pulpoffe</title>
+  <link rel="icon" href="assets/pulpoffe-mark-light.svg">
+  <link rel="stylesheet" href="brand/v2-tokens.css">
+</head>
+<body class="admin-page-body">
+  <a class="skip-link" href="#main-content" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">Skip to main content</a>
+  <div class="bar">Rooted in Kodagu. Crafted for the moments that matter.</div>
+  
+  <header>
+    <div class="w">
+      <a class="logo" href="index.html#top">
+        <svg width="26" height="34" viewBox="0 0 26 34" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M4 2h18M4 32h18M6 2c0 9 7 10 7 15s-7 6-7 15M20 2c0 9-7 10-7 15s7 6 7 15"/>
+        </svg>
+        <span>PULPOFFE<small>MOMENTS BREWED · IMPACTS GROWN</small></span>
+      </a>
+      <nav>
+        <a href="index.html">Storefront ↗</a>
+      </nav>
+      <button id="admin-signout-btn" class="btn s" style="min-height:36px;padding:0 16px;font-size:0.85rem;color:var(--ink);border-color:var(--line)" hidden>Sign out</button>
     </div>
-    <p id="admin-auth-feedback" role="status" style="font-size:14px;color:#d4b389;margin-top:6px;min-height:18px;"></p>
-  </form>
-</section><p id="admin-error" role="status"></p><div id="admin-content" hidden><aside><p class="eyebrow">Store management</p><nav aria-label="Administration"><button data-view="overview" aria-pressed="true">Overview</button><button data-view="products" aria-pressed="false">Products & pricing</button><button data-view="content" aria-pressed="false">Content & social</button><button data-view="settings" aria-pressed="false">Contact details</button><button data-view="people" aria-pressed="false">Signed-in accounts</button><button data-view="inbox" aria-pressed="false">Enquiries</button></nav><p id="admin-user"></p><button type="button" id="admin-signout-btn" class="signout" style="background:none;border:none;cursor:pointer;color:var(--gold);font-size:14px;">Sign out →</button></aside><div class="desk-body"><section id="admin-overview"><p class="eyebrow">Pulpoffe Coffee</p><h1>Store overview</h1><div id="overview-cards"></div></section><section id="admin-products" hidden><h2>Products &amp; pricing</h2><button id="add-product" class="button gold">Add product +</button><dialog id="product-modal" aria-labelledby="editor-title"><form id="product-editor"><button type="button" id="close-product" class="modal-close" aria-label="Close product editor">×</button><h3 id="editor-title"></h3><div class="image-editor"><img id="product-preview" alt="Product image preview"><label class="image-pick">Choose product image<input type="file" id="product-image" accept="image/jpeg,image/png,image/webp"></label><button type="button" id="remove-image">Remove image</button><p id="image-feedback" role="status"></p></div><label>Product name<input type="text" name="name"></label><label>Collection<select name="group"><option value="instant">Instant</option><option value="flavoured">Flavoured</option><option value="fermented">Fermented</option><option value="roasted">Roasted</option></select></label><label>Description<textarea name="note" rows="3"></textarea></label><label>Pack size<input type="text" name="pack"></label><label>Price in INR · optional<input name="price" type="number" min="0.01" step="0.01" max="10000000"></label><div><button class="button gold">Save product</button> <button type="button" id="cancel-product" class="button outline">Cancel</button></div><p id="product-feedback" role="status"></p></form></dialog><div id="stock-list"></div></section><section id="admin-content-editor" hidden><h2>Website content</h2><form id="copy-editor"><label>Hero headline · one line per row<textarea name="headline" rows="3"></textarea></label><label>Hero introduction<textarea name="intro" rows="3"></textarea></label><label>Story heading<textarea name="storyTitle" rows="3"></textarea></label><label>Story introduction<textarea name="story" rows="3"></textarea></label><h3>Social profiles</h3><label>Instagram<input type="url" name="instagram"></label><label>Facebook<input type="url" name="facebook"></label><label>Linkedin<input type="url" name="linkedin"></label><label>Youtube<input type="url" name="youtube"></label><button class="button gold">Publish changes</button></form></section><section id="admin-settings" hidden><div class="settings-intro"><h2>Make it easy to reach you.</h2><p>Replace the sample placeholders with your real details. Contact links appear on the website only after you publish them.</p></div><form id="contact-settings-form"><label>Business email<input name="email" type="email" maxlength="254" placeholder="hello@pulpoffe.example"></label><label>Phone / WhatsApp<input name="phone" type="tel" maxlength="40" placeholder="+91 00000 00000"></label><label>Business address<textarea name="address" maxlength="500" rows="3" placeholder="Your business address"></textarea></label><label class="consent"><input name="published" type="checkbox"><span>Publish these contact details on the website</span></label><button class="button gold" type="submit">Save contact settings <span>✓</span></button><p id="settings-status" role="status"></p></form></section><section id="admin-inbox" hidden><h2>Enquiries</h2><div class="inbox-toolbar"><label>Filter status<select id="request-filter"><option value="all">All requests</option><option value="new">New</option><option value="contacted">Contacted</option><option value="quoted">Quoted</option><option value="closed">Closed</option></select></label><button id="refresh-inbox" class="button outline">Refresh inbox ↻</button></div><p id="inbox-count"></p><div id="admin-requests" class="request-list"></div></section><section id="admin-people" hidden><h2>Signed-in accounts</h2><p>First and latest authenticated portal visits, recorded from this update onward.</p><div id="people-list"></div></section><p id="desk-status" role="status"></p></div></div></main><script src="feedback.js"></script><script src="portal.js"></script><script src="dashboard.js"></script></body></html>
+  </header>
 
+  <main id="main-content" class="w" style="padding-top:48px;padding-bottom:64px">
+    <section id="admin-auth" class="card" style="max-width:480px;margin:0 auto;padding:36px">
+      <h1 style="font-size:1.75rem;margin-bottom:6px">Pulpoffe Admin</h1>
+      <p style="color:var(--muted);font-size:0.95rem;margin:0 0 20px">Sign in with an authorised administrator account.</p>
+      
+      <form id="admin-login-form" style="display:flex;flex-direction:column;gap:16px">
+        <label style="font-size:0.875rem;color:var(--ink);font-weight:500">
+          Admin Email
+          <input type="email" name="email" required placeholder="admin@pulpoffe.com" style="width:100%;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);font:inherit">
+        </label>
+        <label style="font-size:0.875rem;color:var(--ink);font-weight:500">
+          Password
+          <input type="password" name="password" required placeholder="AdminPassword123!" style="width:100%;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);font:inherit">
+        </label>
+        <button type="submit" class="btn p" style="justify-content:center;margin-top:8px">Sign In to Dashboard →</button>
+        <p id="admin-error" role="status" style="font-size:0.85rem;color:#c0392b;margin:0"></p>
+      </form>
+    </section>
+
+    <section id="admin-dashboard" hidden>
+      <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:24px">
+        <div>
+          <span class="eye">Management</span>
+          <h1 style="font-size:2rem;margin:4px 0 0">Enquiry Inbox</h1>
+        </div>
+        <div class="filter-row">
+          <button type="button" class="active" data-admin-tab="inbox">Enquiries</button>
+          <button type="button" data-admin-tab="orders">Orders</button>
+        </div>
+      </div>
+      <div id="admin-inbox-list" style="display:grid;grid-template-columns:1fr 1fr;gap:18px"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="w">
+      <div>
+        <div class="logo" style="color:#F5F5F5">PULPOFFE</div>
+        <p>Purely grown. Honestly brewed.<br>Kodagu, Karnataka, India</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <a href="index.html#story">Our story</a>
+        <a href="shop.html">Our coffees</a>
+        <a href="shop.html">Shop coffee</a>
+      </div>
+      <div>
+        <h4>Connect</h4>
+        <a href="contact.html">Contact us</a>
+        <a href="account.html">My account</a>
+      </div>
+      <div class="cp">
+        <span>© 2026 Pulpoffe. All rights reserved.</span>
+        <span>Internal Administration</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="feedback.js"></script>
+  <script src="portal.js"></script>
+</body>
+</html>
