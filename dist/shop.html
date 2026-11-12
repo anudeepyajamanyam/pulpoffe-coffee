@@ -37,8 +37,8 @@
     <div class="shop-intro">
       <div class="w">
         <span class="eye">Our coffees</span>
-        <h1 style="margin:8px 0 12px">Four collections. <em>One estate.</em></h1>
-        <p style="margin:0 0 16px;color:var(--muted)">24 coffees across instant, flavoured, fermented and roasted.</p>
+        <h1 style="margin:8px 0 12px">Three ranges. <em>Fourteen handcrafted coffees.</em></h1>
+        <p style="margin:0 0 16px;color:var(--muted)">Single-origin Kodagu estate coffees across Gold, Silver, and Diamond ranges. Exact prices include 5% GST.</p>
         <a href="index.html#coffees" class="link">← Back to our collections</a>
       </div>
     </div>
@@ -47,21 +47,20 @@
       <div class="shop-toolbar" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
         <div class="filter-row" role="group" aria-label="Filter products">
           <button class="active" data-shop-filter="all" aria-pressed="true">All coffees</button>
-          <button data-shop-filter="instant" aria-pressed="false">Instant</button>
-          <button data-shop-filter="flavoured" aria-pressed="false">Flavoured</button>
-          <button data-shop-filter="fermented" aria-pressed="false">Fermented</button>
-          <button data-shop-filter="roasted" aria-pressed="false">Roasted</button>
+          <button data-shop-filter="gold" aria-pressed="false">Gold (Flavoured)</button>
+          <button data-shop-filter="silver" aria-pressed="false">Silver (Filter &amp; Pure)</button>
+          <button data-shop-filter="diamond" aria-pressed="false">Diamond (Single-Estate)</button>
         </div>
         <label class="product-search" style="min-width:240px">
           Search coffees
-          <input id="product-search" type="search" placeholder="Try hazelnut or freeze-dried">
+          <input id="product-search" type="search" placeholder="Try choco orange, freeze dried or pure...">
         </label>
       </div>
 
       <p id="product-count" role="status" style="font-size:0.9rem;color:var(--muted);margin:16px 0"></p>
       <div id="product-grid" class="product-grid"></div>
       <p id="no-products" hidden style="padding:48px 0;text-align:center;color:var(--muted)">No coffees match your search. Try another flavour or collection.</p>
-      <p class="collection-note" style="margin-top:32px;font-size:0.85rem;color:var(--muted);text-align:center">Coffee imagery is illustrative. Pack sizes and prices are available on enquiry.</p>
+      <p class="collection-note" style="margin-top:32px;font-size:0.85rem;color:var(--muted);text-align:center">All coffees 100% sourced from Kodagu, Karnataka. Hand-packed in sealed aroma-lock pouches and jars.</p>
     </div>
   </main>
 
@@ -90,6 +89,88 @@
       </div>
     </div>
   </footer>
+
+  <!-- Sensory & Cupping Details Dialog -->
+  <dialog id="cupping-dialog" aria-labelledby="cupping-title">
+    <div style="position:relative;display:grid;grid-template-columns:1fr 1.25fr;max-height:85vh;overflow-y:auto">
+      <button id="close-cupping-modal" aria-label="Close details" style="position:absolute;top:14px;right:14px;background:none;border:1px solid rgba(255,255,255,0.2);color:#fff;width:32px;height:32px;cursor:pointer;border-radius:4px;z-index:2">&times;</button>
+      <div style="background:#110b07;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:32px;border-right:1px solid rgba(255,255,255,0.08)">
+        <img id="cupping-img" src="media/products/gold-choco-orange.webp" alt="Coffee packshot" style="width:100%;max-width:280px;aspect-ratio:4/3;object-fit:cover;border-radius:6px;box-shadow:0 12px 30px rgba(0,0,0,0.5)">
+        <span id="cupping-range" class="eye" style="margin-top:20px;color:var(--honey-lt);font-size:0.75rem;letter-spacing:1px"></span>
+        <p id="cupping-origin" style="font-size:0.85rem;color:#D9CDB6;margin:4px 0 0"></p>
+      </div>
+      <div style="padding:32px 28px;display:flex;flex-direction:column;gap:18px">
+        <div>
+          <h2 id="cupping-title" style="font-size:1.75rem;margin:0 0 8px;color:#fff;font-family:var(--disp)"></h2>
+          <div id="cupping-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px"></div>
+          <p id="cupping-desc" style="color:#D9CDB6;font-size:0.95rem;line-height:1.6;margin:0"></p>
+        </div>
+
+        <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:14px">
+          <span style="font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--honey-lt);display:block;margin-bottom:10px;font-family:var(--disp)">Cupping &amp; Sensory Metrics</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 18px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:#D9CDB6">
+                <span>Acidity</span><span id="val-acidity"></span>
+              </div>
+              <div class="meter-track"><div id="meter-acidity" class="meter-fill"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:#D9CDB6">
+                <span>Body &amp; Mouthfeel</span><span id="val-body"></span>
+              </div>
+              <div class="meter-track"><div id="meter-body" class="meter-fill"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:#D9CDB6">
+                <span>Aroma Intensity</span><span id="val-aroma"></span>
+              </div>
+              <div class="meter-track"><div id="meter-aroma" class="meter-fill"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:#D9CDB6">
+                <span>Sweetness</span><span id="val-sweetness"></span>
+              </div>
+              <div class="meter-track"><div id="meter-sweetness" class="meter-fill"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:14px">
+          <span style="font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--honey-lt);display:block;margin-bottom:10px;font-family:var(--disp)">Recommended Brewing Ritual</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:0.85rem">
+            <div style="background:rgba(255,255,255,0.04);padding:10px;border-radius:4px">
+              <strong style="color:var(--honey-lt);display:block;font-size:0.75rem">WATER TEMP</strong>
+              <span id="cup-temp" style="color:#F5F5F5"></span>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);padding:10px;border-radius:4px">
+              <strong style="color:var(--honey-lt);display:block;font-size:0.75rem">COFFEE RATIO</strong>
+              <span id="cup-ratio" style="color:#F5F5F5"></span>
+            </div>
+            <div style="grid-column:1/-1;background:rgba(255,255,255,0.04);padding:10px;border-radius:4px">
+              <strong style="color:var(--honey-lt);display:block;font-size:0.75rem">SERVING PAIRING</strong>
+              <span id="cup-pairing" style="color:#F5F5F5"></span>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+          <div>
+            <span style="font-size:0.8rem;color:#D9CDB6;display:block">Select pack size:</span>
+            <div id="cupping-pack-row" class="pack-selector-row" style="margin-top:6px;margin-bottom:0"></div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:1.35rem;font-weight:600;color:var(--honey-lt);font-family:var(--disp)">
+              <span id="cupping-price"></span>
+            </div>
+            <span style="font-size:0.75rem;color:#D9CDB6">5% GST included (<span id="cupping-pack-size">100g</span>)</span>
+          </div>
+        </div>
+
+        <button id="cupping-add-btn" class="btn p" style="width:100%;justify-content:center;margin-top:4px">Add to basket +</button>
+      </div>
+    </div>
+  </dialog>
 
   <!-- Dialogs (Cart & Checkout) -->
   <dialog id="basket-dialog" aria-labelledby="basket-title" style="border:none;background:#160e0a;color:#F5F5F5;position:fixed;right:0;top:0;bottom:0;width:min(420px,94vw);padding:24px;box-shadow:-10px 0 40px rgba(0,0,0,0.5)">

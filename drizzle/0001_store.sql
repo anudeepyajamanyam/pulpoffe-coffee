@@ -1,28 +1,20 @@
-CREATE TABLE products(id TEXT PRIMARY KEY, category TEXT NOT NULL,name TEXT NOT NULL,note TEXT NOT NULL, pack TEXT NOT NULL DEFAULT '',price REAL);
+CREATE TABLE products(id TEXT PRIMARY KEY, category TEXT NOT NULL,name TEXT NOT NULL,note TEXT NOT NULL, pack TEXT NOT NULL DEFAULT '',price REAL, image TEXT);
 --> statement-breakpoint
 CREATE TABLE portal_accounts(id TEXT PRIMARY KEY,name TEXT NOT NULL,email TEXT NOT NULL,first_seen TEXT NOT NULL,last_seen TEXT NOT NULL);
 --> statement-breakpoint
-INSERT INTO products(id,category,name,note) VALUES ('freeze-dried','instant','Freeze-dried pure instant','100% coffee'),
-('agglomerated-pure','instant','Agglomerated pure instant','100% coffee'),
-('agglomerated-60','instant','Agglomerated 60 / 40','60% coffee · 40% chicory'),
-('agglomerated-70','instant','Agglomerated 70 / 30','70% coffee · 30% chicory'),
-('spray-pure','instant','Spray-dried pure instant','100% coffee'),
-('spray-60','instant','Spray-dried 60 / 40','60% coffee · 40% chicory'),
-('spray-70','instant','Spray-dried 70 / 30','70% coffee · 30% chicory'),
-('flavour-spiced','flavoured','Spiced instant coffee','Flavoured instant coffee'),
-('flavour-almond','flavoured','Almond instant coffee','Flavoured instant coffee'),
-('flavour-hazelnut','flavoured','Hazelnut instant coffee','Flavoured instant coffee'),
-('flavour-choco-orange','flavoured','Choco Orange instant coffee','Flavoured instant coffee'),
-('flavour-caramel','flavoured','Caramel instant coffee','Flavoured instant coffee'),
-('flavour-cardamom','flavoured','Cardamom instant coffee','Flavoured instant coffee'),
-('flavour-vanilla','flavoured','Vanilla instant coffee','Flavoured instant coffee'),
-('flavour-mint','flavoured','Mint instant coffee','Flavoured instant coffee'),
-('flavour-berry','flavoured','Berry instant coffee','Flavoured instant coffee'),
-('fermented-whiskey-barrel-aged','fermented','Whiskey barrel aged coffee','Fermented roasted bean coffee powder'),
-('fermented-pineapple','fermented','Pineapple coffee','Fermented roasted bean coffee powder'),
-('fermented-cinnamon','fermented','Cinnamon coffee','Fermented roasted bean coffee powder'),
-('fermented-wine','fermented','Wine coffee','Fermented roasted bean coffee powder'),
-('roasted-pure','roasted','Pure roasted coffee','100% coffee powder'),
-('roasted-60','roasted','60 / 40 roasted blend','60% coffee · 40% chicory'),
-('roasted-70','roasted','70 / 30 roasted blend','70% coffee · 30% chicory'),
-('roasted-80','roasted','80 / 20 roasted blend','80% coffee · 20% chicory');
+INSERT INTO products(id,category,name,note,pack,price,image) VALUES 
+('gold-choco-orange','gold','Choco Orange','Dark cocoa with vibrant zesty orange','100g pouch',246,'media/products/gold-choco-orange.webp'),
+('gold-caramel','gold','Caramel','Silky burnt sugar & butterscotch finish','100g pouch',283,'media/products/gold-caramel.webp'),
+('gold-hazelnut','gold','Hazelnut','Rich creamy roasted hazelnut notes','100g pouch',210,'media/products/gold-hazelnut.webp'),
+('gold-almond','gold','Almond','Nutty, subtly sweet toasted almond notes','100g pouch',231,'media/products/gold-almond.webp'),
+('gold-cardamom','gold','Cardamom','Traditional aromatic Coorg cardamom','100g pouch',243,'media/products/gold-cardamom.webp'),
+('gold-berry','gold','Berry','Wild berry brightness with floral honey','100g pouch',242,'media/products/gold-berry.webp'),
+('gold-vanilla','gold','Vanilla','Soft Madagascar vanilla warmth','100g pouch',242,'media/products/gold-vanilla.webp'),
+('gold-mint','gold','Mint','Crisp peppermint balanced with rich coffee','100g pouch',240,'media/products/gold-mint.webp'),
+('silver-agglo-pure','silver','Agglo Pure','100% pure instant coffee · Zero chicory','100g pouch',183,'media/products/silver-agglo-pure.webp'),
+('silver-agglo-prime70','silver','Agglo Prime 70','70% coffee · 30% chicory granular','100g pouch',151,'media/products/silver-agglo-prime70.webp'),
+('silver-agglo-imperial60','silver','Agglo Imperial 60','60% coffee · 40% chicory granular','100g pouch',146,'media/products/silver-agglo-imperial60.webp'),
+('silver-prime70','silver','Prime 70','70% coffee · 30% chicory spray-dried','100g pouch',143,'media/products/silver-prime70.webp'),
+('silver-imperial60','silver','Imperial 60','60% coffee · 40% chicory spray-dried','100g pouch',136,'media/products/silver-imperial60.webp'),
+('diamond-freeze-dried','diamond','Freeze Dried','100% pure freeze-dried single estate','100g jar',357,'media/products/diamond-freeze_dried.webp'),
+('diamond-spiced','diamond','Spiced Reserve','Natural Western Ghats spices infusion','100g pouch',294,'media/products/diamond-spiced.webp');
