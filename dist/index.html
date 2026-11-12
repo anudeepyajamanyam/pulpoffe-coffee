@@ -150,7 +150,7 @@
             <span class="tile-watermark">I</span>
             <div class="tile-top">
               <span class="tile-badge">Collection I</span>
-              <span class="tile-count">8 Coffees</span>
+              
             </div>
             <div class="tile-content">
               <h3>Gold Range</h3>
@@ -166,7 +166,7 @@
             <span class="tile-watermark">II</span>
             <div class="tile-top">
               <span class="tile-badge">Collection II</span>
-              <span class="tile-count">5 Blends</span>
+              
             </div>
             <div class="tile-content">
               <h3>Silver Range</h3>
@@ -182,7 +182,7 @@
             <span class="tile-watermark">III</span>
             <div class="tile-top">
               <span class="tile-badge">Collection III</span>
-              <span class="tile-count">2 Reserves</span>
+              
             </div>
             <div class="tile-content">
               <h3>Diamond Range</h3>
@@ -198,7 +198,7 @@
             <span class="tile-watermark">B2B</span>
             <div class="tile-top">
               <span class="tile-badge">Enterprise</span>
-              <span class="tile-count">Custom Supply</span>
+              
             </div>
             <div class="tile-content">
               <h3>For Business</h3>
@@ -298,31 +298,36 @@
   </footer>
 
   <!-- Dialogs (Cart & Checkout) -->
-  <dialog id="basket-dialog" aria-labelledby="basket-title" style="border:none;background:#160e0a;color:#F5F5F5;position:fixed;right:0;top:0;bottom:0;width:min(420px,94vw);padding:24px;box-shadow:-10px 0 40px rgba(0,0,0,0.5)">
-    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:16px;margin-bottom:16px">
-      <h2 id="basket-title" style="color:#F5F5F5;font-size:1.5rem;margin:0">Your basket.</h2>
-      <button class="basket-close" aria-label="Close basket" style="background:none;border:1px solid rgba(255,255,255,0.2);color:#fff;width:32px;height:32px;cursor:pointer">&times;</button>
+  <!-- Dialogs (Cart & Checkout) -->
+  <dialog id="basket-dialog" aria-labelledby="basket-title">
+    <div class="basket-drawer-header">
+      <h2 id="basket-title">Your Basket</h2>
+      <button class="basket-close basket-drawer-close" aria-label="Close basket">&times;</button>
     </div>
-    <div id="cart-auth-notice" style="font-size:0.85rem;color:#D9CDB6;margin-bottom:14px;padding:8px 12px;background:rgba(201,165,107,0.1);border-radius:4px">
+    <div id="basket-delivery-banner" class="basket-delivery-bar">
+      <span id="delivery-progress-text">Free express delivery on orders ₹1,000+</span>
+      <span style="font-weight:600;color:#fff">Kodagu Direct</span>
+    </div>
+    <div id="cart-auth-notice" style="font-size:0.8rem;color:#D9CDB6;padding:8px 24px;background:rgba(0,0,0,0.25);border-bottom:1px solid rgba(255,255,255,0.06)">
       <span>Order history &amp; blend tracking</span> · <a href="account.html" style="color:var(--honey-lt);text-decoration:underline">Sign in / Register →</a>
     </div>
-    <div id="basket-items" style="max-height:45vh;overflow-y:auto"></div>
-    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:16px;margin-top:16px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.9rem;color:#D9CDB6">
+    <div id="basket-items" class="basket-drawer-body"></div>
+    <div class="basket-drawer-footer">
+      <div style="display:flex;justify-content:space-between;font-size:0.88rem;color:#D9CDB6">
         <span>Items Subtotal</span><span id="breakdown-subtotal">₹0.00</span>
       </div>
-      <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.9rem;color:#D9CDB6">
-        <span>Estimated Delivery (Coorg to You)</span><span id="breakdown-shipping">₹60.00</span>
+      <div style="display:flex;justify-content:space-between;font-size:0.88rem;color:#D9CDB6">
+        <span>Estimated Delivery (Coorg to You)</span><span id="breakdown-shipping">FREE</span>
       </div>
-      <div style="display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.15);padding-top:10px;margin-top:8px;font-weight:600;font-size:1.05rem">
-        <span>Total Payable</span><strong id="basket-total-amount" style="color:var(--honey-lt)">₹0.00</strong>
+      <div style="display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.15);padding-top:10px;font-weight:600;font-size:1.05rem">
+        <span>Total Payable (5% GST Incl.)</span><strong id="basket-total-amount" style="color:var(--honey-lt)">₹0.00</strong>
       </div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
-        <button id="buy-razorpay-btn" class="btn p" style="width:100%;justify-content:center">Proceed to Online Order →</button>
-        <a class="btn s" href="contact.html?type=b2b&amp;from=basket" style="width:100%;justify-content:center">Request B2B Quote →</a>
-        <button id="save-basket" class="btn s" style="width:100%;justify-content:center;font-size:0.85rem">Download Selection Brief ↓</button>
+      <button id="buy-razorpay-btn" class="btn p" style="width:100%;justify-content:center;padding:12px;font-size:0.95rem">Proceed to Checkout →</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+        <a href="cart.html" style="font-size:0.82rem;color:var(--honey-lt);text-decoration:underline">View Full Cart Page ↗</a>
+        <a class="link" href="contact.html?type=b2b&amp;from=basket" style="font-size:0.82rem;color:#AAA">B2B Quote →</a>
       </div>
-      <p id="basket-status" role="status" style="font-size:0.85rem;color:var(--honey-lt);text-align:center;margin-top:10px"></p>
+      <p id="basket-status" role="status" style="font-size:0.82rem;color:var(--honey-lt);text-align:center;margin:0"></p>
     </div>
   </dialog>
 

@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Your Basket — Pulpoffe Coffee</title>
+  <meta name="description" content="Review your selected Pulpoffe single-origin Kodagu coffees and proceed to secure checkout.">
+  <link rel="icon" href="assets/pulpoffe-mark-light.svg">
+  <link rel="stylesheet" href="brand/v2-tokens.css">
+  <link rel="stylesheet" href="feedback.css">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body class="shop-page cart-page-body">
+  <a class="skip-link" href="#main-content" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">Skip to main content</a>
+  <div class="bar">Rooted in Kodagu. Crafted for the moments that matter.</div>
+  
+  <header>
+    <div class="w">
+      <a class="logo" href="index.html#top" aria-label="Pulpoffe home">
+        <img src="brand/pulpoffe-dark.svg" alt="Pulpoffe emblem" width="28" height="36" style="height:38px;width:auto;display:inline-block">
+        <span>PULPOFFE<small>MOMENTS BREWED · IMPACTS GROWN</small></span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="index.html#story">Our story</a>
+        <a href="shop.html" class="on">Our coffees</a>
+        <a href="index.html#craft">The craft</a>
+        <a href="contact.html?type=b2b">For business</a>
+      </nav>
+      <button class="bk basket-open" aria-label="Open shopping basket">
+        Basket <b class="basket-count">0</b>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content" style="padding-top:40px;padding-bottom:80px">
+    <div class="w">
+      <div style="margin-bottom:32px">
+        <span class="eye">Review &amp; Checkout</span>
+        <h1 style="margin:8px 0 10px;font-size:clamp(2rem, 3.5vw, 2.75rem);color:var(--ink)">Your Shopping Basket</h1>
+        <p style="margin:0;color:var(--muted);font-size:0.95rem">Single-origin Kodagu estate coffees packed fresh and dispatched directly to your doorstep. All prices include 5% GST.</p>
+      </div>
+
+      <!-- Empty State -->
+      <div id="cart-page-empty" style="display:none;text-align:center;padding:64px 24px;background:var(--card);border:1px solid var(--line);border-radius:12px;margin:20px 0">
+        <span style="font-size:3rem;display:block;margin-bottom:12px">☕</span>
+        <h2 style="font-size:1.6rem;color:var(--ink);margin:0 0 8px">Your basket is currently empty</h2>
+        <p style="color:var(--muted);max-width:440px;margin:0 auto 24px;line-height:1.5">You have not added any coffees yet. Explore our handcrafted collections across Gold, Silver, and Diamond ranges.</p>
+        <a href="shop.html" class="btn p" style="display:inline-flex;padding:12px 28px">Explore Our Coffees →</a>
+      </div>
+
+      <!-- Active Cart Grid -->
+      <div id="cart-page-active" style="display:grid;grid-template-columns:1.8fr 1fr;gap:32px;align-items:start">
+        <!-- Left Column: Itemized List -->
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden">
+          <div style="padding:18px 24px;border-bottom:1px solid var(--line);background:rgba(0,0,0,0.03);display:flex;justify-content:space-between;align-items:center">
+            <h2 style="font-size:1.15rem;margin:0;color:var(--ink)">Selected Coffees</h2>
+            <a href="shop.html" style="font-size:0.85rem;color:var(--accent);text-decoration:underline">← Continue Shopping</a>
+          </div>
+          <div id="cart-page-items-list" style="padding:0 24px"></div>
+        </div>
+
+        <!-- Right Column: Order Summary -->
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px;position:sticky;top:32px">
+          <h2 style="font-size:1.25rem;margin:0 0 16px;color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:12px">Order Summary</h2>
+          
+          <div id="cart-page-delivery-bar" style="background:rgba(200,157,102,0.12);border:1px solid rgba(200,157,102,0.25);border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:var(--ink)">
+            <span id="cart-delivery-status-text">Free delivery on orders ₹1,000+</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:0.92rem;color:var(--ink)">
+            <div style="display:flex;justify-content:space-between">
+              <span>Items Subtotal:</span>
+              <span id="cart-page-subtotal" style="font-weight:600">₹0.00</span>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <span>Delivery (Kodagu to You):</span>
+              <span id="cart-page-shipping" style="font-weight:600;color:var(--accent)">FREE</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--muted)">
+              <span>Applicable Taxes:</span>
+              <span>5% GST Included</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:1.15rem;font-weight:700;border-top:1px solid var(--line);padding-top:14px;margin-top:6px">
+              <span>Total Payable:</span>
+              <strong id="cart-page-total" style="color:var(--accent)">₹0.00</strong>
+            </div>
+          </div>
+
+          <button id="cart-page-checkout-btn" class="btn p" style="width:100%;justify-content:center;margin-top:20px;padding:14px;font-size:1rem">Proceed to Checkout →</button>
+          
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;font-size:0.78rem;color:var(--muted);text-align:center">
+            <span>🔒 256-bit SSL Secure Checkout via Razorpay</span>
+            <span>☕ 100% Single-Origin Kodagu Estate Coffee</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="w">
+      <div>
+        <div class="logo" style="color:#F5F5F5">PULPOFFE</div>
+        <p>Purely grown. Honestly brewed.<br>Kodagu, Karnataka, India</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <a href="index.html#story">Our story</a>
+        <a href="shop.html">Our coffees</a>
+        <a href="shop.html">Shop coffee</a>
+        <a href="contact.html?type=b2b">For business</a>
+      </div>
+      <div>
+        <h4>Connect</h4>
+        <a href="contact.html">Contact us</a>
+        <a href="account.html">My account</a>
+        <a href="admin.html">Admin</a>
+      </div>
+      <div class="cp">
+        <span>© 2026 Pulpoffe. All rights reserved.</span>
+        <span>Purely grown. Honestly brewed.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Dialogs (Cart Drawer & Checkout Modal) -->
+  <dialog id="basket-dialog" aria-labelledby="basket-title">
+    <div class="basket-drawer-header">
+      <h2 id="basket-title">Your Basket</h2>
+      <button class="basket-close basket-drawer-close" aria-label="Close basket">&times;</button>
+    </div>
+    <div id="basket-delivery-banner" class="basket-delivery-bar">
+      <span id="delivery-progress-text">Free express delivery on orders ₹1,000+</span>
+      <span style="font-weight:600;color:#fff">Kodagu Direct</span>
+    </div>
+    <div id="cart-auth-notice" style="font-size:0.8rem;color:#D9CDB6;padding:8px 24px;background:rgba(0,0,0,0.25);border-bottom:1px solid rgba(255,255,255,0.06)">
+      <span>Order history &amp; blend tracking</span> · <a href="account.html" style="color:var(--honey-lt);text-decoration:underline">Sign in / Register →</a>
+    </div>
+    <div id="basket-items" class="basket-drawer-body"></div>
+    <div class="basket-drawer-footer">
+      <div style="display:flex;justify-content:space-between;font-size:0.88rem;color:#D9CDB6">
+        <span>Items Subtotal</span><span id="breakdown-subtotal">₹0.00</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:0.88rem;color:#D9CDB6">
+        <span>Estimated Delivery (Coorg to You)</span><span id="breakdown-shipping">FREE</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.15);padding-top:10px;font-weight:600;font-size:1.05rem">
+        <span>Total Payable (5% GST Incl.)</span><strong id="basket-total-amount" style="color:var(--honey-lt)">₹0.00</strong>
+      </div>
+      <button id="buy-razorpay-btn" class="btn p" style="width:100%;justify-content:center;padding:12px;font-size:0.95rem">Proceed to Checkout →</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+        <a href="cart.html" style="font-size:0.82rem;color:var(--honey-lt);text-decoration:underline">View Full Cart Page ↗</a>
+        <a class="link" href="contact.html?type=b2b&amp;from=basket" style="font-size:0.82rem;color:#AAA">B2B Quote →</a>
+      </div>
+      <p id="basket-status" role="status" style="font-size:0.82rem;color:var(--honey-lt);text-align:center;margin:0"></p>
+    </div>
+  </dialog>
+
+  <!-- Checkout Modal -->
+  <dialog id="checkout-modal" aria-labelledby="checkout-modal-title" style="padding:24px;border:1px solid var(--honey);background:#1A120D;color:#F5F5F5;width:min(520px,94vw);border-radius:6px;max-height:92vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:14px;margin-bottom:16px">
+      <h2 id="checkout-modal-title" style="font-size:1.35rem;color:#fff;margin:0;font-family:var(--disp)">Complete Your Order</h2>
+      <button type="button" id="close-checkout-modal" style="background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer">&times;</button>
+    </div>
+
+    <!-- Sign In / Auto-Fill Callout Card -->
+    <div id="checkout-auth-card" style="background:rgba(200,157,102,0.08);border:1px solid rgba(200,157,102,0.25);border-radius:6px;padding:12px 14px;margin-bottom:16px;display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:1.1rem;color:var(--honey)">☕</span>
+          <strong id="chk-auth-title" style="font-size:0.86rem;color:#F5EBE1">Save details for future roasts?</strong>
+        </div>
+        <button type="button" id="chk-auth-action-btn" style="background:transparent;border:1px solid var(--honey);color:var(--honey);font-size:0.75rem;padding:4px 10px;border-radius:3px;cursor:pointer;font-weight:600;letter-spacing:0.5px">SIGN IN</button>
+      </div>
+      <p id="chk-auth-desc" style="margin:0;font-size:0.78rem;color:#C4B6A4;line-height:1.4">
+        Sign in to auto-fill your saved address and track your Kodagu roasts, or continue below as a guest.
+      </p>
+
+      <div id="chk-inline-signin" style="display:none;margin-top:8px;padding-top:10px;border-top:1px dashed rgba(200,157,102,0.25)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input type="email" id="chk-inline-email" placeholder="Account email" style="width:100%;padding:8px 10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;font-size:0.82rem">
+          <input type="password" id="chk-inline-password" placeholder="Password" style="width:100%;padding:8px 10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;font-size:0.82rem">
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <span id="chk-inline-error" style="font-size:0.74rem;color:#e57373"></span>
+          <div style="display:flex;gap:6px">
+            <button type="button" id="chk-inline-cancel" style="background:none;border:none;color:#aaa;font-size:0.75rem;cursor:pointer">Cancel</button>
+            <button type="button" id="chk-inline-submit" class="btn p" style="padding:4px 12px;font-size:0.78rem">Sign In &amp; Fill</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form id="online-checkout-form" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <label style="font-size:0.85rem;color:#D9CDB6">Full Name *<input type="text" id="chk-name" required placeholder="Your name" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px"></label>
+        <label style="font-size:0.85rem;color:#D9CDB6">Phone *<input type="tel" id="chk-phone" required placeholder="+91 98765 43210" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px"></label>
+      </div>
+      <label style="font-size:0.85rem;color:#D9CDB6">Email *<input type="email" id="chk-email" required placeholder="you@example.com" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px"></label>
+      <label style="font-size:0.85rem;color:#D9CDB6">Street Address *<input type="text" id="chk-address" required placeholder="House / Street / Area" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px"></label>
+      <div style="display:grid;grid-template-columns:1fr 1.2fr 1.2fr;gap:10px">
+        <label style="font-size:0.85rem;color:#D9CDB6">PIN Code *
+          <input type="text" id="chk-pincode" required pattern="[0-9]{6}" maxlength="6" placeholder="560001" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px">
+          <small id="pincode-status" style="display:block;font-size:0.72rem;color:var(--honey-lt);margin-top:4px;min-height:14px"></small>
+        </label>
+        <label style="font-size:0.85rem;color:#D9CDB6">City / District *
+          <input type="text" id="chk-city" required placeholder="Bangalore" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px">
+        </label>
+        <label style="font-size:0.85rem;color:#D9CDB6">State *
+          <input type="text" id="chk-state" required placeholder="Karnataka" style="width:100%;padding:10px;background:#241811;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:4px;margin-top:4px">
+        </label>
+      </div>
+
+      <label style="display:flex;align-items:flex-start;gap:8px;font-size:0.82rem;color:#D9CDB6;cursor:pointer;margin-top:2px;user-select:none">
+        <input type="checkbox" id="chk-save-details" checked style="accent-color:var(--honey);margin-top:2px">
+        <span>Save this contact &amp; delivery info for faster 1-click checkout on future orders</span>
+      </label>
+
+      <div style="background:rgba(0,0,0,0.3);padding:12px;border-radius:4px;margin-top:6px">
+        <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:#D9CDB6"><span>Items Total:</span><span id="modal-subtotal">₹0.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:#D9CDB6"><span>Delivery:</span><span id="modal-shipping">FREE</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:1rem;font-weight:600;color:#fff;border-top:1px solid rgba(255,255,255,0.15);padding-top:6px;margin-top:6px"><span>Total Payable:</span><strong id="modal-grand-total" style="color:var(--honey-lt)">₹0.00</strong></div>
+      </div>
+      <button type="submit" id="modal-pay-btn" class="btn p" style="width:100%;justify-content:center;margin-top:6px">Proceed to Secure Payment (Razorpay) →</button>
+      <p id="checkout-feedback" role="status" style="font-size:0.85rem;color:var(--honey-lt);text-align:center;margin:0"></p>
+    </form>
+  </dialog>
+
+  <div class="basket-toast" role="status" aria-live="polite"></div>
+  <script src="feedback.js"></script>
+  <script src="app.js"></script>
+  <script src="shop.js"></script>
+  <script src="portal.js"></script>
+</body>
+</html>
