@@ -8,7 +8,7 @@ const $=s=>document.querySelector(s);
 const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 $('#year').textContent=new Date().getFullYear();
 const menu=$('#menu-toggle');
-menu.addEventListener('click',()=>{const open=menu.getAttribute('aria-expanded')==='true';menu.setAttribute('aria-expanded',String(!open));$('#mobile-menu').hidden=open;});
+menu._pulpoffeNavBound=true;menu.addEventListener('click',()=>{const open=menu.getAttribute('aria-expanded')==='true';menu.setAttribute('aria-expanded',String(!open));$('#mobile-menu').hidden=open;});
 $('#mobile-menu').addEventListener('click',e=>{if(e.target.closest('a')){menu.setAttribute('aria-expanded','false');$('#mobile-menu').hidden=true;}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){menu.setAttribute('aria-expanded','false');$('#mobile-menu').hidden=true;}});
 const dialog=$('#coffee-dialog');

@@ -430,15 +430,27 @@ function addToBasket(productOrVariant, triggerBtn) {
   basket[id] = (basket[id] || 0) + 1;
   persist();
 
-  // Visual & tactile feedback on clicked button
+  // Visual & tactile feedback on clicked button (Vivid Green)
   if (triggerBtn) {
     triggerBtn.classList.add('added');
+    triggerBtn.classList.add('btn-added');
     const oldText = triggerBtn.textContent;
-    triggerBtn.textContent = '✓ Added to basket!';
+    const oldBg = triggerBtn.style.background;
+    const oldColor = triggerBtn.style.color;
+    const oldBorder = triggerBtn.style.borderColor;
+    triggerBtn.style.setProperty('background', '#2E7D32', 'important');
+    triggerBtn.style.setProperty('background-color', '#2E7D32', 'important');
+    triggerBtn.style.setProperty('color', '#FFFFFF', 'important');
+    triggerBtn.style.setProperty('border-color', '#2E7D32', 'important');
+    triggerBtn.textContent = '✓ Added to basket';
     setTimeout(() => {
       triggerBtn.classList.remove('added');
+      triggerBtn.classList.remove('btn-added');
+      triggerBtn.style.background = oldBg;
+      triggerBtn.style.color = oldColor;
+      triggerBtn.style.borderColor = oldBorder;
       triggerBtn.textContent = oldText;
-    }, 1400);
+    }, 1500);
   }
 
   // Header badge bump animation
@@ -766,7 +778,11 @@ function autofillSavedDetails() {
 }
 
 function openChkModal() {
-  if (!Object.keys(basket).length) return;
+  if (!Object.keys(basket).length) {
+    alert('Your basket is currently empty. Please choose a handcrafted coffee first!');
+    return;
+  }
+  renderBasket();
   close();
   if (chkModal) {
     chkModal.showModal();
@@ -777,6 +793,15 @@ function openChkModal() {
     firstInput?.focus();
   }
 }
+window.openChkModal = openChkModal;
+
+// Dedicated listener for Proceed to Checkout from cart page
+document.addEventListener('click', e => {
+  if (e.target && e.target.closest('#cart-page-checkout-btn')) {
+    e.preventDefault();
+    openChkModal();
+  }
+});
 
 // Inline Sign-In handlers
 document.addEventListener('click', async e => {
@@ -1391,11 +1416,38 @@ if ($('#year') && !$('#year').textContent) $('#year').textContent = new Date().g
 
 // Menu toggle
 const menu = $('#menu-toggle');
-menu?.addEventListener('click', () => {
-  const open = menu.getAttribute('aria-expanded') === 'true';
-  menu.setAttribute('aria-expanded', String(!open));
-  if ($('#mobile-menu')) $('#mobile-menu').hidden = open;
-});
+if (menu) {
+  menu._pulpoffeNavBound = true;
+  menu.addEventListener('click', () => {
+    const open = menu.getAttribute('aria-expanded') === 'true';
+    menu.setAttribute('aria-expanded', String(!open));
+    const drawer = document.getElementById('mobile-menu');
+    if (drawer) drawer.hidden = open;
+  });
+  // Close drawer when clicking nav links
+  document.querySelectorAll('#mobile-menu a').forEach(a => {
+    a.addEventListener('click', () => {
+      menu.setAttribute('aria-expanded', 'false');
+      const drawer = document.getElementById('mobile-menu');
+      if (drawer) drawer.hidden = true;
+    });
+  });
+  // Close drawer when clicking outside header
+  document.addEventListener('click', e => {
+    const drawer = document.getElementById('mobile-menu');
+    if (drawer && !drawer.hidden && !e.target.closest('header')) {
+      menu.setAttribute('aria-expanded', 'false');
+      drawer.hidden = true;
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      menu.setAttribute('aria-expanded', 'false');
+      const drawer = document.getElementById('mobile-menu');
+      if (drawer) drawer.hidden = true;
+    }
+  });
+}
 })();
 
-$('#cart-page-checkout-btn')?.addEventListener('click', () => { openChkModal(); });
+// Delegated cart checkout listener handled inside IIFE

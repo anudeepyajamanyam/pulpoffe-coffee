@@ -82,4 +82,45 @@
     button.classList.add('button-pressed');
     setTimeout(() => button.classList.remove('button-pressed'), 180);
   });
+
+// Universal Mobile Menu Toggle (for pages without page-specific JS handling)
+// Defer so page scripts like app.js can register their own handlers first
+window.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('menu-toggle');
+  const drawer = document.getElementById('mobile-menu');
+  if (!toggle || !drawer) return;
+
+  // Check if app.js or similar already attached a listener (index.html)
+  // We use a flag to avoid double-binding
+  if (toggle._pulpoffeNavBound) return;
+  toggle._pulpoffeNavBound = true;
+
+  toggle.addEventListener('click', () => {
+    const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!isExpanded));
+    drawer.hidden = isExpanded;
+  });
+
+  drawer.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      drawer.hidden = true;
+    });
+  });
+
+  document.addEventListener('click', e => {
+    if (drawer && !drawer.hidden && !e.target.closest('header')) {
+      toggle.setAttribute('aria-expanded', 'false');
+      drawer.hidden = true;
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      toggle.setAttribute('aria-expanded', 'false');
+      drawer.hidden = true;
+    }
+  });
+});
+
 })();

@@ -241,13 +241,32 @@
         <a href="index.html#process">The craft</a>
         <a href="contact.html?type=b2b">For business</a>
       </nav>
-      <div class="h-act">
-        <a class="basket-btn" href="shop.html#basket" aria-label="View basket">
-          <span>Basket</span>
-          <span class="basket-count" id="header-basket-count">0</span>
-        </a>
+      
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="bk basket-open" aria-label="Open shopping basket">
+          Basket <b class="basket-count" id="header-basket-count">0</b>
+        </button>
+        <button class="mobile-menu-toggle" id="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span class="hamburger-icon">
+            <span></span><span></span><span></span>
+          </span>
+        </button>
       </div>
     </div>
+  
+    <nav id="mobile-menu" class="mobile-nav-drawer" hidden aria-label="Mobile navigation">
+      <div class="mobile-nav-inner">
+        <a href="index.html#story" class="mobile-nav-link">Our story</a>
+        <a href="shop.html" class="mobile-nav-link">Our coffees</a>
+        <a href="index.html#craft" class="mobile-nav-link">The craft</a>
+        <a href="contact.html?type=b2b" class="mobile-nav-link">For business</a>
+        <div class="mobile-nav-divider"></div>
+        <div class="mobile-nav-subrow">
+          <a href="cart.html" class="mobile-nav-sublink">🛒 View Cart</a>
+          <a href="account.html" class="mobile-nav-sublink">👤 My Account</a>
+        </div>
+      </div>
+    </nav>
   </header>
 
   <!-- RECEIPT MAIN CONTENT -->
@@ -505,5 +524,6 @@
       document.getElementById('order-total-display').textContent = '₹' + (order.total || 0).toLocaleString('en-IN');
     })();
   </script>
+<script src="feedback.js"></script>
 </body>
 </html>
