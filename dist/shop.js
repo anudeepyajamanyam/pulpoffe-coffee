@@ -782,16 +782,7 @@ function openChkModal() {
     alert('Your basket is currently empty. Please choose a handcrafted coffee first!');
     return;
   }
-  renderBasket();
-  close();
-  if (chkModal) {
-    chkModal.showModal();
-    document.body.style.overflow = 'hidden';
-    refreshCheckoutAuthBanner();
-    autofillSavedDetails();
-    const firstInput = $('#chk-name');
-    firstInput?.focus();
-  }
+  window.location.href = 'checkout.html';
 }
 window.openChkModal = openChkModal;
 

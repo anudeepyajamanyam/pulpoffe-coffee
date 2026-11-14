@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Checkout · Pulpoffe Single-Origin Kodagu Coffee</title>
+  <meta name="description" content="Complete your Pulpoffe order. Direct estate fulfillment from Kodagu to your doorstep.">
+  <link rel="icon" href="assets/pulpoffe-mark-light.svg">
+  <link rel="stylesheet" href="brand/v2-tokens.css">
+  <link rel="stylesheet" href="feedback.css">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body class="checkout-page">
+  <a class="skip-link" href="#main-content" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">Skip to main content</a>
+  <div class="bar">Rooted in Kodagu. Crafted for the moments that matter.</div>
+  
+  <header>
+    <div class="w">
+      <a class="logo" href="index.html#top" aria-label="Pulpoffe home">
+        <img src="brand/pulpoffe-dark.svg" alt="Pulpoffe emblem" width="28" height="36" style="height:38px;width:auto;display:inline-block">
+        <span>PULPOFFE<small>MOMENTS BREWED · IMPACTS GROWN</small></span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="index.html#story">Our story</a>
+        <a href="shop.html" class="on">Our coffees</a>
+        <a href="index.html#craft">The craft</a>
+        <a href="contact.html?type=b2b">For business</a>
+      </nav>
+      
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="user-menu-wrap">
+          <button id="header-user-btn" class="user-btn" aria-label="Account login" title="Sign In / Account">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span id="header-user-badge" class="user-name-tag">Sign In</span>
+          </button>
+          <div id="header-user-dropdown" class="user-dropdown-popover" hidden>
+            <div id="user-popover-content"></div>
+          </div>
+        </div>
+
+        <a class="bk" href="cart.html" aria-label="Open shopping basket" style="text-decoration:none">
+          Basket <b class="basket-count" id="header-basket-count">0</b>
+        </a>
+        <button class="mobile-menu-toggle" id="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span class="hamburger-icon">
+            <span></span><span></span><span></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  
+    <nav id="mobile-menu" class="mobile-nav-drawer" hidden aria-label="Mobile navigation">
+      <div class="mobile-nav-inner">
+        <a href="index.html#story" class="mobile-nav-link">Our story</a>
+        <a href="shop.html" class="mobile-nav-link">Our coffees</a>
+        <a href="index.html#craft" class="mobile-nav-link">The craft</a>
+        <a href="contact.html?type=b2b" class="mobile-nav-link">For business</a>
+        <div class="mobile-nav-divider"></div>
+        <div class="mobile-nav-subrow">
+          <a href="cart.html" class="mobile-nav-sublink">🛒 View Cart</a>
+          <a href="account.html" class="mobile-nav-sublink">👤 My Account</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content" class="checkout-container">
+    <!-- Breadcrumb Steps Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:30px;padding-bottom:18px;border-bottom:1px solid var(--line)">
+      <div>
+        <div style="font-size:0.82rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px">Frictionless Checkout</div>
+        <h1 style="font-family:var(--disp);font-size:clamp(1.6rem,3vw,2.2rem);margin:0;color:var(--ink)">Complete Your Order</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;font-size:0.86rem;color:var(--muted)">
+        <a href="cart.html" style="color:var(--accent);text-decoration:none;font-weight:500">1. Basket</a>
+        <span>→</span>
+        <span style="color:var(--ink);font-weight:700;border-bottom:2px solid var(--honey);padding-bottom:2px">2. Details &amp; Shipping</span>
+        <span>→</span>
+        <span>3. Confirmation</span>
+      </div>
+    </div>
+
+    <!-- Empty Basket Fallback -->
+    <div id="checkout-empty" class="card" style="display:none;text-align:center;padding:60px 20px">
+      <h2 style="font-family:var(--disp);font-size:1.6rem;margin-bottom:12px">Your basket is waiting for a favourite roast.</h2>
+      <p style="color:var(--muted);max-width:480px;margin:0 auto 24px">Explore our granular infusions, traditional chicory blends, and freeze-dried estate reserves.</p>
+      <a href="shop.html" class="btn p">Explore Our Coffees →</a>
+    </div>
+
+    <!-- Active Checkout Content -->
+    <div id="checkout-content" class="checkout-grid">
+      <!-- LEFT COLUMN: Step-by-Step Flow -->
+      <div>
+        <!-- Sign-In / Google One-Tap Callout (Levista style) -->
+        <div id="checkout-auth-banner" style="background:#FFFFFF;border:1px solid var(--line);border-radius:12px;padding:18px 24px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,0.02)">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="font-size:1.3rem">☕</span>
+              <div>
+                <strong id="chk-auth-title" style="display:block;font-size:0.95rem;color:var(--ink)">Checking out as Guest</strong>
+                <span id="chk-auth-subtitle" style="font-size:0.8rem;color:var(--muted)">Save delivery addresses &amp; track your Kodagu roasts.</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px" id="chk-auth-actions">
+              <button type="button" id="chk-google-btn" class="google-signin-btn" style="width:auto;padding:7px 14px;font-size:0.82rem">
+                <svg width="16" height="16" viewBox="0 0 48 48">
+                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                  <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                  <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                <span>Google 1-Click Fill</span>
+              </button>
+              <a href="account.html" class="btn s" style="min-height:36px;padding:0 14px;font-size:0.8rem">Sign In</a>
+            </div>
+          </div>
+        </div>
+
+        <form id="checkout-flow-form">
+          <!-- STEP 1: Customer Information -->
+          <div class="checkout-step-card">
+            <div class="checkout-step-header">
+              <span class="checkout-step-num">1</span>
+              <div>
+                <h2 class="checkout-step-title">Contact Information</h2>
+                <span style="font-size:0.8rem;color:var(--muted)">Order confirmations and tracking SMS will be delivered here.</span>
+              </div>
+            </div>
+
+            <div class="checkout-form-grid">
+              <div class="checkout-form-group">
+                <label for="step-name">Full Name *</label>
+                <input type="text" id="step-name" name="name" required placeholder="Aarav Sharma" autocomplete="name">
+              </div>
+              <div class="checkout-form-group">
+                <label for="step-phone">Phone Number (+91) *</label>
+                <input type="tel" id="step-phone" name="phone" required placeholder="98765 43210" autocomplete="tel">
+              </div>
+              <div class="checkout-form-group" style="grid-column:1/-1">
+                <label for="step-email">Email Address *</label>
+                <input type="email" id="step-email" name="email" required placeholder="aarav.sharma@example.com" autocomplete="email">
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2: Delivery Address with Auto PIN Lookup -->
+          <div class="checkout-step-card">
+            <div class="checkout-step-header">
+              <span class="checkout-step-num">2</span>
+              <div>
+                <h2 class="checkout-step-title">Delivery Address</h2>
+                <span style="font-size:0.8rem;color:var(--muted)">Direct estate dispatch to anywhere across India.</span>
+              </div>
+            </div>
+
+            <div class="checkout-form-group" style="margin-bottom:16px">
+              <label for="step-address">Flat / House No. / Building / Street Address *</label>
+              <input type="text" id="step-address" name="address" required placeholder="15/A, Sreenivasa Nilaya, 4th Cross" autocomplete="street-address">
+            </div>
+
+            <div class="checkout-form-grid">
+              <div class="checkout-form-group">
+                <label for="step-pincode">Postal PIN Code * (6 digits)</label>
+                <input type="text" id="step-pincode" name="pincode" required pattern="[0-9]{6}" maxlength="6" placeholder="560001" autocomplete="postal-code">
+                <small id="step-pincode-status" style="font-size:0.75rem;color:var(--accent);min-height:16px;margin-top:2px;font-weight:500"></small>
+              </div>
+              <div class="checkout-form-group">
+                <label for="step-city">City / District *</label>
+                <input type="text" id="step-city" name="city" required placeholder="Bangalore" autocomplete="address-level2">
+              </div>
+              <div class="checkout-form-group" style="grid-column:1/-1">
+                <label for="step-state">State *</label>
+                <input type="text" id="step-state" name="state" required placeholder="Karnataka" autocomplete="address-level1">
+              </div>
+            </div>
+
+            <label style="display:flex;align-items:center;gap:10px;font-size:0.85rem;color:var(--ink);cursor:pointer;margin-top:16px;user-select:none">
+              <input type="checkbox" id="step-save-info" checked style="accent-color:var(--honey);width:16px;height:16px">
+              <span>Save this contact &amp; address info for faster 1-click checkout next time</span>
+            </label>
+          </div>
+
+          <!-- STEP 3: Dispatch & Shipping Method -->
+          <div class="checkout-step-card">
+            <div class="checkout-step-header">
+              <span class="checkout-step-num">3</span>
+              <div>
+                <h2 class="checkout-step-title">Delivery Method</h2>
+                <span style="font-size:0.8rem;color:var(--muted)">Sealed freshness directly from the Western Ghats.</span>
+              </div>
+            </div>
+
+            <div style="background:rgba(200,157,102,0.06);border:1px solid var(--honey);border-radius:8px;padding:16px;display:flex;justify-content:space-between;align-items:center">
+              <div style="display:flex;align-items:center;gap:14px">
+                <input type="radio" checked readonly style="accent-color:var(--honey);width:18px;height:18px">
+                <div>
+                  <strong style="display:block;font-size:0.95rem;color:var(--ink)">Kodagu Estate Express Courier (Bluedart / Delhivery)</strong>
+                  <span style="font-size:0.8rem;color:var(--muted)">Dispatches within 24-48 hours. Traced with SMS tracking.</span>
+                </div>
+              </div>
+              <strong id="step-shipping-tag" style="font-size:0.95rem;color:var(--accent)">FREE</strong>
+            </div>
+          </div>
+
+          <!-- STEP 4: Payment Gateway Action -->
+          <div class="checkout-step-card" style="border:2px solid var(--honey)">
+            <div class="checkout-step-header">
+              <span class="checkout-step-num">4</span>
+              <div>
+                <h2 class="checkout-step-title">Payment &amp; Final Review</h2>
+                <span style="font-size:0.8rem;color:var(--muted)">Instant UPI (GPay, PhonePe, Paytm), All Cards &amp; NetBanking via Razorpay.</span>
+              </div>
+            </div>
+
+            <div style="margin-bottom:20px;padding:14px 16px;background:var(--alt);border-radius:6px;font-size:0.85rem;color:var(--ink);line-height:1.6">
+              🔒 <strong>Safe &amp; Encrypted:</strong> You will be securely redirected to the official Razorpay payment modal to verify your purchase. No card numbers are stored on our servers.
+            </div>
+
+            <button type="submit" id="checkout-pay-btn" class="btn p" style="width:100%;justify-content:center;padding:16px;font-size:1.05rem">
+              Proceed to Secure Payment (Razorpay) →
+            </button>
+            <p id="checkout-status-msg" role="status" style="font-size:0.9rem;color:var(--accent);text-align:center;margin:12px 0 0;min-height:20px;font-weight:500"></p>
+          </div>
+        </form>
+      </div>
+
+      <!-- RIGHT COLUMN: Order Summary -->
+      <div>
+        <div class="checkout-summary-sticky">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--line)">
+            <h2 style="font-family:var(--disp);font-size:1.35rem;margin:0;color:var(--ink)">Order Summary</h2>
+            <a href="cart.html" style="font-size:0.82rem;color:var(--accent);text-decoration:underline">Edit basket</a>
+          </div>
+
+          <!-- Items List -->
+          <div id="checkout-items-list" style="display:flex;flex-direction:column;gap:14px;max-height:360px;overflow-y:auto;padding-right:6px;margin-bottom:20px"></div>
+
+          <!-- Free Shipping Incentive Tag -->
+          <div id="checkout-delivery-alert" style="background:rgba(200,157,102,0.1);border-radius:6px;padding:10px 14px;font-size:0.84rem;color:var(--ink);margin-bottom:18px;display:flex;align-items:center;gap:8px">
+            <span>🚚</span>
+            <span id="checkout-delivery-text">Add ₹434.00 more for FREE Delivery</span>
+          </div>
+
+          <!-- Price Calculations -->
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:0.92rem;color:var(--muted)">
+            <div style="display:flex;justify-content:space-between">
+              <span>Items Subtotal:</span>
+              <strong id="summary-subtotal" style="color:var(--ink)">₹0.00</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <span>Delivery (Kodagu to You):</span>
+              <span id="summary-delivery" style="color:var(--ink)">₹60.00</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.82rem">
+              <span>Applicable Taxes:</span>
+              <span>5% GST Included</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding-top:14px;margin-top:6px;font-size:1.15rem">
+              <span style="font-family:var(--disp);font-weight:700;color:var(--ink)">Total Payable:</span>
+              <strong id="summary-grand-total" style="font-family:var(--disp);font-size:1.45rem;color:var(--accent)">₹0.00</strong>
+            </div>
+          </div>
+
+          <!-- Trust Badges -->
+          <div style="margin-top:24px;padding-top:18px;border-top:1px dashed var(--line);display:flex;flex-direction:column;gap:8px;font-size:0.78rem;color:var(--muted)">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span>🛡️</span>
+              <span>256-bit SSL Secure Checkout via Razorpay</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span>☕</span>
+              <span>100% Single-Origin Kodagu Estate Coffee</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span>📦</span>
+              <span>Fresh-roasted &amp; packed at origin upon order</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="w">
+      <div>
+        <div class="logo" style="color:#F5F5F5">PULPOFFE</div>
+        <p>Purely grown. Honestly brewed.<br>Kodagu, Karnataka, India</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <a href="index.html#story">Our story</a>
+        <a href="shop.html">Our coffees</a>
+        <a href="shop.html">Shop coffee</a>
+        <a href="contact.html?type=b2b">For business</a>
+      </div>
+      <div>
+        <h4>Connect</h4>
+        <a href="contact.html">Contact us</a>
+        <a href="account.html">My account</a>
+        <a href="admin.html">Admin</a>
+      </div>
+      <div class="cp">
+        <span>© 2026 Pulpoffe. All rights reserved.</span>
+        <span>Purely grown. Honestly brewed.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="feedback.js"></script>
+  <script src="checkout.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Admin Dashboard — Pulpoffe</title>
+  <title>Admin Dashboard · Pulpoffe Coffee</title>
   <link rel="icon" href="assets/pulpoffe-mark-light.svg">
   <link rel="stylesheet" href="brand/v2-tokens.css">
   <link rel="stylesheet" href="feedback.css">
@@ -20,10 +20,12 @@
       </a>
       <nav>
         <a href="index.html">Storefront ↗</a>
+        <a href="shop.html">Shop Catalog</a>
+        <a href="account.html">Customer View</a>
       </nav>
       
       <div style="display:flex;align-items:center;gap:12px">
-        <button id="admin-signout-btn" class="btn s" style="min-height:36px;padding:0 16px;font-size:0.85rem;color:var(--ink);border-color:var(--line)" hidden>Sign out</button>
+        <button id="admin-signout-btn" class="btn s" style="min-height:36px;padding:0 16px;font-size:0.85rem;color:#c0392b;border-color:rgba(192,57,43,0.3)" hidden>Sign Out</button>
         <button class="mobile-menu-toggle" id="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
           <span class="hamburger-icon">
             <span></span><span></span><span></span>
@@ -34,10 +36,9 @@
   
     <nav id="mobile-menu" class="mobile-nav-drawer" hidden aria-label="Mobile navigation">
       <div class="mobile-nav-inner">
-        <a href="index.html#story" class="mobile-nav-link">Our story</a>
-        <a href="shop.html" class="mobile-nav-link">Our coffees</a>
-        <a href="index.html#craft" class="mobile-nav-link">The craft</a>
-        <a href="contact.html?type=b2b" class="mobile-nav-link">For business</a>
+        <a href="index.html" class="mobile-nav-link">Storefront ↗</a>
+        <a href="shop.html" class="mobile-nav-link">Shop Catalog</a>
+        <a href="account.html" class="mobile-nav-link">Customer View</a>
         <div class="mobile-nav-divider"></div>
         <div class="mobile-nav-subrow">
           <a href="cart.html" class="mobile-nav-sublink">🛒 View Cart</a>
@@ -47,37 +48,71 @@
     </nav>
   </header>
 
-  <main id="main-content" class="w" style="padding-top:48px;padding-bottom:64px">
-    <section id="admin-auth" class="card" style="max-width:480px;margin:0 auto;padding:36px">
-      <h1 style="font-size:1.75rem;margin-bottom:6px">Pulpoffe Admin</h1>
-      <p style="color:var(--muted);font-size:0.95rem;margin:0 0 20px">Sign in with an authorised administrator account.</p>
-      
-      <form id="admin-login-form" style="display:flex;flex-direction:column;gap:16px">
-        <label style="font-size:0.875rem;color:var(--ink);font-weight:500">
-          Admin Email
-          <input type="email" name="email" required placeholder="admin@pulpoffe.com" style="width:100%;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);font:inherit">
-        </label>
-        <label style="font-size:0.875rem;color:var(--ink);font-weight:500">
-          Password
-          <input type="password" name="password" required placeholder="AdminPassword123!" style="width:100%;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);font:inherit">
-        </label>
-        <button type="submit" class="btn p" style="justify-content:center;margin-top:8px">Sign In to Dashboard →</button>
-        <p id="admin-error" role="status" style="font-size:0.85rem;color:#c0392b;margin:0"></p>
-      </form>
+  <main id="main-content" style="max-width:1140px;margin:44px auto 70px;padding:0 20px">
+    <!-- Admin Login Screen -->
+    <section id="admin-auth" style="max-width:440px;margin:30px auto">
+      <div class="card" style="padding:36px 32px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.04)">
+        <div style="text-align:center;margin-bottom:24px">
+          <img src="brand/pulpoffe-dark.svg" alt="Pulpoffe" width="34" height="44" style="height:42px;width:auto;margin-bottom:12px">
+          <h1 style="font-family:var(--disp);font-size:1.75rem;margin:0 0 6px;color:var(--ink)">Pulpoffe Administration</h1>
+          <p style="color:var(--muted);font-size:0.88rem;margin:0">Sign in with authorized administrator credentials.</p>
+        </div>
+        
+        <form id="admin-login-form" style="display:flex;flex-direction:column;gap:16px">
+          <div class="checkout-form-group">
+            <label for="adm-email">Admin Email *</label>
+            <input type="email" id="adm-email" name="email" required placeholder="admin@pulpoffe.com" autocomplete="username">
+          </div>
+          <div class="checkout-form-group">
+            <label for="adm-pass">Password *</label>
+            <input type="password" id="adm-pass" name="password" required placeholder="Enter admin password" autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn p" style="justify-content:center;margin-top:6px;padding:12px;font-size:0.95rem">
+            Sign In to Dashboard →
+          </button>
+          
+          <div style="text-align:center;margin-top:12px">
+            <button type="button" id="adm-demo-fill" style="background:none;border:none;color:var(--accent);font-size:0.8rem;text-decoration:underline;cursor:pointer">
+              Fill Demo Admin Credentials
+            </button>
+          </div>
+          
+          <p id="admin-error" role="status" style="font-size:0.85rem;color:#c0392b;text-align:center;margin:4px 0 0;min-height:20px"></p>
+        </form>
+      </div>
     </section>
 
+    <!-- Admin Dashboard Screen -->
     <section id="admin-dashboard" hidden>
-      <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:24px">
-        <div>
-          <span class="eye">Management</span>
-          <h1 style="font-size:2rem;margin:4px 0 0">Enquiry Inbox</h1>
-        </div>
-        <div class="filter-row">
-          <button type="button" class="active" data-admin-tab="inbox">Enquiries</button>
-          <button type="button" data-admin-tab="orders">Orders</button>
+      <!-- Dashboard Top Header -->
+      <div class="card" style="padding:28px 32px;margin-bottom:28px;border-radius:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px">
+          <div>
+            <span class="eye">Management</span>
+            <h1 style="font-family:var(--disp);font-size:1.9rem;margin:2px 0 4px;color:var(--ink)">Operations &amp; Fulfillment</h1>
+            <span style="font-size:0.85rem;color:var(--muted)">Kodagu Estate Direct Dispatch &amp; Wholesale Registry</span>
+          </div>
+          
+          <!-- Mode Tabs -->
+          <div style="display:inline-flex;gap:6px;background:var(--alt);padding:4px;border-radius:6px" role="group" aria-label="Admin views">
+            <button type="button" class="active admin-tab-btn" data-admin-tab="orders" style="padding:8px 16px;border:none;border-radius:4px;font-size:0.88rem;font-weight:600;cursor:pointer;background:var(--bg);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,0.06)">
+              Customer Orders
+            </button>
+            <button type="button" class="admin-tab-btn" data-admin-tab="inbox" style="padding:8px 16px;border:none;border-radius:4px;font-size:0.88rem;font-weight:500;cursor:pointer;background:transparent;color:var(--muted)">
+              B2B Enquiries
+            </button>
+          </div>
         </div>
       </div>
-      <div id="admin-inbox-list" style="display:grid;grid-template-columns:1fr 1fr;gap:18px"></div>
+
+      <!-- Live Items Grid -->
+      <div class="card" style="padding:28px 32px;border-radius:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:14px">
+          <h2 id="admin-section-heading" style="font-family:var(--disp);font-size:1.35rem;margin:0;color:var(--ink)">Customer Orders &amp; Receipts</h2>
+          <span id="admin-item-count" style="font-size:0.85rem;color:var(--muted)"></span>
+        </div>
+        <div id="admin-inbox-list" style="display:grid;grid-template-columns:1fr 1fr;gap:20px"></div>
+      </div>
     </section>
   </main>
 
@@ -107,5 +142,14 @@
 
   <script src="feedback.js"></script>
   <script src="portal.js"></script>
+  <script>
+    // Demo admin fill
+    document.getElementById('adm-demo-fill')?.addEventListener('click', () => {
+      const email = document.querySelector('#admin-login-form input[name="email"]');
+      const pass = document.querySelector('#admin-login-form input[name="password"]');
+      if (email) email.value = 'admin@pulpoffe.com';
+      if (pass) pass.value = 'AdminPassword123!';
+    });
+  </script>
 </body>
 </html>
