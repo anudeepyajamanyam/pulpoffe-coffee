@@ -124,84 +124,87 @@
     </div>
   </footer>
 
-  <!-- Sensory & Cupping Details Dialog -->
+  <!-- Sensory & Cupping Details Dialog (Warm Luxury Palette) -->
   <dialog id="cupping-dialog" aria-labelledby="cupping-title">
-    <div style="position:relative;display:grid;grid-template-columns:1fr 1.25fr;max-height:85vh;overflow-y:auto">
-      <button id="close-cupping-modal" aria-label="Close details" style="position:absolute;top:14px;right:14px;background:none;border:1px solid rgba(255,255,255,0.2);color:#fff;width:32px;height:32px;cursor:pointer;border-radius:4px;z-index:2">&times;</button>
-      <div style="background:#110b07;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:32px;border-right:1px solid rgba(255,255,255,0.08)">
-        <img id="cupping-img" src="media/products/gold-choco-orange.webp" alt="Coffee packshot" style="width:100%;max-width:280px;aspect-ratio:1/1;object-fit:contain;background:radial-gradient(circle at center, rgba(255,255,255,0.06) 0%, rgba(20,13,8,0.7) 100%);border:1px solid rgba(255,255,255,0.1);padding:14px;border-radius:8px;box-shadow:0 12px 30px rgba(0,0,0,0.5)">
-        <span id="cupping-range" class="eye" style="margin-top:20px;color:var(--honey-lt);font-size:0.75rem;letter-spacing:1px"></span>
-        <p id="cupping-origin" style="font-size:0.85rem;color:#D9CDB6;margin:4px 0 0"></p>
+    <div style="position:relative;display:grid;grid-template-columns:1fr 1.25fr;max-height:85vh;overflow-y:auto;background:#FAF7F2;color:var(--ink)">
+      <button id="close-cupping-modal" aria-label="Close details" style="position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.06);border:1px solid var(--line);color:var(--ink);width:32px;height:32px;cursor:pointer;border-radius:50%;z-index:2;display:flex;align-items:center;justify-content:center;font-size:1.2rem">&times;</button>
+      <div style="background:#F4EFEA;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:32px;border-right:1px solid var(--line)">
+        <img id="cupping-img" src="media/products/gold-choco-orange.webp" alt="Coffee packshot" style="width:100%;max-width:280px;aspect-ratio:1/1;object-fit:contain;background:#FFFFFF;border:1px solid var(--line);padding:14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.06)">
+        <span id="cupping-range" class="eye" style="margin-top:20px;color:var(--muted);font-size:0.75rem;letter-spacing:1px;font-weight:600"></span>
+        <p id="cupping-origin" style="font-size:0.85rem;color:var(--ink);margin:4px 0 0;font-weight:500"></p>
       </div>
-      <div style="padding:32px 28px;display:flex;flex-direction:column;gap:18px">
+      <div style="padding:32px 28px;display:flex;flex-direction:column;gap:18px;background:#FAF7F2">
         <div>
-          <h2 id="cupping-title" style="font-size:1.75rem;margin:0 0 8px;color:#fff;font-family:var(--disp)"></h2>
+          <h2 id="cupping-title" style="font-size:1.75rem;margin:0 0 8px;color:var(--ink);font-family:var(--disp)"></h2>
           <div id="cupping-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px"></div>
-          <p id="cupping-desc" style="color:#D9CDB6;font-size:0.95rem;line-height:1.6;margin:0"></p>
+          <p id="cupping-desc" style="color:var(--ink);opacity:0.88;font-size:0.95rem;line-height:1.6;margin:0"></p>
         </div>
 
-        <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:14px">
-          <span style="font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--honey-lt);display:block;margin-bottom:10px;font-family:var(--disp)">Cupping &amp; Sensory Metrics</span>
+        <div style="border-top:1px solid var(--line);padding-top:14px">
+          <span style="font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:10px;font-family:var(--disp);font-weight:600">Cupping &amp; Sensory Metrics</span>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 18px">
             <div>
-              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:#D9CDB6">
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--ink);font-weight:500">
                 <span>Acidity</span><span id="val-acidity"></span>
               </div>
-              <div class="meter-track"><div id="meter-acidity" class="meter-fill"></div></div>
+              <div class="meter-track" style="background:var(--alt)"><div id="meter-acidity" class="meter-fill" style="background:linear-gradient(90deg, #A87D43, #D4AF37)"></div></div>
             </div>
             <div>
-              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:#D9CDB6">
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--ink);font-weight:500">
                 <span>Body &amp; Mouthfeel</span><span id="val-body"></span>
               </div>
-              <div class="meter-track"><div id="meter-body" class="meter-fill"></div></div>
+              <div class="meter-track" style="background:var(--alt)"><div id="meter-body" class="meter-fill" style="background:linear-gradient(90deg, #A87D43, #D4AF37)"></div></div>
             </div>
             <div>
-              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:#D9CDB6">
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--ink);font-weight:500">
                 <span>Aroma Intensity</span><span id="val-aroma"></span>
               </div>
-              <div class="meter-track"><div id="meter-aroma" class="meter-fill"></div></div>
+              <div class="meter-track" style="background:var(--alt)"><div id="meter-aroma" class="meter-fill" style="background:linear-gradient(90deg, #A87D43, #D4AF37)"></div></div>
             </div>
             <div>
-              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:#D9CDB6">
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--ink);font-weight:500">
                 <span>Sweetness</span><span id="val-sweetness"></span>
               </div>
-              <div class="meter-track"><div id="meter-sweetness" class="meter-fill"></div></div>
+              <div class="meter-track" style="background:var(--alt)"><div id="meter-sweetness" class="meter-fill" style="background:linear-gradient(90deg, #A87D43, #D4AF37)"></div></div>
             </div>
           </div>
         </div>
 
-        <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:14px">
-          <span style="font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--honey-lt);display:block;margin-bottom:10px;font-family:var(--disp)">Recommended Brewing Ritual</span>
+        <div style="border-top:1px solid var(--line);padding-top:14px">
+          <span style="font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:10px;font-family:var(--disp);font-weight:600">Recommended Brewing Ritual</span>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:0.85rem">
-            <div style="background:rgba(255,255,255,0.04);padding:10px;border-radius:4px">
-              <strong style="color:var(--honey-lt);display:block;font-size:0.75rem">WATER TEMP</strong>
-              <span id="cup-temp" style="color:#F5F5F5"></span>
+            <div style="background:#FFFFFF;border:1px solid var(--line);padding:10px;border-radius:6px">
+              <strong style="color:var(--muted);display:block;font-size:0.72rem;text-transform:uppercase;letter-spacing:1px">WATER TEMP</strong>
+              <span id="cup-temp" style="color:var(--ink);font-weight:600"></span>
             </div>
-            <div style="background:rgba(255,255,255,0.04);padding:10px;border-radius:4px">
-              <strong style="color:var(--honey-lt);display:block;font-size:0.75rem">COFFEE RATIO</strong>
-              <span id="cup-ratio" style="color:#F5F5F5"></span>
+            <div style="background:#FFFFFF;border:1px solid var(--line);padding:10px;border-radius:6px">
+              <strong style="color:var(--muted);display:block;font-size:0.72rem;text-transform:uppercase;letter-spacing:1px">COFFEE RATIO</strong>
+              <span id="cup-ratio" style="color:var(--ink);font-weight:600"></span>
             </div>
-            <div style="grid-column:1/-1;background:rgba(255,255,255,0.04);padding:10px;border-radius:4px">
-              <strong style="color:var(--honey-lt);display:block;font-size:0.75rem">SERVING PAIRING</strong>
-              <span id="cup-pairing" style="color:#F5F5F5"></span>
+            <div style="grid-column:1/-1;background:#FFFFFF;border:1px solid var(--line);padding:10px;border-radius:6px">
+              <strong style="color:var(--muted);display:block;font-size:0.72rem;text-transform:uppercase;letter-spacing:1px">SERVING PAIRING</strong>
+              <span id="cup-pairing" style="color:var(--ink)"></span>
             </div>
           </div>
         </div>
 
-        <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <div style="border-top:1px solid var(--line);padding-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
           <div>
-            <span style="font-size:0.8rem;color:#D9CDB6;display:block">Select pack size:</span>
+            <span style="font-size:0.8rem;color:var(--muted);display:block;font-weight:600">Select pack size:</span>
             <div id="cupping-pack-row" class="pack-selector-row" style="margin-top:6px;margin-bottom:0"></div>
           </div>
           <div style="text-align:right">
-            <div style="font-size:1.35rem;font-weight:600;color:var(--honey-lt);font-family:var(--disp)">
+            <div style="font-size:1.45rem;font-weight:700;color:var(--ink);font-family:var(--disp)">
               <span id="cupping-price"></span>
             </div>
-            <span style="font-size:0.75rem;color:#D9CDB6">5% GST included (<span id="cupping-pack-size">100g</span>)</span>
+            <span style="font-size:0.75rem;color:var(--muted)">5% GST included (<span id="cupping-pack-size">100g</span>)</span>
           </div>
         </div>
 
-        <button id="cupping-add-btn" class="btn p" style="width:100%;justify-content:center;margin-top:4px">Add to basket +</button>
+        <div style="display:flex;gap:10px;margin-top:6px">
+          <button id="cupping-add-btn" class="btn p" style="flex:1;justify-content:center">Add to basket +</button>
+          <a id="cupping-full-page-btn" href="product.html" class="btn s" style="justify-content:center;text-decoration:none;font-size:0.85rem;white-space:nowrap">Full Product Page →</a>
+        </div>
       </div>
     </div>
   </dialog>

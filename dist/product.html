@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title id="page-title">Handcrafted Coffee — Pulpoffe</title>
+  <meta name="description" content="Discover single-origin Kodagu estate coffee by Pulpoffe. Roasted in small batches, artisanal tasting notes, and direct delivery.">
+  <link rel="icon" href="assets/pulpoffe-mark-light.svg">
+  <link rel="stylesheet" href="brand/v2-tokens.css">
+  <link rel="stylesheet" href="feedback.css">
+</head>
+<body class="product-page-body">
+  <a class="skip-link" href="#main-content" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">Skip to main content</a>
+  <div class="bar">Rooted in Kodagu. Crafted for the moments that matter.</div>
+  
+  <header>
+    <div class="w">
+      <a class="logo" href="index.html#top" aria-label="Pulpoffe home">
+        <img src="brand/pulpoffe-dark.svg" alt="Pulpoffe emblem" width="28" height="36" style="height:38px;width:auto;display:inline-block">
+        <span>PULPOFFE<small>MOMENTS BREWED · IMPACTS GROWN</small></span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="index.html#story">Our story</a>
+        <a href="shop.html" class="on">Our coffees</a>
+        <a href="index.html#craft">The craft</a>
+        <a href="contact.html?type=b2b">For business</a>
+      </nav>
+      
+      <div style="display:flex;align-items:center;gap:12px">
+        <!-- User Account / Login Button (Levista style) -->
+        <div class="user-menu-wrap">
+          <button id="header-user-btn" class="user-btn" aria-label="Account login" title="Sign In / Account">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span id="header-user-badge" class="user-name-tag">Sign In</span>
+          </button>
+          <div id="header-user-dropdown" class="user-dropdown-popover" hidden>
+            <div id="user-popover-content"></div>
+          </div>
+        </div>
+        <button class="bk basket-open" aria-label="Open shopping basket">
+          Basket <b class="basket-count">0</b>
+        </button>
+        <button class="mobile-menu-toggle" id="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span class="hamburger-icon">
+            <span></span><span></span><span></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  
+    <nav id="mobile-menu" class="mobile-nav-drawer" hidden aria-label="Mobile navigation">
+      <div class="mobile-nav-inner">
+        <a href="index.html#story" class="mobile-nav-link">Our story</a>
+        <a href="shop.html" class="mobile-nav-link">Our coffees</a>
+        <a href="index.html#craft" class="mobile-nav-link">The craft</a>
+        <a href="contact.html?type=b2b" class="mobile-nav-link">For business</a>
+        <div class="mobile-nav-divider"></div>
+        <div class="mobile-nav-subrow">
+          <a href="cart.html" class="mobile-nav-sublink">🛒 View Cart</a>
+          <a href="account.html" class="mobile-nav-sublink">👤 My Account</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <div class="product-detail-container">
+      <!-- Breadcrumb -->
+      <nav aria-label="Breadcrumb" style="margin-bottom:24px;font-size:0.86rem;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <a href="shop.html" style="color:var(--ink);text-decoration:none;font-weight:500">← Back to all coffees</a>
+        <span>/</span>
+        <span id="crumb-range" style="color:var(--muted)">Collection</span>
+        <span>/</span>
+        <span id="crumb-name" style="color:var(--ink);font-weight:600">Product</span>
+      </nav>
+
+      <!-- Main Product Grid -->
+      <div class="product-detail-grid">
+        <!-- Sticky Left: Packaging Mockup -->
+        <div class="product-gallery-sticky">
+          <span id="p-badge" style="display:inline-block;background:var(--alt);color:var(--ink);font-size:0.75rem;font-weight:600;padding:4px 12px;border-radius:20px;border:1px solid var(--line);margin-bottom:18px;text-transform:uppercase;letter-spacing:1px">Gold Range</span>
+          <img id="p-image" class="product-gallery-img" src="media/products/gold-caramel.webp" alt="Coffee packshot">
+          
+          <div style="margin-top:24px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-around;font-size:0.8rem;color:var(--muted)">
+            <div>
+              <strong style="color:var(--ink);display:block">Origin</strong>
+              <span id="p-origin">Kodagu, Karnataka</span>
+            </div>
+            <div>
+              <strong style="color:var(--ink);display:block">Elevation</strong>
+              <span>1,000m ASL</span>
+            </div>
+            <div>
+              <strong style="color:var(--ink);display:block">Rating</strong>
+              <span id="p-rating">★ 4.8 / 5.0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Information & Purchasing Column -->
+        <div class="product-info-col">
+          <div>
+            <p id="p-collection-tag" style="font-size:0.85rem;color:var(--muted);margin:0 0 4px;text-transform:uppercase;letter-spacing:1.5px;font-family:var(--disp)"></p>
+            <h1 id="p-title" style="font-size:2.4rem;line-height:1.15;margin:0 0 10px;color:var(--ink);font-family:var(--disp)">Coffee Name</h1>
+            <div id="p-flavor-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
+            <p id="p-desc" style="font-size:1.05rem;line-height:1.65;color:var(--ink);opacity:0.9;margin:0"></p>
+          </div>
+
+          <!-- Sensory & Cupping Profile -->
+          <div class="sensory-card-group">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+              <span style="font-size:0.75rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;color:var(--muted);font-family:var(--disp)">Cupping &amp; Sensory Metrics</span>
+              <span style="font-size:0.75rem;color:var(--accent);font-weight:600">Specialty Grade</span>
+            </div>
+            
+            <div class="sensory-meter-row">
+              <span style="font-size:0.85rem;font-weight:500;color:var(--ink)">Acidity</span>
+              <div class="sensory-bar-bg"><div id="meter-acidity" class="sensory-bar-fill" style="width:50%"></div></div>
+              <span id="val-acidity" style="font-size:0.82rem;font-weight:600;color:var(--ink);min-width:45px;text-align:right">50/100</span>
+            </div>
+
+            <div class="sensory-meter-row">
+              <span style="font-size:0.85rem;font-weight:500;color:var(--ink)">Body &amp; Mouthfeel</span>
+              <div class="sensory-bar-bg"><div id="meter-body" class="sensory-bar-fill" style="width:50%"></div></div>
+              <span id="val-body" style="font-size:0.82rem;font-weight:600;color:var(--ink);min-width:45px;text-align:right">50/100</span>
+            </div>
+
+            <div class="sensory-meter-row">
+              <span style="font-size:0.85rem;font-weight:500;color:var(--ink)">Aroma Intensity</span>
+              <div class="sensory-bar-bg"><div id="meter-aroma" class="sensory-bar-fill" style="width:50%"></div></div>
+              <span id="val-aroma" style="font-size:0.82rem;font-weight:600;color:var(--ink);min-width:45px;text-align:right">50/100</span>
+            </div>
+
+            <div class="sensory-meter-row">
+              <span style="font-size:0.85rem;font-weight:500;color:var(--ink)">Sweetness</span>
+              <div class="sensory-bar-bg"><div id="meter-sweetness" class="sensory-bar-fill" style="width:50%"></div></div>
+              <span id="val-sweetness" style="font-size:0.82rem;font-weight:600;color:var(--ink);min-width:45px;text-align:right">50/100</span>
+            </div>
+          </div>
+
+          <!-- Brewing Ritual -->
+          <div class="sensory-card-group">
+            <span style="font-size:0.75rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;color:var(--muted);display:block;margin-bottom:12px;font-family:var(--disp)">Recommended Brewing Ritual</span>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.85rem">
+              <div style="background:var(--bg);padding:10px 14px;border-radius:6px;border:1px solid var(--line)">
+                <strong style="color:var(--muted);display:block;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase">WATER TEMP</strong>
+                <span id="p-temp" style="color:var(--ink);font-weight:600">90°C</span>
+              </div>
+              <div style="background:var(--bg);padding:10px 14px;border-radius:6px;border:1px solid var(--line)">
+                <strong style="color:var(--muted);display:block;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase">COFFEE RATIO</strong>
+                <span id="p-ratio" style="color:var(--ink);font-weight:600">1.5 tsp / 150ml</span>
+              </div>
+              <div style="grid-column:1/-1;background:var(--bg);padding:10px 14px;border-radius:6px;border:1px solid var(--line)">
+                <strong style="color:var(--muted);display:block;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase">SERVING PAIRING</strong>
+                <span id="p-pairing" style="color:var(--ink)">Serve with warm frothed milk or cold brew over ice.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pack Size & Pricing Section -->
+          <div style="background:#FFFFFF;border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,0.03)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+              <div>
+                <span style="font-size:0.82rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Select Pack Size</span>
+                <div id="p-pack-row" class="pack-selector-row" style="margin-top:8px;margin-bottom:0"></div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:1.85rem;font-weight:700;color:var(--ink);font-family:var(--disp);line-height:1">
+                  <span id="p-price">₹0.00</span>
+                </div>
+                <span style="font-size:0.78rem;color:var(--muted);display:block;margin-top:4px">5% GST included (<span id="p-pack-label">100g</span>)</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons: Persistent Quantity Controller + Buy Now -->
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+              <div id="p-action-container" class="card-action-wrap"></div>
+              
+              <button id="p-buy-now-btn" type="button" class="btn p" style="width:100%;justify-content:center;font-size:0.95rem;padding:12px">
+                Buy Now (Instant Checkout) →
+              </button>
+            </div>
+
+            <!-- Assurance guarantees -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line);font-size:0.78rem;color:var(--muted)">
+              <div style="display:flex;align-items:center;gap:6px">
+                <span>🚚</span><span>Free shipping on ₹1,000+</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <span>☕</span><span>100% Kodagu Estate Harvest</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <span>🔒</span><span>256-Bit SSL Razorpay</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <span>✨</span><span>Aroma-Lock Valve Pouch</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related / Explore More Coffees Section -->
+      <section style="margin-top:64px;border-top:1px solid var(--line);padding-top:40px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+          <div>
+            <span class="eye">More from Kodagu</span>
+            <h2 style="font-size:1.5rem;margin:4px 0 0">Explore complementary coffees</h2>
+          </div>
+          <a href="shop.html" class="link">View all 14 coffees →</a>
+        </div>
+        <div id="related-grid" class="product-grid" style="grid-template-columns:repeat(auto-fill, minmax(260px, 1fr))"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Basket Drawer -->
+  <dialog id="basket-dialog" aria-labelledby="basket-title">
+    <div class="basket-drawer-header">
+      <h2 id="basket-title">Your Basket</h2>
+      <button class="basket-close basket-drawer-close" aria-label="Close basket">&times;</button>
+    </div>
+    <div id="basket-delivery-banner" class="basket-delivery-bar">
+      <span id="delivery-progress-text">Free express delivery on orders ₹1,000+</span>
+      <span style="font-weight:600;color:#fff">Kodagu Direct</span>
+    </div>
+    <div id="cart-auth-notice" style="font-size:0.8rem;color:#D9CDB6;padding:8px 24px;background:rgba(0,0,0,0.25);border-bottom:1px solid rgba(255,255,255,0.06)">
+      <span>Track orders &amp; blend brief:</span> <a href="account.html" style="color:var(--honey-lt);text-decoration:underline">Sign in / Register →</a>
+    </div>
+    <div class="basket-drawer-body">
+      <ul id="basket-items" class="basket-item-list" aria-live="polite"></ul>
+      <div id="basket-empty-state" class="basket-empty" hidden>
+        <p>Your basket is currently empty.</p>
+        <a href="shop.html" class="btn s">Explore our 14 coffees</a>
+      </div>
+    </div>
+    <div class="basket-drawer-footer">
+      <div class="basket-breakdown">
+        <div class="breakdown-row"><span>Items Subtotal:</span><span id="breakdown-subtotal">₹0.00</span></div>
+        <div class="breakdown-row"><span>Estimated Delivery:</span><span id="breakdown-shipping">₹0.00</span></div>
+        <div class="breakdown-row breakdown-total"><span>Total Payable:</span><span id="basket-total-amount">₹0.00</span></div>
+      </div>
+      <a href="checkout.html" id="save-basket" class="btn p basket-checkout-btn" style="text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px">
+        Proceed to Checkout →
+      </a>
+      <a href="cart.html" style="display:block;text-align:center;font-size:0.85rem;color:var(--muted);margin-top:10px;text-decoration:underline">
+        Or view detailed order summary &amp; bags in cart
+      </a>
+    </div>
+  </dialog>
+
+  <footer>
+    <div class="w">
+      <div>
+        <div class="logo" style="color:#F5F5F5">PULPOFFE</div>
+        <p>Purely grown. Honestly brewed.<br>Kodagu, Karnataka, India</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <a href="index.html#story">Our story</a>
+        <a href="shop.html">Our coffees</a>
+        <a href="shop.html">Shop coffee</a>
+        <a href="contact.html?type=b2b">For business</a>
+      </div>
+      <div>
+        <h4>Connect</h4>
+        <a href="contact.html">Contact us</a>
+        <a href="account.html">My account</a>
+        <a href="admin.html">Admin</a>
+      </div>
+      <div>
+        <h4>Direct estate origin</h4>
+        <p>Pulpoffe Estate, Suntikoppa Road<br>Kodagu 571237, Karnataka</p>
+        <p><small>© <span id="year">2026</span> Pulpoffe. All rights reserved.</small></p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="basket-toast" role="status" aria-live="polite"></div>
+
+  <script src="products-catalog.js"></script>
+  <script src="feedback.js"></script>
+  <script src="product.js"></script>
+</body>
+</html>

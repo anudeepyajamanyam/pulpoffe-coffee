@@ -466,6 +466,7 @@ function addToBasket(productOrVariant, triggerBtn) {
 }
 
 function renderBasket() {
+  if (typeof updateAllCards === 'function') updateAllCards();
   const host = $('#basket-items');
   if (!host) return;
   host.replaceChildren();
@@ -1135,6 +1136,8 @@ $('#save-basket')?.addEventListener('click', () => {
 
   // Sensory & Cupping Details Dialog
   function openCuppingDialog(p, currentSize = '100g') {
+    const fullPageBtn = $('#cupping-full-page-btn');
+    if (fullPageBtn) fullPageBtn.href = `product.html?id=${p.id}&size=${currentSize}`;
     const dlg = $('#cupping-dialog');
     if (!dlg) return;
 
@@ -1248,12 +1251,18 @@ $('#cupping-dialog')?.addEventListener('click', e => {
 });
 
 // ── Shop Grid Rendering ──
+let cardUpdaters = [];
+function updateAllCards() {
+  cardUpdaters.forEach(fn => { try { fn(); } catch {} });
+}
+
 if ($('#product-grid')) {
   let group = new URLSearchParams(location.search).get('collection') || 'all';
   if (!Object.hasOwn(groups, group)) group = 'all';
   let term = '';
 
   function render() {
+    cardUpdaters = [];
     document.querySelectorAll('[data-shop-filter]').forEach(b => {
       const on = b.dataset.shopFilter === group;
       b.classList.toggle('active', on);
@@ -1277,9 +1286,10 @@ if ($('#product-grid')) {
       let activeSize = '100g';
       const getActivePrice = () => p.prices?.[activeSize] ?? p.price;
 
-      // Image header
+      // Image header (clickable -> product.html)
       const imgWrap = document.createElement('div');
       imgWrap.className = 'product-card-img-wrap';
+      imgWrap.style.cursor = 'pointer';
       
       const img = document.createElement('img');
       img.src = p.image || 'media/products/gold-choco-orange.webp';
@@ -1287,7 +1297,9 @@ if ($('#product-grid')) {
       img.loading = 'lazy';
       imgWrap.append(img);
 
-      imgWrap.addEventListener('click', () => openCuppingDialog(p, activeSize));
+      imgWrap.addEventListener('click', () => {
+        window.location.href = `product.html?id=${p.id}&size=${activeSize}`;
+      });
 
       // Featured or Processing badge
       const badge = document.createElement('span');
@@ -1303,12 +1315,14 @@ if ($('#product-grid')) {
       category.className = 'product-category';
       category.textContent = p.range;
 
-      // Name
+      // Name (clickable -> product.html)
       const h = document.createElement('h2');
       h.textContent = p.name;
       h.style.cursor = 'pointer';
       h.title = `View details for ${p.name}`;
-      h.addEventListener('click', () => openCuppingDialog(p, activeSize));
+      h.addEventListener('click', () => {
+        window.location.href = `product.html?id=${p.id}&size=${activeSize}`;
+      });
 
       // Flavor pills
       const flavorPills = document.createElement('div');
@@ -1336,6 +1350,89 @@ if ($('#product-grid')) {
       priceVal.className = 'product-price';
       priceVal.textContent = inr(getActivePrice());
 
+      // Action container for persistent quantity controller
+      const actionWrap = document.createElement('div');
+      actionWrap.className = 'card-action-wrap';
+
+      function updateCardAction() {
+        actionWrap.replaceChildren();
+        const variantId = `${p.id}__${activeSize}`;
+        const count = basket[variantId] || basket[p.id] || 0;
+
+        if (count > 0) {
+          const ctrl = document.createElement('div');
+          ctrl.className = 'card-qty-controller';
+
+          const minusBtn = document.createElement('button');
+          minusBtn.type = 'button';
+          minusBtn.className = 'qty-btn';
+          minusBtn.textContent = '−';
+          minusBtn.setAttribute('aria-label', `Decrease ${p.name} quantity`);
+          minusBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const actualId = basket[variantId] ? variantId : p.id;
+            if (basket[actualId] > 1) {
+              basket[actualId]--;
+            } else {
+              delete basket[actualId];
+            }
+            persist();
+            renderBasket();
+            updateAllCards();
+          });
+
+          const qtyText = document.createElement('span');
+          qtyText.className = 'qty-display';
+          qtyText.innerHTML = `✓ <strong>${count}</strong> in basket`;
+
+          const plusBtn = document.createElement('button');
+          plusBtn.type = 'button';
+          plusBtn.className = 'qty-btn';
+          plusBtn.textContent = '+';
+          plusBtn.setAttribute('aria-label', `Increase ${p.name} quantity`);
+          plusBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const actualId = basket[variantId] ? variantId : (basket[p.id] ? p.id : variantId);
+            basket[actualId] = (basket[actualId] || 0) + 1;
+            persist();
+            renderBasket();
+            updateAllCards();
+          });
+
+          const removeBtn = document.createElement('button');
+          removeBtn.type = 'button';
+          removeBtn.className = 'qty-remove-btn';
+          removeBtn.textContent = 'Remove ✕';
+          removeBtn.setAttribute('aria-label', `Remove ${p.name} from basket`);
+          removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            delete basket[variantId];
+            delete basket[p.id];
+            persist();
+            renderBasket();
+            updateAllCards();
+          });
+
+          ctrl.append(minusBtn, qtyText, plusBtn, removeBtn);
+          actionWrap.append(ctrl);
+        } else {
+          const addBtn = document.createElement('button');
+          addBtn.type = 'button';
+          addBtn.className = 'add-basket';
+          addBtn.textContent = 'Add to basket +';
+          addBtn.setAttribute('aria-label', `Add ${p.name} (${activeSize}) to basket`);
+          addBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const variant = resolveProduct(`${p.id}__${activeSize}`);
+            addToBasket(variant);
+            updateAllCards();
+          });
+          actionWrap.append(addBtn);
+        }
+      }
+
+      cardUpdaters.push(updateCardAction);
+
       for (const size of ['100g', '200g', '250g', '500g']) {
         const b = document.createElement('button');
         b.type = 'button';
@@ -1346,6 +1443,7 @@ if ($('#product-grid')) {
           activeSize = size;
           packRow.querySelectorAll('.pack-btn').forEach(btn => btn.classList.toggle('active', btn === b));
           priceVal.textContent = inr(getActivePrice());
+          updateCardAction();
         });
         packRow.append(b);
       }
@@ -1359,25 +1457,19 @@ if ($('#product-grid')) {
       taxTag.textContent = '5% GST incl.';
       priceRow.append(priceVal, taxTag);
 
-      // Add to Basket button
-      const addBtn = document.createElement('button');
-      addBtn.className = 'add-basket';
-      addBtn.textContent = 'Add to basket +';
-      addBtn.setAttribute('aria-label', `Add ${p.name} (${activeSize}) to basket`);
-      addBtn.addEventListener('click', () => {
-        const variant = resolveProduct(`${p.id}__${activeSize}`);
-        addToBasket(variant, addBtn);
-      });
+      updateCardAction();
 
-      // Sensory profile link
+      // Dedicated Product Page link
       const sensoryLink = document.createElement('button');
       sensoryLink.type = 'button';
       sensoryLink.className = 'cupping-link-btn';
-      sensoryLink.textContent = 'View product details & cupping notes ↗';
+      sensoryLink.textContent = 'View product details & cupping notes →';
       sensoryLink.style.cssText = 'background:none;border:none;color:var(--accent);font:500 0.85rem var(--body);padding:8px 0 0;cursor:pointer;text-align:center;text-decoration:underline';
-      sensoryLink.addEventListener('click', () => openCuppingDialog(p, activeSize));
+      sensoryLink.addEventListener('click', () => {
+        window.location.href = `product.html?id=${p.id}&size=${activeSize}`;
+      });
 
-      copy.append(category, h, flavorPills, note, packRow, priceRow, addBtn, sensoryLink);
+      copy.append(category, h, flavorPills, note, packRow, priceRow, actionWrap, sensoryLink);
       card.append(imgWrap, copy);
       grid.append(card);
     }
